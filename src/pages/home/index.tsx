@@ -1,8 +1,14 @@
-import { Graph, type Model } from '@antv/x6'
-import { useEffect, useRef, useState } from 'react'
-import { register } from '@antv/x6-react-shape'
-import { Snapline } from '@antv/x6-plugin-snapline'
-import { Button } from 'antd'
+import { type Model } from '@antv/x6'
+import {  useEffect, useRef, useState } from 'react'
+import {FlowChart} from '@/components'
+// import SvgData from '@/components/svg/test.svg'
+const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="888" height="483.61099" viewBox="0 0 888 483.61099" xmlns:xlink="http://www.w3.org/1999/xlink">
+     <rect id="node1" x="10" y="10" width="100" height="40" />
+     <circle id="node2" cx="200" cy="30" r="20" />
+</svg>
+
+`
+
 
 const data = {
   nodes: [
@@ -67,130 +73,66 @@ const data = {
   ]
 }
 
-const commands = [
-  {
-    key: 'zoomIn',
-    label: 'ZoomIn(0.2)'
-  },
-  {
-    key: 'zoomOut',
-    label: 'ZoomOut(-0.2)'
-  },
-  {
-    key: 'zoomTo',
-    label: 'ZoomTo(1)'
-  },
-  {
-    key: 'zoomToFit',
-    label: 'ZoomToFit'
-  },
-  {
-    key: 'centerContent',
-    label: 'CenterContent'
-  }
-]
+
+
+
+
 
 function Home() {
   const refContainer = useRef<HTMLDivElement>(null)
 
-  const [graph, setGraph] = useState<Graph | null>(null)
+  const [graphData, setGraphData] = useState<Model.FromJSONData>()
 
-  useEffect(() => {
-    const graph = new Graph({
-      container: refContainer.current as HTMLElement,
-      background: {
-        color: '#F2F7FA'
-      },
-      grid: {
-        visible: true,
-        type: 'doubleMesh',
-        args: [
-          {
-            color: '#eee', // 主网格线颜色
-            thickness: 1 // 主网格线宽度
-          },
-          {
-            color: '#ddd', // 次网格线颜色
-            thickness: 1, // 次网格线宽度
-            factor: 4 // 主次网格线间隔
+
+
+
+    const svgToAnt = (svg: string) => {
+      // 使用 DOMParser 解析 SVG
+      const parser = new DOMParser()
+      const svgDoc = parser.parseFromString(svgString, 'image/svg+xml')
+      const elements = svgDoc.documentElement.childNodes
+
+      // 转换为 X6 节点格式
+      const x6Nodes = Array.from(elements)
+        .map((node) => {
+          // 确保 node 是一个 Element
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const element = node as SVGElement // 类型断言为 SVGElement
+
+            const nodeData = {
+              id: element.getAttribute('id'),
+              x: parseFloat(element.getAttribute('x') || element.getAttribute('cx') || '0'),
+              y: parseFloat(element.getAttribute('y') || element.getAttribute('cy') || '0'),
+              width: 300,
+              height: 200,
+              label: element.tagName === 'rect' ? '矩形' : '圆形', // 根据元素类型设置标签
+              shape: element.tagName === 'rect' ? 'rect' : 'circle',
+            }
+
+            return nodeData
           }
-        ]
-      },
-      panning: true,
-      mousewheel: {
-        enabled: true,
-        modifiers: 'Ctrl',
-        maxScale: 4,
-        minScale: 0.2
-      },
-      width: 800,
-      height: 600
-      // autoResize: true
-    })
+          return null // 过滤非元素节点
+        })
+        .filter((node) => node !== null) // 过滤掉 null
 
-    graph.use(
-      new Snapline({
-        enabled: true
-      })
-    )
-    graph.fromJSON(data as Model.FromJSONData)
-    graph.centerContent()
-
-    setGraph(graph)
-
-    return () => {
-      graph.dispose() // 组件卸载时清理
+      return x6Nodes
     }
-  }, [])
 
-  const handleImport = () => {
-    console.log(graph?.toJSON())
-  }
+    useEffect(() => {
+      console.log('svgString', svgString)
+      const svgData1 = svgToAnt(svgString)
+      setGraphData({
+        nodes: svgData1,
+      } as Model.FromJSONData)
+      console.log(svgData1)
+    },[])
 
-  const handleZoom = (command: string) => {
-    switch (command) {
-      case 'translate':
-        graph?.translate(20, 20)
-        break
-      case 'zoomIn':
-        graph?.zoom(0.2)
-        break
-      case 'zoomOut':
-        graph?.zoom(-0.2)
-        break
-      case 'zoomTo':
-        graph?.zoomTo(1)
-        break
-      case 'zoomToFit':
-        graph?.zoomToFit()
-        break
-      case 'centerContent':
-        graph?.centerContent()
-        break
-      default:
-        break
-    }
-  }
+
+
   return (
     <div className="w-screen h-screen">
-      <Button onClick={handleImport}>导出JSON</Button>
-      <Button.Group>
-        {commands.map((item) => (
-          <Button
-            onClick={() => handleZoom(item.key)}
-            key={item.key}
-          >
-            {item.label}
-          </Button>
-        ))}
-      </Button.Group>
-
-      <div className="bg-red-100 w-full h-full flex justify-center items-center">
-        <div
-          id="container"
-          ref={refContainer}
-        ></div>
-      </div>
+      {graphData?.toString()}
+      <FlowChart data={graphData} />
     </div>
   )
 }

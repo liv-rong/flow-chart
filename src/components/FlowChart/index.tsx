@@ -4,68 +4,68 @@ import { register } from '@antv/x6-react-shape'
 import { Snapline } from '@antv/x6-plugin-snapline'
 import { Button } from 'antd'
 
-const data = {
-  nodes: [
-    {
-      id: 'node1',
-      shape: 'rect',
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 200,
-      label: 'hello',
-      attrs: {
-        // body 是选择器名称，选中的是 rect 元素
-        body: {
-          stroke: '#8f8f8f',
-          strokeWidth: 1,
-          fill: 'red',
-          rx: 6,
-          ry: 6,
-          backgroundColor: 'red' // 设置背景色
-        },
-        label: {
-          text: 'hello',
-          fill: '#000',
-          fontSize: 28
-        }
-      }
-    },
-    {
-      id: 'node2',
-      shape: 'rect',
-      x: 300,
-      y: 500,
-      width: 100,
-      height: 40,
-      label: 'world',
-      attrs: {
-        body: {
-          stroke: '#8f8f8f',
-          strokeWidth: 1,
-          fill: '#fff',
-          rx: 6,
-          ry: 6
-        }
-      }
-    }
-  ],
-  edges: [
-    {
-      shape: 'edge',
-      source: 'node1',
-      target: 'node2',
-      label: 'x6',
-      attrs: {
-        // line 是选择器名称，选中的边的 path 元素
-        line: {
-          stroke: '#8f8f8f',
-          strokeWidth: 1
-        }
-      }
-    }
-  ]
-}
+// const data = {
+//   nodes: [
+//     {
+//       id: 'node1',
+//       shape: 'rect',
+//       x: 0,
+//       y: 0,
+//       width: 100,
+//       height: 200,
+//       label: 'hello',
+//       attrs: {
+//         // body 是选择器名称，选中的是 rect 元素
+//         body: {
+//           stroke: '#8f8f8f',
+//           strokeWidth: 1,
+//           fill: 'red',
+//           rx: 6,
+//           ry: 6,
+//           backgroundColor: 'red' // 设置背景色
+//         },
+//         label: {
+//           text: 'hello',
+//           fill: '#000',
+//           fontSize: 28
+//         }
+//       }
+//     },
+//     {
+//       id: 'node2',
+//       shape: 'rect',
+//       x: 300,
+//       y: 500,
+//       width: 100,
+//       height: 40,
+//       label: 'world',
+//       attrs: {
+//         body: {
+//           stroke: '#8f8f8f',
+//           strokeWidth: 1,
+//           fill: '#fff',
+//           rx: 6,
+//           ry: 6
+//         }
+//       }
+//     }
+//   ],
+//   edges: [
+//     {
+//       shape: 'edge',
+//       source: 'node1',
+//       target: 'node2',
+//       label: 'x6',
+//       attrs: {
+//         // line 是选择器名称，选中的边的 path 元素
+//         line: {
+//           stroke: '#8f8f8f',
+//           strokeWidth: 1
+//         }
+//       }
+//     }
+//   ]
+// }
 
 const commands = [
   {
@@ -89,8 +89,11 @@ const commands = [
     label: 'CenterContent'
   }
 ]
+interface Props {
+  data?: Model.FromJSONData
+}
 
-function FlowChart() {
+function FlowChart({data}:Props) {
   const refContainer = useRef<HTMLDivElement>(null)
 
   const [graph, setGraph] = useState<Graph | null>(null)
