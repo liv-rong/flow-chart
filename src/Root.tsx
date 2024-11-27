@@ -4,8 +4,6 @@ import { useEffect } from 'react'
 
 nprogress.configure({ showSpinner: false })
 
-
-
 /**
  * 生成页面标题
  * @description
@@ -14,20 +12,19 @@ nprogress.configure({ showSpinner: false })
  */
 const getDocumentTitle = (title?: string) => (title ? `${title} ` : 'flow-chart')
 
-
 export default function Root() {
   const navigation = useNavigation()
   const location = useLocation()
 
   // 监听路由变化，显示进度条
   useEffect(() => {
+    console.log(navigation.state)
     if (navigation.state === 'loading') {
       nprogress.start()
     } else {
       nprogress.done()
     }
   }, [navigation.state])
-
 
   useEffect(() => {
     document.title = getDocumentTitle('flow-chart')
