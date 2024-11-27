@@ -128,7 +128,7 @@ function Home() {
   }, [svg])
 
   return (
-    <div className="w-screen h-screen">
+    <div className="h-screen w-full">
       <div
         ref={refContainer}
         dangerouslySetInnerHTML={{ __html: svg ?? '' }}
