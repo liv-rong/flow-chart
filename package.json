@@ -12,6 +12,7 @@
   "dependencies": {
     "@antv/x6": "^2.18.1",
     "@antv/x6-plugin-snapline": "^2.1.7",
+    "@mermaid-js/parser": "^0.3.0",
     "antd": "^5.21.6",
     "classnames": "^2.5.1",
     "mermaid": "^11.4.0",

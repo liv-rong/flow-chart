@@ -1,15 +1,18 @@
-import { type Model } from '@antv/x6'
+import { Model, Node, Edge } from '@antv/x6'
 import { useEffect, useRef, useState } from 'react'
-import { FlowChart } from '@/components'
-// import SvgData from '@/components/svg/test.svg'
-const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="888" height="483.61099" viewBox="0 0 888 483.61099" xmlns:xlink="http://www.w3.org/1999/xlink">
-     <rect id="node1" x="10" y="10" width="100" height="40" />
-     <circle id="node2" cx="200" cy="30" r="20" />
-</svg>
+import { FlowChart, MermaidDiagram } from '@/components'
+import SvgData11 from '@/components/svg/test.svg'
+import mermaid from 'mermaid'
+import { ChartUtils } from '@/utils'
 
+const svgString = `
+<svg xmlns="http://www.w3.org/2000/svg" width="888" height="483.61099" viewBox="0 0 888 483.61099">
+    <rect id="node1" x="10" y="10" width="100" height="40" />
+    <circle id="node2" cx="200" cy="30" r="20" />
+</svg>
 `
 
-const data = {
+const initialData = {
   nodes: [
     {
       id: 'node1',
@@ -20,14 +23,12 @@ const data = {
       height: 200,
       label: 'hello',
       attrs: {
-        // body 是选择器名称，选中的是 rect 元素
         body: {
           stroke: '#8f8f8f',
           strokeWidth: 1,
           fill: 'red',
           rx: 6,
-          ry: 6,
-          backgroundColor: 'red' // 设置背景色
+          ry: 6
         },
         label: {
           text: 'hello',
@@ -62,7 +63,6 @@ const data = {
       target: 'node2',
       label: 'x6',
       attrs: {
-        // line 是选择器名称，选中的边的 path 元素
         line: {
           stroke: '#8f8f8f',
           strokeWidth: 1
@@ -74,55 +74,86 @@ const data = {
 
 function Home() {
   const refContainer = useRef<HTMLDivElement>(null)
-
   const [graphData, setGraphData] = useState<Model.FromJSONData>()
 
-  const svgToAnt = (svg: string) => {
-    // 使用 DOMParser 解析 SVG
-    const parser = new DOMParser()
-    const svgDoc = parser.parseFromString(svgString, 'image/svg+xml')
-    const elements = svgDoc.documentElement.childNodes
+  const [svg, setSvg] = useState<string>()
 
-    // 转换为 X6 节点格式
-    const x6Nodes = Array.from(elements)
-      .map((node) => {
-        // 确保 node 是一个 Element
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const element = node as SVGElement // 类型断言为 SVGElement
+  const [nodes, setNodes] = useState<Node.Metadata[]>([])
+  const [edges, setEdges] = useState<Edge.Metadata[]>([])
 
-          const nodeData = {
-            id: element.getAttribute('id'),
-            x: parseFloat(element.getAttribute('x') || element.getAttribute('cx') || '0'),
-            y: parseFloat(element.getAttribute('y') || element.getAttribute('cy') || '0'),
-            width: 300,
-            height: 200,
-            label: element.tagName === 'rect' ? '矩形' : '圆形', // 根据元素类型设置标签
-            shape: element.tagName === 'rect' ? 'rect' : 'circle'
-          }
+  const mermaidInput = `
+  flowchart TD
+      A[ChristmasA] -->|Get money| B(Go shoppingB)
+      B --> C{Let me thinkC}
+      C -->|One| D[LaptopD]
+      C -->|Two| E[iPhoneE]
+      C -->|Three| F[fa:fa-car CarF]
 
-          return nodeData
-        }
-        return null // 过滤非元素节点
-      })
-      .filter((node) => node !== null) // 过滤掉 null
+  `
 
-    return x6Nodes
+  //   const mermaidInput = `
+  //   flowchart TD
+  //     Start --> Stop
+  // `
+
+  const handleInit = async () => {
+    const res = await mermaid.render('text', mermaidInput)
+    setSvg(res.svg)
+    return res.svg
+  }
+
+  const handleData = () => {
+    const { nodes, edges } = ChartUtils.mermaidTojson(mermaidInput)
+    setNodes(nodes)
+    setEdges(edges)
+  }
+
+  const handleXYTojson = () => {
+    const res = ChartUtils.handleXY()
+    if (nodes.length > 0) {
+      setNodes((pre) =>
+        pre.map((item) => {
+          const resXY = res?.find((resItem) => {
+            const splitXY = resItem.id?.split('-')[1] ?? ''
+            console.log(splitXY, 'splitXY')
+            return splitXY === item.id
+          })
+          console.log(resXY, 'resXY')
+          item.x = resXY?.x
+          item.y = resXY?.y
+          item.width = 200
+          item.height = 100
+          return item
+        })
+      )
+    }
+    console.log(res, 'res')
   }
 
   useEffect(() => {
-    console.log('svgString', svgString)
-    const svgData1 = svgToAnt(svgString)
-    setGraphData({
-      nodes: svgData1
-    } as Model.FromJSONData)
-    console.log(svgData1)
+    handleInit()
+    handleData()
   }, [])
+
+  useEffect(() => {
+    if (svg) {
+      handleXYTojson() // 在 SVG 渲染后调用
+    }
+  }, [svg]) // 依赖 svg
 
   return (
     <div className="w-screen h-screen">
-      1111
-      {/* {graphData?.toString()} */}
-      {/* <FlowChart data={graphData} /> */}
+      <div
+        ref={refContainer}
+        dangerouslySetInnerHTML={{ __html: svg! }}
+      ></div>
+      <FlowChart
+        data={{
+          nodes,
+          edges
+        }}
+      />
+      {/* <MermaidDiagram children={mermaidInput} /> */}
     </div>
   )
 }
