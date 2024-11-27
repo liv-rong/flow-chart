@@ -1,17 +1,5 @@
 import { Model, Node, Edge } from '@antv/x6'
-import { useEffect, useRef, useState } from 'react'
-import { FlowChart, MermaidDiagram } from '@/components'
-import SvgData11 from '@/components/svg/test.svg'
 import mermaid from 'mermaid'
-import { ChartUtils } from '@/utils'
-
-const svgString = `
-<svg xmlns="http://www.w3.org/2000/svg" width="888" height="483.61099" viewBox="0 0 888 483.61099">
-    <rect id="node1" x="10" y="10" width="100" height="40" />
-    <circle id="node2" cx="200" cy="30" r="20" />
-</svg>
-`
-
 const initialData = {
   nodes: [
     {
@@ -72,29 +60,27 @@ const initialData = {
   ]
 }
 
+const mermaidInput = `
+flowchart TD
+    A[ChristmasA] -->|Get money| B(Go <br/>  shoppingB)
+    B --> C{Let me <br/> thinkC}
+    C -->|One| D[LaptopD]
+    C -->|Two| E[iPhoneE]
+    C -->|Three| F[fa:fa-car CarF]
+
+`
+//   const mermaidInput = `
+//   flowchart TD
+//     Start --> Stop
+// `
+
 function Home() {
   const refContainer = useRef<HTMLDivElement>(null)
-  const [graphData, setGraphData] = useState<Model.FromJSONData>()
 
   const [svg, setSvg] = useState<string>()
 
   const [nodes, setNodes] = useState<Node.Metadata[]>([])
   const [edges, setEdges] = useState<Edge.Metadata[]>([])
-
-  const mermaidInput = `
-  flowchart TD
-      A[ChristmasA] -->|Get money| B(Go shoppingB)
-      B --> C{Let me thinkC}
-      C -->|One| D[LaptopD]
-      C -->|Two| E[iPhoneE]
-      C -->|Three| F[fa:fa-car CarF]
-
-  `
-
-  //   const mermaidInput = `
-  //   flowchart TD
-  //     Start --> Stop
-  // `
 
   const handleInit = async () => {
     const res = await mermaid.render('text', mermaidInput)
@@ -137,16 +123,16 @@ function Home() {
 
   useEffect(() => {
     if (svg) {
-      handleXYTojson() // 在 SVG 渲染后调用
+      handleXYTojson()
     }
-  }, [svg]) // 依赖 svg
+  }, [svg])
 
   return (
     <div className="w-screen h-screen">
       <div
         ref={refContainer}
-        dangerouslySetInnerHTML={{ __html: svg! }}
-      ></div>
+        dangerouslySetInnerHTML={{ __html: svg ?? '' }}
+      />
       <FlowChart
         data={{
           nodes,

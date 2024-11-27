@@ -1,5 +1,14 @@
-const leftOperate = () => {
-  return <div className="h-full w-96 bg-red-50 border-r border-gray-200">leftOperate </div>
+import { memo, type ReactNode } from 'react'
+
+interface Props {
+  children?: ReactNode
 }
 
-export default leftOperate
+const leftOperate = (props: Props) => {
+  const { children } = props
+  return (
+    <div className="h-full w-96 bg-red-50 border-r border-gray-200">leftOperate{children} </div>
+  )
+}
+
+export default memo(leftOperate)

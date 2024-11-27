@@ -1,8 +1,6 @@
 import { Graph, type Model, Shape } from '@antv/x6'
-import { useEffect, useRef, useState } from 'react'
 import { register } from '@antv/x6-react-shape'
 import { Button } from 'antd'
-import LeftOperate from './LeftOperate'
 import { Stencil } from '@antv/x6-plugin-stencil'
 import { Transform } from '@antv/x6-plugin-transform'
 import { Selection } from '@antv/x6-plugin-selection'
@@ -103,6 +101,8 @@ interface Props {
 function FlowChart({ data }: Props) {
   const refContainer = useRef<HTMLDivElement>(null)
 
+  const refStencil = useRef<HTMLDivElement | null>(null)
+
   const [graph, setGraph] = useState<Graph | null>(null)
 
   const initGraph = () => {
@@ -194,6 +194,121 @@ function FlowChart({ data }: Props) {
       .use(new Keyboard())
       .use(new Clipboard())
       .use(new History())
+
+    setGraph(graph)
+    const stencil = new Stencil({
+      title: '流程图',
+      target: graph,
+      stencilGraphWidth: 300,
+      stencilGraphHeight: 200,
+      collapsable: true,
+      groups: [
+        {
+          title: '基础流程图',
+          name: 'group1'
+        },
+        {
+          title: '系统设计图',
+          name: 'group2',
+          graphHeight: 250,
+          layoutOptions: {
+            rowHeight: 70
+          }
+        }
+      ],
+      layoutOptions: {
+        columns: 2,
+        columnWidth: 200,
+        rowHeight: 55
+      }
+    })
+    if (refStencil.current) {
+      refStencil.current.appendChild(stencil.container)
+    }
+
+    graph.bindKey(['meta+c', 'ctrl+c'], () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.copy(cells)
+      }
+      return false
+    })
+    graph.bindKey(['meta+x', 'ctrl+x'], () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.cut(cells)
+      }
+      return false
+    })
+    graph.bindKey(['meta+v', 'ctrl+v'], () => {
+      if (!graph.isClipboardEmpty()) {
+        const cells = graph.paste({ offset: 32 })
+        graph.cleanSelection()
+        graph.select(cells)
+      }
+      return false
+    })
+
+    // undo redo
+    graph.bindKey(['meta+z', 'ctrl+z'], () => {
+      if (graph.canUndo()) {
+        graph.undo()
+      }
+      return false
+    })
+    graph.bindKey(['meta+shift+z', 'ctrl+shift+z'], () => {
+      if (graph.canRedo()) {
+        graph.redo()
+      }
+      return false
+    })
+
+    // select all
+    graph.bindKey(['meta+a', 'ctrl+a'], () => {
+      const nodes = graph.getNodes()
+      if (nodes) {
+        graph.select(nodes)
+      }
+    })
+
+    // delete
+    graph.bindKey('backspace', () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.removeCells(cells)
+      }
+    })
+
+    // zoom
+    graph.bindKey(['ctrl+1', 'meta+1'], () => {
+      const zoom = graph.zoom()
+      if (zoom < 1.5) {
+        graph.zoom(0.1)
+      }
+    })
+    graph.bindKey(['ctrl+2', 'meta+2'], () => {
+      const zoom = graph.zoom()
+      if (zoom > 0.5) {
+        graph.zoom(-0.1)
+      }
+    })
+
+    // 控制连接桩显示/隐藏
+    const showPorts = (ports: NodeListOf<SVGElement>, show: boolean) => {
+      for (let i = 0, len = ports.length; i < len; i += 1) {
+        ports[i].style.visibility = show ? 'visible' : 'hidden'
+      }
+    }
+    graph.on('node:mouseenter', () => {
+      const container = document.getElementById('graph-container')!
+      const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
+      showPorts(ports, true)
+    })
+    graph.on('node:mouseleave', () => {
+      const container = document.getElementById('graph-container')!
+      const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
+      showPorts(ports, false)
+    })
   }
 
   useEffect(() => {
@@ -287,7 +402,9 @@ function FlowChart({ data }: Props) {
       </Button.Group>
 
       <div className="bg-red-100 w-full h-full flex justify-between items-center">
-        <LeftOperate />
+        <LeftOperate>
+          <div ref={refStencil}></div>
+        </LeftOperate>
         <div
           id="container"
           ref={refContainer}

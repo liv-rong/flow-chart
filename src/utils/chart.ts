@@ -94,7 +94,12 @@ export class ChartUtils {
     const simpleRegex = /(\w+)\s*/
 
     if (/^\w+$/.test(inputString)) {
-      return { id: inputString, edgeLabel: '', nodeLabel: inputString, shape: 'rect' }
+      return {
+        id: inputString,
+        edgeLabel: '',
+        nodeLabel: this.replaceBRWithNewline(inputString),
+        shape: 'rect'
+      }
     }
 
     let edgeLabel = ''
@@ -128,11 +133,16 @@ export class ChartUtils {
           shape = 'rect'
       }
 
-      return { id, nodeLabel, shape, edgeLabel }
+      return { id, nodeLabel: this.replaceBRWithNewline(nodeLabel), shape, edgeLabel }
     } else {
       const simpleMatch = inputString.match(simpleRegex)
       if (simpleMatch) {
-        return { id: simpleMatch[1], edgeLabel, nodeLabel: simpleMatch[1], shape: 'rect' }
+        return {
+          id: simpleMatch[1],
+          edgeLabel,
+          nodeLabel: this.replaceBRWithNewline(simpleMatch[1]),
+          shape: 'rect'
+        }
       }
     }
 
@@ -141,5 +151,9 @@ export class ChartUtils {
     // const match = inputString.match(/\|(.+?)\|\s*(\w+)(\[(.*?)\]|\((.*?)\))/)
 
     // const simpleMatch = inputString.match(/(\w+)\s*([\[\(])([^]*?)([\]\)])/)
+  }
+
+  static replaceBRWithNewline(inputString: string) {
+    return inputString.replace(/<br\/?>/g, '\n')
   }
 }
