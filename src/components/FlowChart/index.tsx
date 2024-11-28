@@ -37,7 +37,7 @@ interface Props {
 
 function FlowChart({ data }: Props) {
   const { initGraph, handleZoom, refContainer, refStencil, graph, handleStencilInit } =
-    useFlowChart()
+    useFlowChart(data as Model.FromJSONData)
   // const refContainer = useRef<HTMLDivElement>(null)
 
   // const refStencil = useRef<HTMLDivElement | null>(null)
@@ -254,12 +254,12 @@ function FlowChart({ data }: Props) {
   // graph.centerContent()
 
   useEffect(() => {
-    const { graph: customGraph } = initGraph(data as Model.FromJSONData)
-    handleStencilInit(customGraph)
+    const { graph: customGraph } = initGraph()
+    // handleStencilInit(customGraph)
     return () => {
       graph?.dispose()
     }
-  }, [data])
+  }, [])
 
   return (
     <div className="w-full h-screen bg-green-50">
@@ -277,6 +277,7 @@ function FlowChart({ data }: Props) {
 
       <div className="bg-red-100 w-full h-full flex justify-between items-center">
         <LeftOperate className="w-20 h-full bg-red-200">
+          132312
           {/* <div
             ref={refStencil}
             className="!w-20 !h-20 bg-blue-400"
@@ -286,12 +287,9 @@ function FlowChart({ data }: Props) {
           <div
             id="container"
             ref={refContainer}
+            className="w-full h-full"
           ></div>
         </div>
-        {/* <div
-          id="container"
-          className="bg-pink-100"
-        ></div> */}
       </div>
     </div>
   )

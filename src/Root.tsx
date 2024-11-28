@@ -18,7 +18,7 @@ export default function Root() {
 
   // 监听路由变化，显示进度条
   useEffect(() => {
-    console.log(navigation.state)
+    // console.log(navigation.state)
     if (navigation.state === 'loading') {
       nprogress.start()
     } else {

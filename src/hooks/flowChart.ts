@@ -9,7 +9,7 @@ import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
 
-export const useFlowChart = () => {
+export const useFlowChart = (data: Model.FromJSONData) => {
   const refContainer = useRef<HTMLDivElement>(null)
 
   const refStencil = useRef<HTMLDivElement | null>(null)
@@ -95,7 +95,7 @@ export const useFlowChart = () => {
     ]
   }
 
-  const initGraph = (data: Model.FromJSONData) => {
+  const initGraph = () => {
     const graph = new Graph({
       container: refContainer.current as HTMLElement,
       background: {
@@ -130,7 +130,7 @@ export const useFlowChart = () => {
           name: 'jumpover'
         },
         anchor: 'center',
-        connectionPoint: 'anchor',
+        // connectionPoint: 'anchor'
         allowBlank: false,
         snap: {
           radius: 20
@@ -140,7 +140,7 @@ export const useFlowChart = () => {
             attrs: {
               line: {
                 stroke: '#000000',
-                strokeWidth: 2,
+                strokeWidth: 1,
                 targetMarker: {
                   name: 'block',
                   width: 12,
@@ -185,9 +185,6 @@ export const useFlowChart = () => {
       .use(new Keyboard())
       .use(new Clipboard())
       .use(new History())
-
-    graph.fromJSON(data)
-    graph.centerContent()
 
     graph.bindKey(['meta+c', 'ctrl+c'], () => {
       const cells = graph.getSelectedCells()
@@ -262,16 +259,18 @@ export const useFlowChart = () => {
         ports[i].style.visibility = show ? 'visible' : 'hidden'
       }
     }
-    graph.on('node:mouseenter', () => {
-      const container = document.getElementById('graph-container')!
-      const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
-      showPorts(ports, true)
-    })
-    graph.on('node:mouseleave', () => {
-      const container = document.getElementById('graph-container')!
-      const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
-      showPorts(ports, false)
-    })
+    // graph.on('node:mouseenter', () => {
+    //   const container = document.getElementById('graph-container')!
+    //   const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
+    //   showPorts(ports, true)
+    // })
+    // graph.on('node:mouseleave', () => {
+    //   const container = document.getElementById('graph-container')!
+    //   const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
+    //   showPorts(ports, false)
+    // })
+    graph.fromJSON(data)
+    graph.centerContent()
     setGraph(graph)
     return { graph }
   }
@@ -333,6 +332,28 @@ export const useFlowChart = () => {
     'custom-circle',
     {
       inherit: 'circle',
+      width: 45,
+      height: 45,
+      attrs: {
+        body: {
+          strokeWidth: 1,
+          stroke: '#5F95FF',
+          fill: '#EFF4FF'
+        },
+        text: {
+          fontSize: 12,
+          fill: '#262626'
+        }
+      },
+      ports: { ...ports }
+    },
+    true
+  )
+
+  Graph.registerNode(
+    'custom-ellipse',
+    {
+      inherit: 'ellipse',
       width: 45,
       height: 45,
       attrs: {
@@ -448,7 +469,9 @@ export const useFlowChart = () => {
     }
   }
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    initGraph()
+  }, [data])
 
   return {
     initGraph,

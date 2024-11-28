@@ -1,73 +1,71 @@
 import { Model, Node, Edge } from '@antv/x6'
 import mermaid from 'mermaid'
-const initialData = {
-  nodes: [
-    {
-      id: 'node1',
-      shape: 'rect',
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 200,
-      label: 'hello',
-      attrs: {
-        body: {
-          stroke: '#8f8f8f',
-          strokeWidth: 1,
-          fill: 'red',
-          rx: 6,
-          ry: 6
-        },
-        label: {
-          text: 'hello',
-          fill: '#000',
-          fontSize: 28
-        }
+const Mynodes: Node.Metadata[] = [
+  {
+    id: 'node1',
+    shape: 'custom-rect',
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 200,
+    label: '过程',
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: 'red',
+        rx: 6,
+        ry: 6
+      },
+      label: {
+        text: 'hello',
+        fill: '#000',
+        fontSize: 28
+      }
+    }
+  },
+  {
+    id: 'node3',
+    shape: 'custom-polygon',
+    attrs: {
+      body: {
+        refPoints: '0,10 10,0 20,10 10,20'
       }
     },
-    {
-      id: 'node2',
-      shape: 'rect',
-      x: 300,
-      y: 500,
-      width: 100,
-      height: 40,
-      label: 'world',
-      attrs: {
-        body: {
-          stroke: '#8f8f8f',
-          strokeWidth: 1,
-          fill: '#fff',
-          rx: 6,
-          ry: 6
-        }
+    label: '决策'
+  },
+  {
+    id: 'node2',
+    shape: 'rect',
+    x: 300,
+    y: 500,
+    width: 100,
+    height: 40,
+    label: 'world',
+    attrs: {
+      body: {
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+        fill: '#fff',
+        rx: 6,
+        ry: 6
       }
     }
-  ],
-  edges: [
-    {
-      shape: 'edge',
-      source: 'node1',
-      target: 'node2',
-      label: 'x6',
-      attrs: {
-        line: {
-          stroke: '#8f8f8f',
-          strokeWidth: 1
-        }
-      }
-    }
-  ]
-}
+  }
+]
 
+// A[ChristmasA] -->|Get money| B(Go <br/>  shoppingB)
+// B --> C{Let me <br/> thinkC}
+// C -->|One| D[LaptopD]
+// C -->|Two| E[iPhoneE]
+// C -->|Three| F[fa:fa-car CarF]
 const mermaidInput = `
 flowchart TD
-    A[ChristmasA] -->|Get money| B(Go <br/>  shoppingB)
-    B --> C{Let me <br/> thinkC}
-    C -->|One| D[LaptopD]
-    C -->|Two| E[iPhoneE]
-    C -->|Three| F[fa:fa-car CarF]
 
+    id1((园))
+    id2{菱形}
+    id1([圆角矩形])
+    A((椭圆形<br/>aasdada状))
 `
 //   const mermaidInput = `
 //   flowchart TD
@@ -85,40 +83,17 @@ function Home() {
   const handleInit = async () => {
     const res = await mermaid.render('text', mermaidInput)
     setSvg(res.svg)
-    return res.svg
-  }
-
-  const handleData = () => {
-    const { nodes, edges } = ChartUtils.mermaidTojson(mermaidInput)
-    setNodes(nodes)
-    setEdges(edges)
   }
 
   const handleXYTojson = () => {
     const res = ChartUtils.handleXY()
-    if (nodes.length > 0) {
-      setNodes((pre) =>
-        pre.map((item) => {
-          const resXY = res?.find((resItem) => {
-            const splitXY = resItem.id?.split('-')[1] ?? ''
-            console.log(splitXY, 'splitXY')
-            return splitXY === item.id
-          })
-          console.log(resXY, 'resXY')
-          item.x = resXY?.x
-          item.y = resXY?.y
-          item.width = 200
-          item.height = 100
-          return item
-        })
-      )
-    }
-    console.log(res, 'res')
+    setNodes(res)
+    const { edges } = ChartUtils.mermaidTojson(mermaidInput)
+    setEdges(edges)
   }
 
   useEffect(() => {
     handleInit()
-    handleData()
   }, [])
 
   useEffect(() => {
@@ -129,16 +104,17 @@ function Home() {
 
   return (
     <div className="h-screen w-full">
-      <div
-        ref={refContainer}
-        dangerouslySetInnerHTML={{ __html: svg ?? '' }}
-      />
       <FlowChart
         data={{
           nodes,
           edges
         }}
       />
+      <div
+        ref={refContainer}
+        dangerouslySetInnerHTML={{ __html: svg ?? '' }}
+      />
+
       {/* <MermaidDiagram children={mermaidInput} /> */}
     </div>
   )
