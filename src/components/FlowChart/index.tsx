@@ -36,8 +36,9 @@ interface Props {
 }
 
 function FlowChart({ data }: Props) {
-  // const { initGraph, handleZoom, refContainer, refStencil, graph, handleStencilInit } =
-  //   useFlowChart(data as Model.FromJSONData)
+  console.log('data', data)
+  const { initGraph, handleZoom, refContainer, refStencil, graph, handleStencilInit } =
+    useFlowChart(data as Model.FromJSONData)
   // const refContainer = useRef<HTMLDivElement>(null)
 
   // const refStencil = useRef<HTMLDivElement | null>(null)
@@ -253,24 +254,24 @@ function FlowChart({ data }: Props) {
   // graph.fromJSON(data as Model.FromJSONData)
   // graph.centerContent()
 
-  const refContainer = useRef<HTMLDivElement>(null)
+  // const refContainer = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // const { graph: customGraph } = initGraph()
-    // // handleStencilInit(customGraph)
-    // return () => {
-    //   graph?.dispose()
-    // }
-    const graph = new Graph({
-      container: refContainer.current as HTMLElement,
-      // 设置画布背景颜色
-      background: {
-        color: '#F2F7FA'
-      }
-    })
+    const { graph: customGraph } = initGraph()
+    // handleStencilInit(customGraph)
+    return () => {
+      graph?.dispose()
+    }
+    // const graph = new Graph({
+    //   container: refContainer.current as HTMLElement,
+    //   // 设置画布背景颜色
+    //   background: {
+    //     color: '#F2F7FA'
+    //   }
+    // })
 
-    graph.fromJSON(data!) // 渲染元素
-    graph.centerContent() // 居中显示
+    // graph.fromJSON(data!) // 渲染元素
+    // graph.centerContent() // 居中显示
   }, [])
 
   return (

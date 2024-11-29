@@ -90,18 +90,30 @@ h1 {
   }
 }
 
-.helloworld-app {
-  display: flex;
-  width: 100%;
-  padding: 0;
-  font-family: sans-serif;
+.x6-widget-selection-box {
+  border: 1px dashed #239edd;
+  background-color: rgb(0, 0, 0, 0.01);
+}
 
-  .app-content {
-    flex: 1;
-    height: 280px;
-    margin-right: 8px;
-    margin-left: 8px;
-    border-radius: 5px;
-    box-shadow: 0 12px 5px -10px rgb(0 0 0 / 10%), 0 0 4px 0 rgb(0 0 0 / 10%);
-  }
+.x6-widget-selection-inner {
+  border: 1px solid #239edd;
+  background-color: rgb(0, 0, 0, 0.01);
+}
+
+.x6-widget-transform {
+  margin: -1px 0 0 -1px;
+  padding: 0px;
+  border: 1px solid #239edd;
+}
+.x6-widget-transform > div {
+  border: 1px solid #239edd;
+}
+.x6-widget-transform > div:hover {
+  background-color: #3dafe4;
+}
+.x6-widget-transform-active-handle {
+  background-color: #3dafe4;
+}
+.x6-widget-transform-resize {
+  border-radius: 0;
 }

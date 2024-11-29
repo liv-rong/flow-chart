@@ -101,63 +101,62 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       background: {
         color: '#F2F7FA'
       },
-      // translating: {
-      //   restrict: true //设置节点移动范围在画布内
-      // },
-      autoResize: true
-      // mousewheel: {
-      //   enabled: true,
-      //   zoomAtMousePosition: true,
-      //   modifiers: 'ctrl',
-      //   minScale: 0.5,
-      //   maxScale: 3
-      // },
-      // grid: {
-      //   visible: true,
-      //   type: 'doubleMesh',
-      //   args: [
-      //     {
-      //       color: '#eee', // 主网格线颜色
-      //       thickness: 1 // 主网格线宽度
-      //     },
-      //     {
-      //       color: '#ddd', // 次网格线颜色
-      //       thickness: 1, // 次网格线宽度
-      //       factor: 4 // 主次网格线间隔
-      //     }
-      //   ]
-      // }
-      // connecting: {
-      //   router: 'manhattan',
-      //   connector: {
-      //     name: 'jumpover'
-      //   },
-      //   anchor: 'center',
-      //   // connectionPoint: 'anchor'
-      //   allowBlank: false,
-      //   snap: {
-      //     radius: 20
-      //   },
-      //   createEdge() {
-      //     return new Shape.Edge({
-      //       attrs: {
-      //         line: {
-      //           stroke: '#000000',
-      //           strokeWidth: 1,
-      //           targetMarker: {
-      //             name: 'block',
-      //             width: 12,
-      //             height: 8
-      //           }
-      //         }
-      //       },
-      //       zIndex: 0
-      //     })
-      //   },
-      //   validateConnection({ targetMagnet }) {
-      //     return !!targetMagnet
-      //   }
-      // },
+      translating: {
+        restrict: true //设置节点移动范围在画布内
+      },
+      autoResize: true,
+      mousewheel: {
+        enabled: true,
+        zoomAtMousePosition: true,
+        modifiers: 'ctrl',
+        minScale: 0.5,
+        maxScale: 3
+      },
+      grid: {
+        visible: true,
+        type: 'doubleMesh',
+        args: [
+          {
+            color: '#eee', // 主网格线颜色
+            thickness: 1 // 主网格线宽度
+          },
+          {
+            color: '#ddd', // 次网格线颜色
+            thickness: 1, // 次网格线宽度
+            factor: 4 // 主次网格线间隔
+          }
+        ]
+      },
+      connecting: {
+        router: {
+          name: 'orth'
+        },
+        anchor: 'center',
+        // connectionPoint: 'anchor',
+        allowBlank: false,
+        snap: {
+          radius: 20
+        },
+        createEdge() {
+          return new Shape.Edge({
+            attrs: {
+              line: {
+                stroke: '#000000',
+                strokeWidth: 1,
+                targetMarker: {
+                  name: 'block',
+                  width: 12,
+                  height: 8
+                }
+              }
+            },
+            zIndex: 0
+          })
+        },
+        validateConnection({ targetMagnet }) {
+          return !!targetMagnet
+        }
+      }
       // highlighting: {
       //   magnetAdsorbed: {
       //     name: 'stroke',
@@ -171,120 +170,151 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       // }
     })
 
-    // graph
-    //   .use(
-    //     new Transform({
-    //       resizing: true,
-    //       rotating: true
-    //     })
-    //   )
-    //   .use(
-    //     new Selection({
-    //       rubberband: true,
-    //       showNodeSelectionBox: true
-    //     })
-    //   )
-    //   .use(new Snapline())
-    //   .use(new Keyboard())
-    //   .use(new Clipboard())
-    //   .use(new History())
+    graph
+      .use(
+        new Transform({
+          resizing: true,
+          rotating: true
+          // dragNode: true
+        })
+      )
+      .use(
+        new Selection({
+          enabled: true,
+          multiple: true,
+          rubberband: true,
+          movable: true,
+          showNodeSelectionBox: true
+        })
+      )
+      .use(
+        new Snapline({
+          enabled: true,
+          sharp: true,
+          // resizing: true,
+          clean: true
+        })
+      )
+      .use(new Keyboard())
+      .use(new Clipboard())
+      .use(new History())
 
-    // graph.bindKey(['meta+c', 'ctrl+c'], () => {
-    //   const cells = graph.getSelectedCells()
-    //   if (cells.length) {
-    //     graph.copy(cells)
-    //   }
-    //   return false
-    // })
-    // graph.bindKey(['meta+x', 'ctrl+x'], () => {
-    //   const cells = graph.getSelectedCells()
-    //   if (cells.length) {
-    //     graph.cut(cells)
-    //   }
-    //   return false
-    // })
-    // graph.bindKey(['meta+v', 'ctrl+v'], () => {
-    //   if (!graph.isClipboardEmpty()) {
-    //     const cells = graph.paste({ offset: 32 })
-    //     graph.cleanSelection()
-    //     graph.select(cells)
-    //   }
-    //   return false
-    // })
+    graph.bindKey(['meta+c', 'ctrl+c'], () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.copy(cells)
+      }
+      return false
+    })
+    graph.bindKey(['meta+x', 'ctrl+x'], () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.cut(cells)
+      }
+      return false
+    })
+    graph.bindKey(['meta+v', 'ctrl+v'], () => {
+      if (!graph.isClipboardEmpty()) {
+        const cells = graph.paste({ offset: 32 })
+        graph.cleanSelection()
+        graph.select(cells)
+      }
+      return false
+    })
 
     // undo redo
-    // graph.bindKey(['meta+z', 'ctrl+z'], () => {
-    //   if (graph.canUndo()) {
-    //     graph.undo()
-    //   }
-    //   return false
-    // })
-    // graph.bindKey(['meta+shift+z', 'ctrl+shift+z'], () => {
-    //   if (graph.canRedo()) {
-    //     graph.redo()
-    //   }
-    //   return false
-    // })
+    graph.bindKey(['meta+z', 'ctrl+z'], () => {
+      if (graph.canUndo()) {
+        graph.undo()
+      }
+      return false
+    })
+    graph.bindKey(['meta+shift+z', 'ctrl+shift+z'], () => {
+      if (graph.canRedo()) {
+        graph.redo()
+      }
+      return false
+    })
 
-    // // select all
-    // graph.bindKey(['meta+a', 'ctrl+a'], () => {
-    //   const nodes = graph.getNodes()
-    //   if (nodes) {
-    //     graph.select(nodes)
-    //   }
-    // })
+    // select all
+    graph.bindKey(['meta+a', 'ctrl+a'], () => {
+      const nodes = graph.getNodes()
+      if (nodes) {
+        graph.select(nodes)
+      }
+    })
 
     // delete
-    // graph.bindKey('backspace', () => {
-    //   const cells = graph.getSelectedCells()
-    //   if (cells.length) {
-    //     graph.removeCells(cells)
-    //   }
-    // })
+    graph.bindKey('backspace', () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.removeCells(cells)
+      }
+    })
 
-    // // zoom
-    // graph.bindKey(['ctrl+1', 'meta+1'], () => {
-    //   const zoom = graph.zoom()
-    //   if (zoom < 1.5) {
-    //     graph.zoom(0.1)
-    //   }
-    // })
-    // graph.bindKey(['ctrl+2', 'meta+2'], () => {
-    //   const zoom = graph.zoom()
-    //   if (zoom > 0.5) {
-    //     graph.zoom(-0.1)
-    //   }
-    // })
+    // zoom
+    graph.bindKey(['ctrl+1', 'meta+1'], () => {
+      const zoom = graph.zoom()
+      if (zoom < 1.5) {
+        graph.zoom(0.1)
+      }
+    })
+    graph.bindKey(['ctrl+2', 'meta+2'], () => {
+      const zoom = graph.zoom()
+      if (zoom > 0.5) {
+        graph.zoom(-0.1)
+      }
+    })
 
     // // 控制连接桩显示/隐藏
-    // const showPorts = (ports: NodeListOf<SVGElement>, show: boolean) => {
-    //   for (let i = 0, len = ports.length; i < len; i += 1) {
-    //     ports[i].style.visibility = show ? 'visible' : 'hidden'
-    //   }
-    // }
-    // graph.on('node:dragend', ({ cell, e, x, y }) => {
-    //   // 更新节点位置
-    //   if (cell.id) {
-    //     cell.position(x, y) // 更新节点位置
-    //   }
-    // })
+    const showPorts = (ports: NodeListOf<SVGElement>, show: boolean) => {
+      for (let i = 0, len = ports.length; i < len; i += 1) {
+        ports[i].style.visibility = show ? 'visible' : 'hidden'
+      }
+    }
+    graph.on('node:dragend', ({ cell, e, x, y }) => {
+      // 更新节点位置
+      // if (cell.id) {
+      //   cell.position(x, y) // 更新节点位置
+      // }
+    })
 
-    // graph.on('node:mouseup', ({ cell }) => {
-    //   // 确保节点在鼠标抬起时能够放置
-    //   if (cell.id) {
-    //     const position = cell.getPosition()
-    //     cell.position(position.x, position.y) // 确保位置更新
-    //   }
-    // })
+    graph.on('node:mouseup', ({ cell }) => {
+      // 确保节点在鼠标抬起时能够放置
+      // if (cell.id) {
+      //   const position = cell.getPosition()
+      //   cell.position(position.x, position.y) // 确保位置更新
+      // }
+    })
+    graph.on('node:dblclick', ({ cell }) => {
+      const ports = refContainer.current?.querySelectorAll(
+        '.x6-port-body'
+      ) as NodeListOf<SVGElement>
+      showPorts(ports, false)
+      // 编辑节点内容
+      if (cell.id) {
+        //把原来的 旋转框
+        cell.updateData({
+          content: '双击编辑'
+        })
+        // cell.prop('size', { width: 120, height: 50 }) // 修改 x 坐标
+        cell.attr('body/fill', 'red')
+        cell.attr('label/text', '双击编辑')
+      }
+    })
 
-    // graph.on('node:click', ({ cell, x, y }) => {
-    //   console.log('Node clicked:', cell, x, y)
+    graph.on('node:click', ({ cell, x, y }) => {
+      const ports = refContainer.current?.querySelectorAll(
+        '.x6-port-body'
+      ) as NodeListOf<SVGElement>
+      showPorts(ports, false)
+      console.log('Node clicked:', cell, x, y)
 
-    //   graph.select(cell)
-    //   if (cell.id) {
-    //     cell.position(x, y) // 更新节点位置
-    //   }
-    // })
+      // graph.select(cell)
+      // if (cell.id) {
+      //   cell.position(x, y) // 更新节点位置
+      // }
+    })
 
     // graph.on('node:mouseup', ({ cell, x, y }) => {
     //   console.log('Node placed: mouseup', cell, x, y)
@@ -292,18 +322,31 @@ export const useFlowChart = (data: Model.FromJSONData) => {
     //   //   cell.position(x, y) // 更新节点位置
     //   // }
     // })
-    // graph.on('node:mouseenter', () => {
-    //   const container = document.getElementById('graph-container')!
-    //   const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
-    //   showPorts(ports, true)
-    // })
-    // graph.on('node:mouseleave', () => {
-    //   const container = document.getElementById('graph-container')!
-    //   const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGElement>
-    //   showPorts(ports, false)
+    graph.on('node:mouseenter', ({ e, node, view }) => {
+      const ports = refContainer.current?.querySelectorAll(
+        '.x6-port-body'
+      ) as NodeListOf<SVGElement>
+      showPorts(ports, true)
+      //鼠标滑过显示连接庄
+    })
+    graph.on('node:mouseleave', () => {
+      const ports = refContainer.current?.querySelectorAll(
+        '.x6-port-body'
+      ) as NodeListOf<SVGElement>
+      showPorts(ports, false)
+    })
+
+    // cell.unembed(cell) // 取消当前节点的选择
+    // graph.on('node:mouseup', ({ cell }) => {
+    //   console.log('node:mouseup  mouseup', cell)
+    //   // graph.cleanSelection()
+    //   // cell.off() // 取消当前节点的选择
+    //   cell.unembed(cell) // 取消当前节点的选择
+    //   // 当前节点和鼠标不在联系
     // })
     graph.fromJSON(data)
     graph.centerContent()
+
     setGraph(graph)
     return { graph }
   }
@@ -316,8 +359,8 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       attrs: {
         body: {
           strokeWidth: 1,
-          stroke: '#5F95FF',
-          fill: '#EFF4FF'
+          stroke: '#000000',
+          fill: '#FFFFFF'
         },
         text: {
           fontSize: 12,
@@ -338,8 +381,8 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       attrs: {
         body: {
           strokeWidth: 1,
-          stroke: '#5F95FF',
-          fill: '#EFF4FF'
+          stroke: '#000000',
+          fill: '#FFFFFF'
         },
         text: {
           fontSize: 12,
@@ -354,6 +397,12 @@ export const useFlowChart = (data: Model.FromJSONData) => {
           },
           {
             group: 'bottom'
+          },
+          {
+            group: 'left'
+          },
+          {
+            group: 'right'
           }
         ]
       }
@@ -370,8 +419,8 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       attrs: {
         body: {
           strokeWidth: 1,
-          stroke: '#5F95FF',
-          fill: '#EFF4FF'
+          stroke: '#000000',
+          fill: '#FFFFFF'
         },
         text: {
           fontSize: 12,
@@ -392,8 +441,8 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       attrs: {
         body: {
           strokeWidth: 1,
-          stroke: '#5F95FF',
-          fill: '#EFF4FF'
+          stroke: '#000000',
+          fill: '#FFFFFF'
         },
         text: {
           fontSize: 12,
