@@ -1,18 +1,21 @@
 import { memo, type ReactNode } from 'react'
-// import classNames from 'classnames'
 
 interface Props {
   children?: ReactNode
   className?: string
+  refCustom: React.MutableRefObject<HTMLDivElement | null>
 }
 
-const leftOperate = (props: Props) => {
-  const { children } = props
+const LeftOperate = (props: Props) => {
+  const { children, refCustom } = props
   return (
-    <div className={classNames('h-full w-96 bg-red-50 border-r border-gray-200')}>
-      leftOperate{children}{' '}
+    <div
+      ref={refCustom}
+      className={classNames('h-full relative w-[200px] bg-red-50 border-r border-gray-200')}
+    >
+      {children}
     </div>
   )
 }
 
-export default memo(leftOperate)
+export default memo(LeftOperate)

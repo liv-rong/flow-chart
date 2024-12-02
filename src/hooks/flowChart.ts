@@ -1,4 +1,4 @@
-import { Graph, type Model, Shape, Dom, Addon } from '@antv/x6'
+import { Graph, type Model, Shape } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Button } from 'antd'
 import { Stencil } from '@antv/x6-plugin-stencil'
@@ -156,18 +156,18 @@ export const useFlowChart = (data: Model.FromJSONData) => {
         validateConnection({ targetMagnet }) {
           return !!targetMagnet
         }
+      },
+      highlighting: {
+        magnetAdsorbed: {
+          name: 'stroke',
+          args: {
+            attrs: {
+              fill: '#5F95FF',
+              stroke: '#5F95FF'
+            }
+          }
+        }
       }
-      // highlighting: {
-      //   magnetAdsorbed: {
-      //     name: 'stroke',
-      //     args: {
-      //       attrs: {
-      //         fill: '#5F95FF',
-      //         stroke: '#5F95FF'
-      //       }
-      //     }
-      //   }
-      // }
     })
 
     graph
@@ -180,18 +180,18 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       )
       .use(
         new Selection({
-          enabled: true,
-          multiple: true,
-          rubberband: true,
-          movable: true,
-          showNodeSelectionBox: true
+          enabled: true
+          // multiple: true
+          // rubberband: true,
+          // movable: true,
+          // showNodeSelectionBox: true
         })
       )
       .use(
         new Snapline({
           enabled: true,
           sharp: true,
-          // resizing: true,
+          resizing: true,
           clean: true
         })
       )
@@ -246,6 +246,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
 
     // delete
     graph.bindKey('backspace', () => {
+      console.log('backspace')
       const cells = graph.getSelectedCells()
       if (cells.length) {
         graph.removeCells(cells)
@@ -286,21 +287,11 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       //   cell.position(position.x, position.y) // 确保位置更新
       // }
     })
-    graph.on('node:dblclick', ({ cell }) => {
+    graph.on('node:dblclick', ({ cell, node }) => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
-      // 编辑节点内容
-      if (cell.id) {
-        //把原来的 旋转框
-        cell.updateData({
-          content: '双击编辑'
-        })
-        // cell.prop('size', { width: 120, height: 50 }) // 修改 x 坐标
-        cell.attr('body/fill', 'red')
-        cell.attr('label/text', '双击编辑')
-      }
     })
 
     graph.on('node:click', ({ cell, x, y }) => {
@@ -308,7 +299,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
-      console.log('Node clicked:', cell, x, y)
+      // console.log('Node clicked:', cell, x, y)
 
       // graph.select(cell)
       // if (cell.id) {
@@ -344,9 +335,10 @@ export const useFlowChart = (data: Model.FromJSONData) => {
     //   cell.unembed(cell) // 取消当前节点的选择
     //   // 当前节点和鼠标不在联系
     // })
+
+    handleStencilInit(graph)
     graph.fromJSON(data)
     graph.centerContent()
-
     setGraph(graph)
     return { graph }
   }
@@ -367,6 +359,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
           fill: '#262626'
         }
       },
+      tools: ['node-editor'],
       ports: { ...ports }
     },
     true
@@ -389,6 +382,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
           fill: '#262626'
         }
       },
+      tools: ['node-editor'],
       ports: {
         ...ports,
         items: [
@@ -427,6 +421,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
           fill: '#262626'
         }
       },
+      tools: ['node-editor'],
       ports: { ...ports }
     },
     true
@@ -449,6 +444,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
           fill: '#262626'
         }
       },
+      tools: ['node-editor'],
       ports: { ...ports }
     },
     true
@@ -458,19 +454,27 @@ export const useFlowChart = (data: Model.FromJSONData) => {
     const stencil = new Stencil({
       title: '流程图',
       target: graph,
-      stencilGraphWidth: 300,
-      stencilGraphHeight: 200,
+      placeholder: 'Search by shape name',
+      notFoundText: 'Not Found',
       collapsable: true,
+      stencilGraphHeight: 0,
+      search(cell, keyword) {
+        return cell.shape.indexOf(keyword) !== -1
+      },
       groups: [
         {
           title: '基础流程图',
           name: 'group1'
+        },
+        {
+          name: 'group2',
+          title: '高级'
         }
       ],
       layoutOptions: {
         columns: 2,
-        columnWidth: 200,
-        rowHeight: 55
+        columnWidth: 90,
+        rowHeight: 50
       }
     })
     if (refStencil.current) {
@@ -524,6 +528,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
     })
 
     stencil.load([r1, r2, r3, r4, r5, r6], 'group1')
+    stencil.load([r1, r2], 'group2')
   }
 
   const handleZoom = (command: string) => {

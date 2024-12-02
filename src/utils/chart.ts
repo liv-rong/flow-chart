@@ -22,7 +22,8 @@ export class ChartUtils {
         edges.push({
           source: sourceId, // 源节点
           target: targetId, // 目标节点
-          label: edgeLabel || '' // 边的标签
+          label: edgeLabel || '', // 边的标签
+          tools: ['edge-editor']
         })
       }
     })
