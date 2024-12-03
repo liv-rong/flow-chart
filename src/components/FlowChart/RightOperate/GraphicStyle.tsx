@@ -1,4 +1,18 @@
-import { ColorPicker, Input, InputNumber, Select } from 'antd'
+import {
+  AlignCenterOutlined,
+  AlignLeftOutlined,
+  AlignRightOutlined,
+  BoldOutlined,
+  FontSizeOutlined,
+  ItalicOutlined,
+  LineHeightOutlined,
+  StrikethroughOutlined,
+  UnderlineOutlined,
+  VerticalAlignBottomOutlined,
+  VerticalAlignMiddleOutlined,
+  VerticalAlignTopOutlined
+} from '@ant-design/icons'
+import { Button, ColorPicker, Input, InputNumber, Radio, Select } from 'antd'
 
 const GraphicStyle = () => {
   return (
@@ -8,12 +22,14 @@ const GraphicStyle = () => {
         <div className="flex w-full h-6 bg-white justify-between items-center">
           <p>不透明度</p>
           <div>
-            <InputNumber
+            <InputNumber<number>
               min={1}
-              max={10}
+              max={100}
               defaultValue={3}
               size="small"
               className="w-20 h-6"
+              formatter={(value) => `${value}%`}
+              parser={(value) => value?.replace('%', '') as unknown as number}
             />
           </div>
         </div>
@@ -22,7 +38,7 @@ const GraphicStyle = () => {
       <div className="border-b  p-2 space-y-2">
         <p className="text-xs font-bold">布局</p>
         <div className="flex w-full justify-between items-center custom-input">
-          <InputNumber
+          <InputNumber<number>
             defaultValue={3}
             size="small"
             className="w-20 h-6"
@@ -30,7 +46,7 @@ const GraphicStyle = () => {
             type="number"
           />
 
-          <InputNumber
+          <InputNumber<number>
             defaultValue={3}
             size="small"
             className="w-20 h-6"
@@ -39,7 +55,7 @@ const GraphicStyle = () => {
           />
         </div>
         <div className="flex w-full justify-between items-center  custom-input">
-          <InputNumber
+          <InputNumber<number>
             defaultValue={3}
             size="small"
             className="w-20 h-6"
@@ -47,7 +63,7 @@ const GraphicStyle = () => {
             type="number"
           />
 
-          <InputNumber
+          <InputNumber<number>
             defaultValue={3}
             size="small"
             className="w-20 h-6"
@@ -56,7 +72,7 @@ const GraphicStyle = () => {
           />
         </div>
         <div className="flex w-full justify-between items-center  custom-input">
-          <InputNumber
+          <InputNumber<number>
             defaultValue={3}
             size="small"
             className="w-20 h-6"
@@ -86,29 +102,95 @@ const GraphicStyle = () => {
             className="h-6 w-6 !border-0"
           />
         </div>
+
         <div className="flex w-full justify-between items-center  custom-input">
-          <InputNumber
-            defaultValue={3}
+          <InputNumber<number>
+            defaultValue={16}
+            min={0}
+            max={100}
             size="small"
             className="w-20 h-6"
-            type="number"
-            prefix="字"
+            prefix={<FontSizeOutlined className="text-xs" />}
+            formatter={(value) => `${value}px`}
+            parser={(value) => value?.replace('px', '') as unknown as number}
+            // onChange={onChange}
           />
 
-          <InputNumber
-            defaultValue={3}
+          <Select
+            defaultValue="1.0"
             size="small"
             className="w-20 h-6"
-            suffix="y"
-            type="number"
+            // onChange={handleChange}
+            options={[
+              { value: '1.0', label: '1.0' },
+              { value: '1.25', label: '1.25' },
+              { value: '1.5', label: '1.5' },
+              { value: '2.0', label: '2.0' },
+              { value: '2.5', label: '2.5' },
+              { value: '3.0', label: '3.0' }
+            ]}
+            prefix={<LineHeightOutlined className="text-xs" />}
           />
         </div>
+
         <div className="flex w-full justify-between items-center  custom-input">
-          <InputNumber
-            defaultValue={3}
+          <Radio.Group
+            defaultValue="a"
+            buttonStyle="outline"
             size="small"
-            className="w-20 h-6"
-            type="number"
+          >
+            <Radio.Button value="a">
+              <AlignCenterOutlined />
+            </Radio.Button>
+            <Radio.Button value="b">
+              <AlignLeftOutlined />
+            </Radio.Button>
+            <Radio.Button value="c">
+              <AlignRightOutlined />
+            </Radio.Button>
+          </Radio.Group>
+
+          <Radio.Group
+            defaultValue="a"
+            buttonStyle="outline"
+            size="small"
+          >
+            <Radio.Button value="a">
+              <VerticalAlignTopOutlined />
+            </Radio.Button>
+            <Radio.Button value="b">
+              <VerticalAlignMiddleOutlined />
+            </Radio.Button>
+            <Radio.Button value="c">
+              <VerticalAlignBottomOutlined />
+            </Radio.Button>
+          </Radio.Group>
+        </div>
+
+        <div className="flex w-full justify-between items-center  custom-input">
+          <div>
+            <Button size="small">
+              <BoldOutlined />
+            </Button>
+            <Button size="small">
+              <ItalicOutlined />
+            </Button>
+            <Button size="small">
+              <UnderlineOutlined />
+            </Button>
+            <Button size="small">
+              <StrikethroughOutlined />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-b  p-2 space-y-2">
+        <p className="text-xs font-bold">填充</p>
+        <div className="flex w-full justify-between items-center custom-input">
+          <ColorPicker
+            defaultValue="#1677ff"
+            className="h-6 w-6 !border-0"
           />
         </div>
       </div>

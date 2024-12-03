@@ -8,6 +8,7 @@ import { Snapline } from '@antv/x6-plugin-snapline'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
+import Guides from '@scena/guides'
 
 export const useFlowChart = (data: Model.FromJSONData) => {
   const refContainer = useRef<HTMLDivElement>(null)
@@ -15,6 +16,9 @@ export const useFlowChart = (data: Model.FromJSONData) => {
   const refStencil = useRef<HTMLDivElement | null>(null)
 
   const [graph, setGraph] = useState<Graph | null>(null)
+
+  const [currentNode, setCurrentNode] = useState<any>(null)
+  const [currentAttrs, setCurrentAttrs] = useState<any>(null)
 
   const ports = {
     groups: {
@@ -299,6 +303,17 @@ export const useFlowChart = (data: Model.FromJSONData) => {
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
+      setCurrentNode(cell)
+      console.log('Node clicked:', cell.getAttrs())
+      console.log('Node clicked:', cell.getData())
+
+      const a = cell.getAttrs()
+      setCurrentAttrs({
+        ...a,
+        x,
+        y
+      })
+
       // console.log('Node clicked:', cell, x, y)
 
       // graph.select(cell)
@@ -566,6 +581,13 @@ export const useFlowChart = (data: Model.FromJSONData) => {
     refStencil,
     graph,
     handleStencilInit,
-    handleZoom
+    handleZoom,
+    currentNode,
+    currentAttrs,
+    setCurrentAttrs,
+    setCurrentNode
   }
 }
+
+// const [currentNode, setCurrentNode] = useState<any>(null)
+// const [currentAttrs, setCurrentAttrs] = useState<any>(null)

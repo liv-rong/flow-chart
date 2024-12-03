@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/happy-work-theme": "^1.0.0",
+    "@ant-design/icons": "^5.5.2",
     "@antv/x6": "^2.18.1",
     "@antv/x6-plugin-clipboard": "^2.1.6",
     "@antv/x6-plugin-dnd": "^2.1.1",
@@ -20,6 +22,7 @@
     "@antv/x6-plugin-stencil": "^2.1.5",
     "@antv/x6-plugin-transform": "^2.1.8",
     "@mermaid-js/parser": "^0.3.0",
+    "@scena/guides": "^0.29.2",
     "antd": "^5.21.6",
     "classnames": "^2.5.1",
     "mermaid": "^11.4.0",
