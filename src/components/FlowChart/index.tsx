@@ -31,9 +31,18 @@ interface Props {
 }
 
 function FlowChart({ data }: Props) {
-  const { initGraph, handleZoom, refContainer, refStencil, graph } = useFlowChart(
-    data as Model.FromJSONData
-  )
+  const {
+    initGraph,
+    handleZoom,
+    refContainer,
+    currentNode,
+    currentAttrs,
+    setCurrentAttrs,
+    setCurrentNode,
+    refStencil,
+    graph
+  } = useFlowChart(data as Model.FromJSONData)
+  console.log(data)
 
   useEffect(() => {
     initGraph()
@@ -48,7 +57,7 @@ function FlowChart({ data }: Props) {
       <div className="h-[calc(100%-72px)] w-full flex">
         <LeftOperate refCustom={refStencil}></LeftOperate>
         <div className="w-full h-full bg-gray-50 flex-1 overflow-auto flex justify-center items-center">
-          <div className="flex flex-col h-[600px] w-[1050px]">
+          <div className="flex flex-col h-full w-full">
             <div
               id="container"
               ref={refContainer}
@@ -56,7 +65,12 @@ function FlowChart({ data }: Props) {
             ></div>
           </div>
         </div>
-        <RightOperate />
+        <RightOperate
+          currentNode={currentNode}
+          currentAttrs={currentAttrs}
+          setCurrentAttrs={setCurrentAttrs}
+          setCurrentNode={setCurrentNode}
+        />
       </div>
       <Footer />
     </div>

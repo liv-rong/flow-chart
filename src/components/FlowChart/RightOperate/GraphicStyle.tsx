@@ -12,9 +12,19 @@ import {
   VerticalAlignMiddleOutlined,
   VerticalAlignTopOutlined
 } from '@ant-design/icons'
-import { Button, ColorPicker, Input, InputNumber, Radio, Select } from 'antd'
+import { Node } from '@antv/x6'
+import { Button, ColorPicker, InputNumber, Radio, Select } from 'antd'
 
-const GraphicStyle = () => {
+interface Props {
+  currentNode: Node<Node.Properties> | null
+  currentAttrs: any
+  setCurrentAttrs: any
+  setCurrentNode: any
+}
+
+const GraphicStyle = (props: Props) => {
+  const { currentNode, currentAttrs, setCurrentAttrs, setCurrentNode } = props
+  console.log(currentAttrs, 'currentAttrs')
   return (
     <div className="text-xs">
       <div className="border-b p-2 space-y-2">
@@ -26,6 +36,7 @@ const GraphicStyle = () => {
               min={1}
               max={100}
               defaultValue={3}
+              // value={currentAttrs}
               size="small"
               className="w-20 h-6"
               formatter={(value) => `${value}%`}
@@ -44,6 +55,7 @@ const GraphicStyle = () => {
             className="w-20 h-6"
             suffix="w"
             type="number"
+            value={currentAttrs?.body?.refHeight}
           />
 
           <InputNumber<number>
@@ -52,6 +64,7 @@ const GraphicStyle = () => {
             className="w-20 h-6"
             suffix="H"
             type="number"
+            value={currentAttrs.body.refHeight}
           />
         </div>
         <div className="flex w-full justify-between items-center  custom-input">
@@ -61,7 +74,24 @@ const GraphicStyle = () => {
             className="w-20 h-6"
             suffix="x"
             type="number"
+            value={currentAttrs?.x}
+            onChange={(value) => {
+              setCurrentAttrs({ ...currentAttrs, x: value })
+              currentNode?.setPosition(value!, currentAttrs.y!, {
+                // center: true  // 取消 centering 选项，避免跳跃
+              })
+            }}
+            onBlur={() => {
+              if (currentNode) {
+                const newX = currentAttrs?.x // 使用最新的 x 值
+                const newY = currentAttrs?.y // 使用 y 值
+                currentNode.setPosition(newX!, newY!, {
+                  // center: true
+                })
+              }
+            }}
           />
+          {currentAttrs?.x}
 
           <InputNumber<number>
             defaultValue={3}
@@ -112,9 +142,12 @@ const GraphicStyle = () => {
             className="w-20 h-6"
             prefix={<FontSizeOutlined className="text-xs" />}
             formatter={(value) => `${value}px`}
+            // value={currentNode?.getAttrs().body.}
             parser={(value) => value?.replace('px', '') as unknown as number}
             // onChange={onChange}
           />
+
+          {/* {currentNode?.getAttrs({})} */}
 
           <Select
             defaultValue="1.0"

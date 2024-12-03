@@ -1,4 +1,4 @@
-import { Graph, type Model, Shape } from '@antv/x6'
+import { Graph, type Model, Shape, Node } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Button } from 'antd'
 import { Stencil } from '@antv/x6-plugin-stencil'
@@ -17,7 +17,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
 
   const [graph, setGraph] = useState<Graph | null>(null)
 
-  const [currentNode, setCurrentNode] = useState<any>(null)
+  const [currentNode, setCurrentNode] = useState<Node<Node.Properties> | null>(null)
   const [currentAttrs, setCurrentAttrs] = useState<any>(null)
 
   const ports = {
@@ -353,6 +353,9 @@ export const useFlowChart = (data: Model.FromJSONData) => {
 
     handleStencilInit(graph)
     graph.fromJSON(data)
+    console.log('graph', graph.toJSON())
+
+    // graph.parseJSON()
     graph.centerContent()
     setGraph(graph)
     return { graph }

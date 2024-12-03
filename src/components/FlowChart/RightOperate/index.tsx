@@ -6,22 +6,35 @@ import GraphicStyle from './GraphicStyle'
 
 interface Props {
   className?: string
+  currentNode: any
+  currentAttrs: any
+  setCurrentAttrs: any
+  setCurrentNode: any
 }
 
-const items: TabsProps['items'] = [
-  {
-    key: '1',
-    label: '页面样式',
-    children: <PageStyle />
-  },
-  {
-    key: '2',
-    label: '图形样式',
-    children: <GraphicStyle />
-  }
-]
-
 const RightOperate = (props: Props) => {
+  const { className, currentNode, currentAttrs, setCurrentAttrs, setCurrentNode } = props
+
+  const items: TabsProps['items'] = [
+    {
+      key: '1',
+      label: '页面样式',
+      children: <PageStyle />
+    },
+    {
+      key: '2',
+      label: '图形样式',
+      children: (
+        <GraphicStyle
+          currentNode={currentNode}
+          currentAttrs={currentAttrs}
+          setCurrentAttrs={setCurrentAttrs}
+          setCurrentNode={setCurrentNode}
+        />
+      )
+    }
+  ]
+
   const onChange = (key: string) => {
     console.log(key)
   }
