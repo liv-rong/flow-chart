@@ -78,18 +78,18 @@ const GraphicStyle = (props: Props) => {
             onChange={(value) => {
               setCurrentAttrs({ ...currentAttrs, x: value })
               currentNode?.setPosition(value!, currentAttrs.y!, {
-                // center: true  // 取消 centering 选项，避免跳跃
+                center: true // 取消 centering 选项，避免跳跃
               })
             }}
-            onBlur={() => {
-              if (currentNode) {
-                const newX = currentAttrs?.x // 使用最新的 x 值
-                const newY = currentAttrs?.y // 使用 y 值
-                currentNode.setPosition(newX!, newY!, {
-                  // center: true
-                })
-              }
-            }}
+            // onBlur={() => {
+            //   if (currentNode) {
+            //     const newX = currentAttrs?.x // 使用最新的 x 值
+            //     const newY = currentAttrs?.y // 使用 y 值
+            //     currentNode.setPosition(newX!, newY!, {
+            //       // center: true
+            //     })
+            //   }
+            // }}
           />
           {currentAttrs?.x}
 
@@ -130,6 +130,13 @@ const GraphicStyle = (props: Props) => {
           <ColorPicker
             defaultValue="#1677ff"
             className="h-6 w-6 !border-0"
+            onChange={(color) => {
+              setCurrentAttrs((pre: any) => ({
+                ...pre,
+                text: { ...pre.body, fill: color.toHexString() }
+              }))
+              currentNode?.updateAttrs({ text: { fill: color.toHexString() } })
+            }}
           />
         </div>
 
@@ -223,7 +230,15 @@ const GraphicStyle = (props: Props) => {
         <div className="flex w-full justify-between items-center custom-input">
           <ColorPicker
             defaultValue="#1677ff"
+            value={currentAttrs?.body?.fill}
             className="h-6 w-6 !border-0"
+            onChange={(color) => {
+              setCurrentAttrs((pre: any) => ({
+                ...pre,
+                body: { ...pre.body, fill: color.toHexString() }
+              }))
+              currentNode?.updateAttrs({ body: { fill: color.toHexString() } })
+            }}
           />
         </div>
       </div>
