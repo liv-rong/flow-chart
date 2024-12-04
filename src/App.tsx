@@ -5,9 +5,8 @@ import { HappyProvider } from '@ant-design/happy-work-theme'
 function App() {
   return (
     <div className="w-screen h-screen">
-      <HappyProvider>
-        <RouterProvider router={router} />
-      </HappyProvider>
+      <RouterProvider router={router} />
+      <HappyProvider></HappyProvider>
     </div>
   )
 }

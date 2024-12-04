@@ -3,6 +3,7 @@ import type { TabsProps } from 'antd'
 import { Tabs } from 'antd'
 import PageStyle from './PageStyle'
 import GraphicStyle from './GraphicStyle'
+import type { Graph } from '@antv/x6'
 
 interface Props {
   className?: string
@@ -10,10 +11,11 @@ interface Props {
   currentAttrs: any
   setCurrentAttrs: any
   setCurrentNode: any
+  graph: Graph | null
 }
 
 const RightOperate = (props: Props) => {
-  const { className, currentNode, currentAttrs, setCurrentAttrs, setCurrentNode } = props
+  const { className, graph, currentNode, currentAttrs, setCurrentAttrs, setCurrentNode } = props
 
   const items: TabsProps['items'] = [
     {
@@ -30,6 +32,7 @@ const RightOperate = (props: Props) => {
           currentAttrs={currentAttrs}
           setCurrentAttrs={setCurrentAttrs}
           setCurrentNode={setCurrentNode}
+          graph={graph}
         />
       )
     }
@@ -45,7 +48,7 @@ const RightOperate = (props: Props) => {
       )}
     >
       <Tabs
-        defaultActiveKey="1"
+        defaultActiveKey="2"
         centered
         items={items}
         onChange={onChange}

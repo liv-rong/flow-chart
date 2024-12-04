@@ -56,7 +56,10 @@ export class ChartUtils {
         height = 0,
         nodeLabel = '',
         shape = 'rect'
-      const body: { [key: string]: any } = {} // 使用索引签名定义 body 的类型
+      const body: { [key: string]: any } = {
+        border: '1px solid #000',
+        stroke: '#333333'
+      } // 使用索引签名定义 body 的类型
 
       if (transform) {
         const translateMatch = transform.match(

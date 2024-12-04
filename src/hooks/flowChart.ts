@@ -1,6 +1,5 @@
 import { Graph, type Model, Shape, Node } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
-import { Button } from 'antd'
 import { Stencil } from '@antv/x6-plugin-stencil'
 import { Transform } from '@antv/x6-plugin-transform'
 import { Selection } from '@antv/x6-plugin-selection'
@@ -8,9 +7,8 @@ import { Snapline } from '@antv/x6-plugin-snapline'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
-import Guides from '@scena/guides'
 
-export const useFlowChart = (data: Model.FromJSONData) => {
+export const useFlowChart = () => {
   const refContainer = useRef<HTMLDivElement>(null)
 
   const refStencil = useRef<HTMLDivElement | null>(null)
@@ -99,7 +97,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
     ]
   }
 
-  const initGraph = () => {
+  const initGraph = (data: Model.FromJSONData) => {
     const graph = new Graph({
       container: refContainer.current as HTMLElement,
       background: {
@@ -185,7 +183,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       .use(
         new Selection({
           enabled: true
-          // multiple: true
+          // multiple: true,
           // rubberband: true,
           // movable: true,
           // showNodeSelectionBox: true
@@ -271,7 +269,7 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       }
     })
 
-    // // 控制连接桩显示/隐藏
+    // 控制连接桩显示/隐藏
     const showPorts = (ports: NodeListOf<SVGElement>, show: boolean) => {
       for (let i = 0, len = ports.length; i < len; i += 1) {
         ports[i].style.visibility = show ? 'visible' : 'hidden'
@@ -291,11 +289,42 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       //   cell.position(position.x, position.y) // 确保位置更新
       // }
     })
-    graph.on('node:dblclick', ({ cell, node }) => {
+    graph.on('cell:dblclick', ({ cell, e }) => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
+
+      const name = cell.isEdge() ? 'edge-editor' : 'node-editor'
+
+      if (cell.isNode()) {
+        const attrs = cell.getAttrs()
+        setCurrentAttrs(attrs)
+        setCurrentNode(cell)
+      }
+
+      // const attrs = cell.getAttrs()
+      // setCurrentAttrs(attrs)
+      // setCurrentNode(cell)
+      // currentNode.current = cell // 保存当前节点
+      // cell.removeTool(name)
+      // cell.addTools([
+      //   {
+      //     name,
+      //     args: {
+      //       event: e
+      //     }
+      //   }
+      // ])
+
+      // node.addTools({
+      //   name: 'node-editor',
+      //   args: {
+      //     event: e
+      //   }
+      // })
+      console.log(cell, '双击编辑1')
+      console.log('双击编辑', cell.getAttrs())
     })
 
     graph.on('node:click', ({ cell, x, y }) => {
@@ -304,30 +333,21 @@ export const useFlowChart = (data: Model.FromJSONData) => {
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
       setCurrentNode(cell)
-      console.log('Node clicked:', cell.getAttrs())
-      console.log('Node clicked:', cell.getData())
-
-      const a = cell.getAttrs()
+      // console.log('Node clicked:', cell.getAttrs())
+      // console.log('Node clicked:', cell.getData())
       setCurrentAttrs({
-        ...a,
+        ...cell.getAttrs(),
         x,
         y
       })
+    })
 
-      // console.log('Node clicked:', cell, x, y)
-
-      // graph.select(cell)
+    graph.on('node:mouseup', ({ cell, x, y }) => {
+      console.log('Node placed: mouseup', cell, x, y)
       // if (cell.id) {
       //   cell.position(x, y) // 更新节点位置
       // }
     })
-
-    // graph.on('node:mouseup', ({ cell, x, y }) => {
-    //   console.log('Node placed: mouseup', cell, x, y)
-    //   // if (cell.id) {
-    //   //   cell.position(x, y) // 更新节点位置
-    //   // }
-    // })
     graph.on('node:mouseenter', ({ e, node, view }) => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
@@ -343,23 +363,24 @@ export const useFlowChart = (data: Model.FromJSONData) => {
     })
 
     // cell.unembed(cell) // 取消当前节点的选择
-    // graph.on('node:mouseup', ({ cell }) => {
-    //   console.log('node:mouseup  mouseup', cell)
-    //   // graph.cleanSelection()
-    //   // cell.off() // 取消当前节点的选择
-    //   cell.unembed(cell) // 取消当前节点的选择
-    //   // 当前节点和鼠标不在联系
-    // })
+    graph.on('node:mouseup', ({ cell }) => {
+      console.log('node:mouseup  mouseup', cell)
+      // graph.cleanSelection()
+      // cell.off() // 取消当前节点的选择
+      // cell.unembed(cell) // 取消当前节点的选择
+      // 当前节点和鼠标不在联系
+    })
 
     handleStencilInit(graph)
+    console.log(data, 'data')
     graph.fromJSON(data)
-    console.log('graph', graph.toJSON())
-
-    // graph.parseJSON()
+    graph.isPannable() //  画布是否可以平移
+    graph.enablePanning() //  启用画布平移
     graph.centerContent()
     setGraph(graph)
     return { graph }
   }
+
   Graph.registerNode(
     'custom-rect',
     {
@@ -573,10 +594,6 @@ export const useFlowChart = (data: Model.FromJSONData) => {
         break
     }
   }
-
-  useEffect(() => {
-    initGraph()
-  }, [data])
 
   return {
     initGraph,

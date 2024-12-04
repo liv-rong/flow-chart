@@ -59,6 +59,176 @@ const data = {
   ]
 }
 
+const testData = {
+  nodes: [
+    {
+      id: '药物机制',
+      x: 100,
+      y: 50,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: 'lncRNA VAL通过竞争性结合Vimentin调控Trim16介导的泛素化作用'
+    },
+    {
+      id: 'VAL-Vimentin结合实验',
+      x: 100,
+      y: 120,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '通过RNA pulldown和WB验证VAL不同片段与Vimentin的结合'
+    },
+    {
+      id: 'ΔVAL对Vimentin表达的影响',
+      x: 100,
+      y: 190,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '构建ΔVAL突变体，观察其对Vimentin表达及肺腺癌细胞侵袭的调节作用'
+    },
+    {
+      id: 'ΔVAL对Vimentin泛素化的调控',
+      x: 100,
+      y: 260,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '使用MG132和CHX观察ΔVAL对Vimentin半衰期和泛素化水平的影响'
+    },
+    {
+      id: 'ΔVAL与Trim16结合的竞争性效应',
+      x: 100,
+      y: 330,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '通过co-IP实验评估ΔVAL对Trim16与Vimentin结合的影响'
+    },
+    {
+      id: '在体验证VAL与Vimentin调控功能',
+      x: 100,
+      y: 400,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '构建VAL和ΔVAL过表达的肺腺癌细胞株，并进行尾静脉注射建立肺转移模型'
+    },
+    {
+      id: '验证骨转移模型',
+      x: 100,
+      y: 470,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '在心脏注射肺腺癌细胞，评估VAL及ΔVAL在骨转移中的作用'
+    },
+    {
+      id: 'VAL与Trim16竞争效应的在体实验',
+      x: 100,
+      y: 540,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '评估VAL对Trim16介导的Vimentin调控及其在转移中的作用'
+    },
+    {
+      id: 'AKT/STAT3/VAL/Vimentin信号轴的验证',
+      x: 100,
+      y: 610,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '进行动物模型中的信号轴调控实验'
+    },
+    {
+      id: '临床意义研究',
+      x: 100,
+      y: 680,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '通过回顾性和前瞻性研究分析AKT、STAT3、VAL和Vimentin的表达与肺腺癌转移的相关性'
+    },
+    {
+      id: '统计分析',
+      x: 100,
+      y: 750,
+      width: 150,
+      height: 60,
+      shape: 'rect',
+      label: '采用SPSS分析分子标记物与临床因素及预后的关系'
+    }
+  ],
+  edges: [
+    {
+      source: '药物机制',
+      target: 'VAL-Vimentin结合实验',
+      label: ''
+    },
+    {
+      source: 'VAL-Vimentin结合实验',
+      target: 'ΔVAL对Vimentin表达的影响',
+      label: ''
+    },
+    {
+      source: 'ΔVAL对Vimentin表达的影响',
+      target: 'ΔVAL对Vimentin泛素化的调控',
+      label: ''
+    },
+    {
+      source: 'ΔVAL对Vimentin泛素化的调控',
+      target: 'ΔVAL与Trim16结合的竞争性效应',
+      label: ''
+    },
+    {
+      source: 'ΔVAL与Trim16结合的竞争性效应',
+      target: '在体验证VAL与Vimentin调控功能',
+      label: ''
+    },
+    {
+      source: '在体验证VAL与Vimentin调控功能',
+      target: '验证骨转移模型',
+      label: ''
+    },
+    {
+      source: '验证骨转移模型',
+      target: 'VAL与Trim16竞争效应的在体实验',
+      label: ''
+    },
+    {
+      source: 'VAL与Trim16竞争效应的在体实验',
+      target: 'AKT/STAT3/VAL/Vimentin信号轴的验证',
+      label: ''
+    },
+    {
+      source: 'AKT/STAT3/VAL/Vimentin信号轴的验证',
+      target: '临床意义研究',
+      label: ''
+    },
+    {
+      source: '临床意义研究',
+      target: '统计分析',
+      label: ''
+    }
+  ]
+}
+
+const testC = {
+  nodes: [
+    {
+      x: 530,
+      y: 60,
+      width: 150,
+      height: 60,
+      label: 'lncRNA VAL通过竞争性结合Vimentin调控Trim16介导的泛素化作用',
+      shape: 'custom-rect',
+
+      id: '药物机制'
+    }
+  ]
+}
 const Mynodes: Node.Metadata[] = [
   // {
   //   id: 'node1',
@@ -144,24 +314,6 @@ flowchart TD
     D --> E[ΔVAL影响Vimentin表达及转移]
     E --> F[构建结合失活突变体AVAL]
     F --> G[ ΔVAL对Vimentin泛素化调控]
-    F --> H[验证AVAL与VAL调控Vimentin蛋白表达的差异]
-    G --> I[.MG132抑制剂处理观察AVAL与VAL调节Vimentin表达能力]
-    I --> J[CHX抑制剂处理观察AVAL与VAL影响Vimentin蛋白半衰期]
-    J --> K[.检测K48和K63泛素化水平]
-    K --> L[.Trim16过表达条件下重复上述a/b/c三个泛素化相关实验]
-    L --> M[ΔVAL对Vimentin-Trim16结合的竞争性效应]
-    H --> M[ΔVAL对Vimentin-Trim16结合的竞争性效应]
-    M --> N[AVAL与VAL处理co-IP比较Trim16与Vimentin结合效应]
-    M --> P[AVAL与VAL处理co-IP比较Trim16与Vimentin结合效应]
-
-    R[2.在体水平验证VAL结合Vimentin调控肺腺癌转移] --> S[构建VAL和ΔVAL过表达的肺腺癌稳转细胞株]
-    S --> T[尾静脉注射肺转移模型验证VAL及AVAL功能]
-    T --> W[心脏注射肺腺癌骨转移模型验证VAL及AVAL功能]
-    W --> X[VAL与Trim16存在竞争性效应的在体实验]
-
-    Y[.AKT/STAT3/VAL/Vimentin信号轴在肺腺癌转移中的临床意义] --> Z[200例肺腺癌患者肿瘤组织进行回顾性研究，qPCR、WB和IH 检测检测其中AKT、STAT3、VAL和Vimentin表达]
-    1 --> 2[100例AKT持续激活特征的肺腺癌前瞻性研究:新鲜组织标本配对癌旁组织及血浆检测其中STAT3、VAL和Vimentin表达]
-    2 --> 3[统计分析:对AKT、STAT3、VAL和Vimentin表达与临床病理因素做单因素/多因素分析和预后关联分析，明确临床意义]
 `
 
 // `
@@ -192,6 +344,9 @@ function Home() {
   const handleInit = async () => {
     const res = await mermaid.render('text', mermaidInput)
     setSvg(res.svg)
+    document.getElementById('svgContainer')!.innerHTML = res.svg
+    // handleXYTojson(res.svg)
+    handleXYTojson()
   }
 
   const handleXYTojson = () => {
@@ -790,187 +945,63 @@ function Home() {
     ]
   }
 
-  const testA = {
+  const drugValMechanism = {
     nodes: [
       {
-        id: 'A',
-        x: 174.21250343322754,
-        y: 52.46875,
-        width: 94,
-        height: 68,
-        shape: 'custom-ellipse',
-        attrs: {
-          body: {},
-          text: {
-            text: '椭圆形\naasdada状'
-          }
-        },
-        label: '椭圆形\naasdada状'
+        x: 530,
+        y: 60,
+        width: 600,
+        height: 100,
+        label: '药物VAL的分子机制 - 竞争性结合Vimentin调控Trim16介导的泛素化',
+        shape: 'ellipse',
+        id: '药物VAL的分子机制 - 竞争性结合Vimentin调控Trim16介导的泛素化'
       },
       {
-        id: 'B',
-        x: 174.21250343322754,
-        y: 209.9375,
-        width: 92,
-        height: 68,
-        shape: 'custom-rect',
-        attrs: {
-          body: {
-            rx: '5',
-            ry: '5'
-          },
-          text: {
-            text: 'Go\nshoppingB'
-          }
-        },
-        label: 'Go\nshoppingB'
+        x: 530,
+        y: 220,
+        width: 600,
+        height: 100,
+        label: '功能原理 - 通过影响Vimentin表达和转移',
+        shape: 'rect',
+        id: '功能原理 - 通过影响Vimentin表达和转移'
       },
       {
-        id: 'C',
-        x: 174.21250343322754,
-        y: 362.9375,
-        width: 90,
-        height: 88,
-        shape: 'custom-polygon',
-        attrs: {
-          body: {
-            refPoints: '64,0 128,-64 64,-128 0,-64'
-          },
-          text: {
-            text: 'Let me\nthinkC'
-          }
-        },
-        label: 'Let me\nthinkC'
+        x: 530,
+        y: 380,
+        width: 600,
+        height: 100,
+        label: '临床意义 - 评估VAL在肺腺癌转移中的作用',
+        shape: 'rect',
+        id: '临床意义 - 评估VAL在肺腺癌转移中的作用'
       },
       {
-        id: 'D',
-        x: 67.54375076293945,
-        y: 527.9375,
-        width: 79,
-        height: 44,
-        shape: 'custom-rect',
-        attrs: {
-          body: {
-            rx: null,
-            ry: null
-          },
-          text: {
-            text: 'LaptopD'
-          }
-        },
-        label: 'LaptopD'
-      },
-      {
-        id: 'E',
-        x: 235.1437530517578,
-        y: 527.9375,
-        width: 76,
-        height: 44,
-        shape: 'custom-rect',
-        attrs: {
-          body: {
-            rx: null,
-            ry: null
-          },
-          text: {
-            text: 'iPhoneE'
-          }
-        },
-        label: 'iPhoneE'
-      },
-      {
-        id: 'F',
-        x: 389.50000381469727,
-        y: 527.9375,
-        width: 53,
-        height: 44,
-        shape: 'custom-rect',
-        attrs: {
-          body: {
-            rx: null,
-            ry: null
-          },
-          text: {
-            text: 'CarF'
-          }
-        },
-        label: 'CarF'
-      },
-      {
-        id: 'id1',
-        x: 313.05625343322754,
-        y: 52.46875,
-        width: 84,
-        height: 44,
-        shape: 'custom-rect',
-        attrs: {
-          body: {
-            rx: '19.5',
-            ry: '19.5'
-          },
-          text: {
-            text: '圆角矩形'
-          }
-        },
-        label: '圆角矩形'
-      },
-      {
-        id: 'id2',
-        x: 450.43125343322754,
-        y: 52.46875,
-        width: 72,
-        height: 64,
-        shape: 'custom-polygon',
-        attrs: {
-          body: {
-            refPoints: '43,0 86,-43 43,-86 0,-43'
-          },
-          text: {
-            text: '菱形'
-          }
-        },
-        label: '菱形'
+        x: 530,
+        y: 540,
+        width: 600,
+        height: 100,
+        label: '数据分析 - 统计AKT、STAT3、VAL和Vimentin表达与临床预后的相关性',
+        shape: 'ellipse',
+        id: '数据分析 - 统计AKT、STAT3、VAL和Vimentin表达与临床预后的相关性'
       }
     ],
     edges: [
       {
-        source: 'A',
-        target: 'B',
-        label: 'Get money',
-        tools: ['edge-editor'],
-        shape: 'edge'
+        source: '药物VAL的分子机制 - 竞争性结合Vimentin调控Trim16介导的泛素化',
+        target: '功能原理 - 通过影响Vimentin表达和转移',
+        label: ''
       },
       {
-        source: 'B',
-        target: 'C',
-        label: '',
-        tools: ['edge-editor'],
-        shape: 'edge'
+        source: '功能原理 - 通过影响Vimentin表达和转移',
+        target: '临床意义 - 评估VAL在肺腺癌转移中的作用',
+        label: ''
       },
       {
-        source: 'C',
-        target: 'D',
-        label: 'One',
-        tools: ['edge-editor'],
-        shape: 'edge'
-      },
-      {
-        source: 'C',
-        target: 'E',
-        label: 'Two',
-        tools: ['edge-editor'],
-        shape: 'edge'
-      },
-      {
-        source: 'C',
-        target: 'F',
-        label: 'Three',
-        tools: ['edge-editor'],
-        shape: 'edge'
+        source: '临床意义 - 评估VAL在肺腺癌转移中的作用',
+        target: '数据分析 - 统计AKT、STAT3、VAL和Vimentin表达与临床预后的相关性',
+        label: ''
       }
     ]
   }
-
   const handleXY = () => {
     const g = new dagre.graphlib.Graph()
     g.setGraph({})
@@ -1042,8 +1073,9 @@ function Home() {
 
   return (
     <div className="h-screen w-full">
-      <FlowChart data={{ nodes, edges }} />
+      <FlowChart />
       <div
+        id="svgContainer"
         ref={refContainer}
         dangerouslySetInnerHTML={{ __html: svg ?? '' }}
       />

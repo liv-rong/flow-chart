@@ -54,6 +54,7 @@ declare global {
   const useResolvedPath: typeof import('react-router-dom')['useResolvedPath']
   const useRoutes: typeof import('react-router-dom')['useRoutes']
   const useSearchParams: typeof import('react-router-dom')['useSearchParams']
+  const useSetAttrs: typeof import('../hooks/setAttrs')['useSetAttrs']
   const useState: typeof import('react')['useState']
   const useSyncExternalStore: typeof import('react')['useSyncExternalStore']
   const useTransition: typeof import('react')['useTransition']

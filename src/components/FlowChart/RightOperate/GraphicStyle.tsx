@@ -12,19 +12,63 @@ import {
   VerticalAlignMiddleOutlined,
   VerticalAlignTopOutlined
 } from '@ant-design/icons'
-import { Node } from '@antv/x6'
+import { Node, type Graph } from '@antv/x6'
 import { Button, ColorPicker, InputNumber, Radio, Select } from 'antd'
+import { useSetAttrs } from '@/hooks'
+
+// export const useSetAttrs = () => {
+//   const onAttrsChanged = (attrs: State, node: Node<Node.Properties> | null) => {
+//     node?.attr({
+//       ref: attrs,
+//       hLine: { refY: attrs.refY },
+//       vLine: { refX: attrs.refX }
+//     } as any)
+//   }
+//   return { onAttrsChanged }
+// }
 
 interface Props {
   currentNode: Node<Node.Properties> | null
   currentAttrs: any
   setCurrentAttrs: any
   setCurrentNode: any
+  graph: Graph | null
 }
 
 const GraphicStyle = (props: Props) => {
-  const { currentNode, currentAttrs, setCurrentAttrs, setCurrentNode } = props
+  const { currentNode, graph, currentAttrs, setCurrentAttrs, setCurrentNode } = props
   console.log(currentAttrs, 'currentAttrs')
+
+  const { onAttrsChanged } = useSetAttrs()
+
+  // const onAttrsChanged = (attrs: State) => {
+  //   this.node.attr({
+  //     ref: attrs,
+  //     hLine: { refY: attrs.refY },
+  //     vLine: { refX: attrs.refX }
+  //   } as any)
+  // }
+
+  const handleAlignmentChange = (value: string) => {
+    // 更新节点文本位置
+
+    console.log(value, 'value')
+
+    onAttrsChanged(
+      {
+        refX: 0,
+        refY: 0.5,
+        xAlign: 'left',
+        yAlign: 'middle'
+      },
+      currentNode
+    )
+  }
+
+  // refX: 0.5,
+  //   refY: 0.5,
+  //   xAlign: 'left',
+  //   yAlign: 'top',
   return (
     <div className="text-xs">
       <div className="border-b p-2 space-y-2">
@@ -64,7 +108,7 @@ const GraphicStyle = (props: Props) => {
             className="w-20 h-6"
             suffix="H"
             type="number"
-            value={currentAttrs.body.refHeight}
+            value={currentAttrs?.body?.refHeight}
           />
         </div>
         <div className="flex w-full justify-between items-center  custom-input">
@@ -129,13 +173,17 @@ const GraphicStyle = (props: Props) => {
           />
           <ColorPicker
             defaultValue="#1677ff"
+            value={currentAttrs?.text?.fill}
             className="h-6 w-6 !border-0"
             onChange={(color) => {
               setCurrentAttrs((pre: any) => ({
                 ...pre,
                 text: { ...pre.body, fill: color.toHexString() }
               }))
-              currentNode?.updateAttrs({ text: { fill: color.toHexString() } })
+
+              currentNode?.updateAttrs({
+                text: { ...currentNode?.getAttrs()?.text, fill: color.toHexString() }
+              })
             }}
           />
         </div>
@@ -149,12 +197,23 @@ const GraphicStyle = (props: Props) => {
             className="w-20 h-6"
             prefix={<FontSizeOutlined className="text-xs" />}
             formatter={(value) => `${value}px`}
-            // value={currentNode?.getAttrs().body.}
+            value={currentAttrs?.text?.fontSize as number}
             parser={(value) => value?.replace('px', '') as unknown as number}
-            // onChange={onChange}
+            onChange={(value) => {
+              console.log(value)
+
+              setCurrentAttrs((pre: any) => ({
+                ...pre,
+                text: { ...pre.text, fontSize: value as number }
+              }))
+              currentNode?.updateAttrs({
+                text: { ...currentNode?.getAttrs()?.text, fontSize: value as number },
+                label: { ...currentNode?.getAttrs()?.label, fontSize: value as number }
+              })
+            }}
           />
 
-          {/* {currentNode?.getAttrs({})} */}
+          {currentNode?.getAttrs()?.text?.fontSize as number}
 
           <Select
             defaultValue="1.0"
@@ -178,6 +237,10 @@ const GraphicStyle = (props: Props) => {
             defaultValue="a"
             buttonStyle="outline"
             size="small"
+            onChange={(value) => {
+              console.log(value.target.value, '111212112121111')
+              handleAlignmentChange(value.target.value)
+            }}
           >
             <Radio.Button value="a">
               <AlignCenterOutlined />
@@ -230,13 +293,13 @@ const GraphicStyle = (props: Props) => {
         <div className="flex w-full justify-between items-center custom-input">
           <ColorPicker
             defaultValue="#1677ff"
-            value={currentAttrs?.body?.fill}
+            value={currentAttrs?.body?.fill as string}
             className="h-6 w-6 !border-0"
             onChange={(color) => {
-              setCurrentAttrs((pre: any) => ({
-                ...pre,
-                body: { ...pre.body, fill: color.toHexString() }
-              }))
+              setCurrentAttrs({
+                ...currentAttrs,
+                body: { ...currentAttrs?.body, fill: color.toHexString() }
+              })
               currentNode?.updateAttrs({ body: { fill: color.toHexString() } })
             }}
           />
