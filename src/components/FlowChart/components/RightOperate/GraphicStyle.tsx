@@ -15,6 +15,9 @@ import {
 import { Node, type Graph } from '@antv/x6'
 import { Button, ColorPicker, InputNumber, Radio, Select } from 'antd'
 import { useSetAttrs } from '@/hooks'
+import { fontWeight } from 'html2canvas/dist/types/css/property-descriptors/font-weight'
+import { Console } from 'console'
+import { fontFamilyOptions, lineHeightOptions } from '../../types'
 
 // export const useSetAttrs = () => {
 //   const onAttrsChanged = (attrs: State, node: Node<Node.Properties> | null) => {
@@ -30,7 +33,7 @@ import { useSetAttrs } from '@/hooks'
 interface Props {
   currentNode: Node<Node.Properties> | null
   currentAttrs: any
-  setCurrentAttrs: any
+  setCurrentAttrs: React.Dispatch<React.SetStateAction<{ [x: string]: any } | null>>
   setCurrentNode: any
   graph: Graph | null
 }
@@ -39,7 +42,7 @@ const GraphicStyle = (props: Props) => {
   const { currentNode, graph, currentAttrs, setCurrentAttrs, setCurrentNode } = props
   console.log(currentAttrs, 'currentAttrs')
 
-  const { onAttrsChanged } = useSetAttrs()
+  const { onAttrsChanged, handleTextStyle } = useSetAttrs(currentNode, setCurrentAttrs)
 
   // const onAttrsChanged = (attrs: State) => {
   //   this.node.attr({
@@ -54,15 +57,12 @@ const GraphicStyle = (props: Props) => {
 
     console.log(value, 'value')
 
-    onAttrsChanged(
-      {
-        refX: 0,
-        refY: 0.5,
-        xAlign: 'left',
-        yAlign: 'middle'
-      },
-      currentNode
-    )
+    onAttrsChanged({
+      refX: 0,
+      refY: 0.5,
+      xAlign: 'left',
+      yAlign: 'middle'
+    })
   }
 
   // refX: 0.5,
@@ -159,17 +159,24 @@ const GraphicStyle = (props: Props) => {
         <p className="text-xs font-bold">文本</p>
         <div className="flex w-full justify-between items-center custom-input">
           <Select
-            defaultValue="lucy"
+            defaultValue="Arial"
             style={{ width: 140 }}
             size="small"
             className="w-32 h-6"
-            // onChange={handleChange}
-            options={[
-              { value: 'jack', label: '思源黑体' },
-              { value: 'lucy', label: '微软雅黑' },
-              { value: 'Yiminghe', label: '宋体' },
-              { value: 'disabled', label: '楷体' }
-            ]}
+            onChange={(value) => {
+              currentNode?.attr('text/fontFamily', value)
+              setCurrentAttrs((pre: any) => ({
+                ...pre,
+                text: { ...pre.text, fontFamily: value }
+              }))
+            }}
+            value={
+              (currentNode?.getAttrs()?.text?.fontFamily as string) ===
+              'Arial, helvetica, sans-serif'
+                ? 'Arial'
+                : currentNode?.getAttrs()?.text?.fontFamily
+            }
+            options={fontFamilyOptions}
           />
           <ColorPicker
             defaultValue="#1677ff"
@@ -178,12 +185,9 @@ const GraphicStyle = (props: Props) => {
             onChange={(color) => {
               setCurrentAttrs((pre: any) => ({
                 ...pre,
-                text: { ...pre.body, fill: color.toHexString() }
+                text: { ...pre.text, fill: color.toHexString() }
               }))
-
-              currentNode?.updateAttrs({
-                text: { ...currentNode?.getAttrs()?.text, fill: color.toHexString() }
-              })
+              currentNode?.attr('text/fill', color.toHexString())
             }}
           />
         </div>
@@ -200,16 +204,11 @@ const GraphicStyle = (props: Props) => {
             value={currentAttrs?.text?.fontSize as number}
             parser={(value) => value?.replace('px', '') as unknown as number}
             onChange={(value) => {
-              console.log(value)
-
               setCurrentAttrs((pre: any) => ({
                 ...pre,
                 text: { ...pre.text, fontSize: value as number }
               }))
-              currentNode?.updateAttrs({
-                text: { ...currentNode?.getAttrs()?.text, fontSize: value as number },
-                label: { ...currentNode?.getAttrs()?.label, fontSize: value as number }
-              })
+              currentNode?.attr('text/fontSize', value as number)
             }}
           />
 
@@ -220,14 +219,7 @@ const GraphicStyle = (props: Props) => {
             size="small"
             className="w-20 h-6"
             // onChange={handleChange}
-            options={[
-              { value: '1.0', label: '1.0' },
-              { value: '1.25', label: '1.25' },
-              { value: '1.5', label: '1.5' },
-              { value: '2.0', label: '2.0' },
-              { value: '2.5', label: '2.5' },
-              { value: '3.0', label: '3.0' }
-            ]}
+            options={lineHeightOptions}
             prefix={<LineHeightOutlined className="text-xs" />}
           />
         </div>
@@ -271,17 +263,69 @@ const GraphicStyle = (props: Props) => {
         </div>
 
         <div className="flex w-full justify-between items-center  custom-input">
-          <div>
-            <Button size="small">
+          <div className="gap-1 flex">
+            <Button
+              size="small"
+              onClick={() => {
+                const value =
+                  currentNode?.getAttrs()?.text?.fontWeight === 'bold' ? 'normal' : 'bold'
+                currentNode?.attr('text/fontWeight', value)
+                setCurrentAttrs((prev) => ({
+                  ...prev,
+                  text: { ...prev?.text, fontWeight: value }
+                }))
+              }}
+              type={currentAttrs?.text?.fontWeight === 'bold' ? 'primary' : 'default'}
+            >
               <BoldOutlined />
             </Button>
-            <Button size="small">
+            <Button
+              size="small"
+              onClick={() => {
+                const value =
+                  currentNode?.getAttrs()?.text?.fontStyle === 'italic' ? 'none' : 'italic'
+                currentNode?.attr('text/fontStyle', value)
+                setCurrentAttrs((prev) => ({
+                  ...prev,
+                  text: { ...prev?.text, fontStyle: value }
+                }))
+              }}
+              type={currentAttrs?.text?.fontStyle === 'italic' ? 'primary' : 'default'}
+            >
               <ItalicOutlined />
             </Button>
-            <Button size="small">
+            <Button
+              size="small"
+              onClick={() => {
+                const value =
+                  currentNode?.getAttrs()?.text?.textDecoration === 'underline'
+                    ? 'none'
+                    : 'underline'
+                currentNode?.attr('text/textDecoration', value)
+                setCurrentAttrs((prev) => ({
+                  ...prev,
+                  text: { ...prev?.text, textDecoration: value }
+                }))
+              }}
+              type={currentAttrs?.text?.textDecoration === 'underline' ? 'primary' : 'default'}
+            >
               <UnderlineOutlined />
             </Button>
-            <Button size="small">
+            <Button
+              size="small"
+              onClick={() => {
+                const value =
+                  currentNode?.getAttrs()?.text?.textDecoration === 'line-through'
+                    ? 'none'
+                    : 'line-through'
+                currentNode?.attr('text/textDecoration', value)
+                setCurrentAttrs((prev) => ({
+                  ...prev,
+                  text: { ...prev?.text, textDecoration: value }
+                }))
+              }}
+              type={currentAttrs?.text?.textDecoration === 'line-through' ? 'primary' : 'default'}
+            >
               <StrikethroughOutlined />
             </Button>
           </div>
@@ -300,7 +344,7 @@ const GraphicStyle = (props: Props) => {
                 ...currentAttrs,
                 body: { ...currentAttrs?.body, fill: color.toHexString() }
               })
-              currentNode?.updateAttrs({ body: { fill: color.toHexString() } })
+              currentNode?.attr('body/fill', color.toHexString())
             }}
           />
         </div>

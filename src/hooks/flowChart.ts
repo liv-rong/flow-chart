@@ -16,7 +16,7 @@ export const useFlowChart = () => {
   const [graph, setGraph] = useState<Graph | null>(null)
 
   const [currentNode, setCurrentNode] = useState<Node<Node.Properties> | null>(null)
-  const [currentAttrs, setCurrentAttrs] = useState<any>(null)
+  const [currentAttrs, setCurrentAttrs] = useState<{ [x: string]: any } | null>(null)
 
   const ports = {
     groups: {

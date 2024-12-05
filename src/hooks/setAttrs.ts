@@ -6,15 +6,31 @@ export interface State {
   yAlign?: string
 }
 
-export const useSetAttrs = () => {
-  const onAttrsChanged = (attrs: State, node: Node<Node.Properties> | null) => {
+export const useSetAttrs = (
+  node: Node<Node.Properties> | null,
+  setCurrentAttrs: React.Dispatch<React.SetStateAction<{ [x: string]: any } | null>>
+) => {
+  const onAttrsChanged = (attrs: State) => {
     console.log('onAttrsChanged', node)
     node?.updateAttrs({
       ref: attrs,
       hLine: { refY: attrs.refY },
       vLine: { refX: attrs.refX }
     } as any)
-    console.log('onAttrsChanged', node?.getAttrs())
   }
-  return { onAttrsChanged }
+
+  const handleTextStyle = (textProps: { [key: string]: any }) => {
+    console.log('handleTextStyle', textProps)
+    // if (!textProps) return
+    if (!textProps) return
+    setCurrentAttrs((prev) => ({ ...prev, label: { ...prev?.label, ...textProps } }))
+    // node?.updateAttrs({
+    //   label: {
+    //     ...,
+    //     ...textProps
+    //   }
+    // })
+    // node?.attr('label/fontStyle', textProps.fontStyle)
+  }
+  return { onAttrsChanged, handleTextStyle }
 }
