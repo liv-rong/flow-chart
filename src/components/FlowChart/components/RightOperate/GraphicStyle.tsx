@@ -18,6 +18,7 @@ import { useSetAttrs } from '@/hooks'
 import { fontWeight } from 'html2canvas/dist/types/css/property-descriptors/font-weight'
 import { Console } from 'console'
 import { fontFamilyOptions, lineHeightOptions } from '../../types'
+import type { State } from '../settings'
 
 // export const useSetAttrs = () => {
 //   const onAttrsChanged = (attrs: State, node: Node<Node.Properties> | null) => {
@@ -30,16 +31,26 @@ import { fontFamilyOptions, lineHeightOptions } from '../../types'
 //   return { onAttrsChanged }
 // }
 
+// export interface Props {}
+
 interface Props {
   currentNode: Node<Node.Properties> | null
   currentAttrs: any
   setCurrentAttrs: React.Dispatch<React.SetStateAction<{ [x: string]: any } | null>>
   setCurrentNode: any
   graph: Graph | null
+  onChange: (state: State) => void
 }
 
 const GraphicStyle = (props: Props) => {
-  const { currentNode, graph, currentAttrs, setCurrentAttrs, setCurrentNode } = props
+  const {
+    currentNode,
+    graph,
+    currentAttrs,
+    onChange: handleTextAlign,
+    setCurrentAttrs,
+    setCurrentNode
+  } = props
   console.log(currentAttrs, 'currentAttrs')
 
   const { onAttrsChanged, handleTextStyle } = useSetAttrs(currentNode, setCurrentAttrs)
@@ -74,7 +85,18 @@ const GraphicStyle = (props: Props) => {
       <div className="border-b p-2 space-y-2">
         <div className="flex w-full h-6 bg-white justify-between items-center border"></div>
         <div className="flex w-full h-6 bg-white justify-between items-center">
-          <p>不透明度</p>
+          <p
+            onClick={() => {
+              handleTextAlign({
+                refX: 1,
+                refY: 1,
+                xAlign: 'left',
+                yAlign: 'top'
+              })
+            }}
+          >
+            不透明度
+          </p>
           <div>
             <InputNumber<number>
               min={1}
@@ -214,13 +236,23 @@ const GraphicStyle = (props: Props) => {
 
           {currentNode?.getAttrs()?.text?.fontSize as number}
 
-          <Select
-            defaultValue="1.0"
+          <InputNumber<number>
+            defaultValue={16}
+            min={0}
+            max={100}
             size="small"
             className="w-20 h-6"
-            // onChange={handleChange}
-            options={lineHeightOptions}
             prefix={<LineHeightOutlined className="text-xs" />}
+            formatter={(value) => `${value}px`}
+            value={currentAttrs?.text?.lineHeight as number}
+            parser={(value) => value?.replace('px', '') as unknown as number}
+            onChange={(value) => {
+              setCurrentAttrs((pre: any) => ({
+                ...pre,
+                text: { ...pre.text, lineHeight: value as number }
+              }))
+              currentNode?.attr('text/lineHeight', value as number)
+            }}
           />
         </div>
 
@@ -229,18 +261,92 @@ const GraphicStyle = (props: Props) => {
             defaultValue="a"
             buttonStyle="outline"
             size="small"
+            // onChange={(value) => {
+            //   console.log(value.target.value, '111212112121111')
+            //   handleAlignmentChange(value.target.value)
+
+            // }}
             onChange={(value) => {
-              console.log(value.target.value, '111212112121111')
-              handleAlignmentChange(value.target.value)
+              const align = value.target.value
+              // console.log(value.target.value, '111212112121111')
+              // setCurrentAttrs((pre: any) => ({
+              //   ...pre,
+              //   text: { ...pre.text, textAlign: align }
+              // }))
+              // currentNode?.attr('text/textAlign', align)
+              // currentNode?.updateAttrs({
+              //   text: {
+              //     textAnchor: 'start', // 左对齐
+              //     textVerticalAnchor: 'middle' // 垂直居中
+              //   }
+              // })
+
+              // 居左
+              // text: {
+              //   refX: 1,
+              //   refY: 0.5,
+              //   textAnchor: 'start'
+              // }
+
+              // 居右边
+              // text: {
+              //   refX: 1,
+              //   refY: 0.5,
+              //   textAnchor: 'end'
+              // }
+
+              // 居中
+              // text: {
+              //   refX: 1,
+              //   refY: 0.5,
+              //   textAnchor: 'middle'
+              // }
+
+              // 150 * 30 = 4500
+
+              // . 调试可能会有其他情况 一星期
+              // 7. 上线 一星期
+              handleTextAlign({
+                refX: 1,
+                refY: 1,
+                xAlign: 'left',
+                yAlign: 'top'
+              })
+
+              // currentNode?.attr({
+              //   // label: {
+              //   //   // textVerticalAnchor: 'middle',
+              //   //   refX: -1,
+              //   //   refY: 0.5,
+              //   //   textAnchor: 'end',
+              //   //   textVerticalAnchor: 'middle'
+              //   // },
+              //   label: {
+              //     refX: -1,
+              //     refY: 0.5,
+              //     textAnchor: 'end',
+              //     textVerticalAnchor: 'middle'
+              //   },
+              //   // text: {
+              //   //   // textVerticalAnchor: 'middle',
+              //   //   refX: 1,
+              //   //   refY: 0.5,
+              //   //   textAnchor: 'end',
+              //   //   textVerticalAnchor: 'middle'
+              //   // },
+              //   vLine: { refX: -1 },
+              //   hLine: { refY: 0.5 }
+              // } as any)
+              console.log(currentNode?.getAttrs(), '111212112121111')
             }}
           >
-            <Radio.Button value="a">
+            <Radio.Button value="left">
               <AlignCenterOutlined />
             </Radio.Button>
-            <Radio.Button value="b">
+            <Radio.Button value="center">
               <AlignLeftOutlined />
             </Radio.Button>
-            <Radio.Button value="c">
+            <Radio.Button value="right">
               <AlignRightOutlined />
             </Radio.Button>
           </Radio.Group>

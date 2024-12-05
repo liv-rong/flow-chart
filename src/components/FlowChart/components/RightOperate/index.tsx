@@ -4,6 +4,7 @@ import { Tabs } from 'antd'
 import PageStyle from './PageStyle'
 import GraphicStyle from './GraphicStyle'
 import type { Graph } from '@antv/x6'
+import type { State } from '../settings'
 
 interface Props {
   className?: string
@@ -12,10 +13,12 @@ interface Props {
   setCurrentAttrs: any
   setCurrentNode: any
   graph: Graph | null
+  onChange: (state: State) => void
 }
 
 const RightOperate = (props: Props) => {
-  const { className, graph, currentNode, currentAttrs, setCurrentAttrs, setCurrentNode } = props
+  const { className, onChange, graph, currentNode, currentAttrs, setCurrentAttrs, setCurrentNode } =
+    props
 
   const items: TabsProps['items'] = [
     {
@@ -28,6 +31,7 @@ const RightOperate = (props: Props) => {
       label: '图形样式',
       children: (
         <GraphicStyle
+          onChange={onChange}
           currentNode={currentNode}
           currentAttrs={currentAttrs}
           setCurrentAttrs={setCurrentAttrs}
@@ -38,9 +42,9 @@ const RightOperate = (props: Props) => {
     }
   ]
 
-  const onChange = (key: string) => {
-    console.log(key)
-  }
+  // const onChange = (key: string) => {
+  //   console.log(key)
+  // }
   return (
     <div
       className={classNames(
@@ -51,7 +55,7 @@ const RightOperate = (props: Props) => {
         defaultActiveKey="2"
         centered
         items={items}
-        onChange={onChange}
+        // onChange={onChange}
         className="w-full"
       />
     </div>

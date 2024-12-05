@@ -118,6 +118,10 @@ export class ChartUtils {
         attrs: {
           body
         },
+        refX: '99%',
+
+        refY: '99%',
+
         label: nodeLabel
       }
     })
