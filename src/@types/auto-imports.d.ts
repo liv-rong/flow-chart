@@ -30,6 +30,7 @@ declare global {
   const forwardRef: typeof import('react')['forwardRef']
   const lazy: typeof import('react')['lazy']
   const lineHeightOptions: typeof import('../components/FlowChart/types/text')['lineHeightOptions']
+  const lineHeightType: typeof import('../components/FlowChart/types/text')['lineHeightType']
   const memo: typeof import('react')['memo']
   const settings: typeof import('../components/FlowChart/components/settings')['default']
   const startTransition: typeof import('react')['startTransition']
@@ -65,9 +66,6 @@ declare global {
 }
 // for type re-export
 declare global {
-  // @ts-ignore
-  export type { Settings } from '../components/FlowChart/components/settings'
-  import('../components/FlowChart/components/settings')
   // @ts-ignore
   export type { ChartUtils, ChartUtils } from '../utils/chart'
   import('../utils/chart')

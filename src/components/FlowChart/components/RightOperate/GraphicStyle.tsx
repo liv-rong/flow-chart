@@ -50,10 +50,10 @@ const GraphicStyle = (props: Props) => {
     textVerticalAnchorValue,
     setTextVerticalAnchorValue,
     setTextAnchorValue,
-    textLineHeight,
-    setTextLineHeight,
     textSize,
-    setTextSize
+    setTextSize,
+    textLineHeight,
+    setTextLineHeight
   } = useSetAttrs(currentNode)
 
   return (
@@ -183,35 +183,31 @@ const GraphicStyle = (props: Props) => {
             parser={(value) => value?.replace('px', '') as unknown as number}
             onChange={(value) => {
               setTextSize(value as number)
+              currentNode?.attr({
+                text: {
+                  fontSize: textSize,
+                  lineHeight: textSize * textLineHeight
+                }
+              })
             }}
           />
-
           {currentNode?.getAttrs()?.text?.fontSize as number}
-
-          <InputNumber<number>
-            defaultValue={16}
-            min={0}
-            max={100}
+          <Select
+            defaultValue={1}
             size="small"
             className="w-20 h-6"
             prefix={<LineHeightOutlined className="text-xs" />}
-            formatter={(value) => `${value}px`}
-            value={textLineHeight as number}
-            // value={currentAttrs?.text?.lineHeight as number}
-            parser={(value) => value?.replace('px', '') as unknown as number}
             onChange={(value) => {
-              setTextLineHeight(value as number)
-              // setCurrentAttrs((pre: any) => ({
-              //   ...pre,
-              //   text: { ...pre.text, lineHeight: value as number }
-              // }))
-              // currentNode?.attr('text/lineHeight', value as number)
-              // setCurrentAttrs((pre: any) => ({
-              //   ...pre,
-              //   text: { ...pre.text, lineHeight: value as number }
-              // }))
-              // currentNode?.attr('text/lineHeight', value as number)
+              setTextLineHeight(value)
+              currentNode?.attr({
+                text: {
+                  fontSize: textSize,
+                  lineHeight: textSize * value
+                }
+              })
             }}
+            value={textLineHeight}
+            options={lineHeightOptions}
           />
         </div>
 

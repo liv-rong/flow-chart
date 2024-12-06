@@ -1,12 +1,9 @@
-import { Graph, type Model, Shape } from '@antv/x6'
 import Footer from '../common/Footer'
 import Header from '../common/Header'
 import LeftOperate from './components/LeftOperate'
 import RightOperate from './components/RightOperate'
 import mermaid from 'mermaid'
 import type { Props } from 'react-resize-detector/build/types/types'
-import { type State } from './components/settings'
-import Settings from './components/settings'
 
 const commands = [
   {
@@ -258,7 +255,7 @@ function FlowChart(props: Props) {
           // graph?.toJSON()
         }}
       />
-      <Settings onChange={onAttrsChanged} />
+
       <div className="h-[calc(100%-72px)] w-full flex">
         <LeftOperate refCustom={refStencil}></LeftOperate>
         <div className="w-full h-full bg-gray-50 flex-1 overflow-auto flex justify-center items-center">

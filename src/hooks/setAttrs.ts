@@ -16,11 +16,14 @@ export const useSetAttrs = (node: Node<Node.Properties> | null) => {
   const [textVerticalAnchorValue, setTextVerticalAnchorValue] =
     useState<TextVerticalAnchorType>('middle')
 
-  const [textSize, setTextSize] = useState<number>(node?.attr('text/textSize') || 12)
+  const [textSize, setTextSize] = useState<number>()
 
-  const [textLineHeight, setTextLineHeight] = useState<number>(node?.attr('text/lineHeight') || 12)
+  const [textLineHeight, setTextLineHeight] = useState<number>(node?.attr('text/lineHeight') || 1.0)
 
   const handleTextAlign = () => {
+    console.log('textAnchorValue', textAnchorValue)
+    console.log('textVerticalAnchorValue', textVerticalAnchorValue)
+
     const resTextAlign: StateTextAlign = {
       textAnchor: textAnchorValue,
       textVerticalAnchor: textVerticalAnchorValue,
@@ -74,7 +77,6 @@ export const useSetAttrs = (node: Node<Node.Properties> | null) => {
       }
     }
 
-    console.log('resTextAlign', resTextAlign)
     node?.attr({
       label: resTextAlign,
       hLine: { refY: resTextAlign.refY },
@@ -87,28 +89,12 @@ export const useSetAttrs = (node: Node<Node.Properties> | null) => {
   }, [textAnchorValue, textVerticalAnchorValue])
 
   useEffect(() => {
-    console.log(node?.getAttrs().text)
-    if (node) {
-      node.attr({
-        text: {
-          // lineHeight: textLineHeight,
-          fontSize: textSize
-        }
-      })
-      handleTextAlign()
-    }
-  }, [textSize])
-
-  // useEffect(() => {
-  //   if (node) {
-  //     node.attr({
-  //       label: {
-  //         fontSize: textSize
-  //       }
-  //     })
-  //     handleTextAlign()
-  //   }
-  // }, [textSize])
+    handleTextAlign()
+    const textSize = node?.getAttrs().text.fontSize as number
+    const textLineHeight = (node?.getAttrs().text.lineHeight ?? textSize) as number
+    setTextSize(textSize)
+    setTextLineHeight(textLineHeight / textSize)
+  }, [node])
 
   return {
     textAnchorValue,
@@ -116,9 +102,9 @@ export const useSetAttrs = (node: Node<Node.Properties> | null) => {
     handleTextAlign,
     setTextVerticalAnchorValue,
     setTextAnchorValue,
-    textLineHeight,
-    setTextLineHeight,
     textSize,
-    setTextSize
+    setTextSize,
+    textLineHeight,
+    setTextLineHeight
   }
 }
