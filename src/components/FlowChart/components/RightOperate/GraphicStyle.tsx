@@ -39,64 +39,29 @@ interface Props {
   setCurrentAttrs: React.Dispatch<React.SetStateAction<{ [x: string]: any } | null>>
   setCurrentNode: any
   graph: Graph | null
-  onChange: (state: State) => void
+  onChange?: (state: State) => void
 }
 
 const GraphicStyle = (props: Props) => {
+  const { currentNode, graph, currentAttrs, setCurrentAttrs, setCurrentNode } = props
+
   const {
-    currentNode,
-    graph,
-    currentAttrs,
-    onChange: handleTextAlign,
-    setCurrentAttrs,
-    setCurrentNode
-  } = props
-  console.log(currentAttrs, 'currentAttrs')
+    textAnchorValue,
+    textVerticalAnchorValue,
+    setTextVerticalAnchorValue,
+    setTextAnchorValue,
+    textLineHeight,
+    setTextLineHeight,
+    textSize,
+    setTextSize
+  } = useSetAttrs(currentNode)
 
-  const { onAttrsChanged, handleTextStyle } = useSetAttrs(currentNode, setCurrentAttrs)
-
-  // const onAttrsChanged = (attrs: State) => {
-  //   this.node.attr({
-  //     ref: attrs,
-  //     hLine: { refY: attrs.refY },
-  //     vLine: { refX: attrs.refX }
-  //   } as any)
-  // }
-
-  const handleAlignmentChange = (value: string) => {
-    // 更新节点文本位置
-
-    console.log(value, 'value')
-
-    onAttrsChanged({
-      refX: 0,
-      refY: 0.5,
-      xAlign: 'left',
-      yAlign: 'middle'
-    })
-  }
-
-  // refX: 0.5,
-  //   refY: 0.5,
-  //   xAlign: 'left',
-  //   yAlign: 'top',
   return (
     <div className="text-xs">
       <div className="border-b p-2 space-y-2">
         <div className="flex w-full h-6 bg-white justify-between items-center border"></div>
         <div className="flex w-full h-6 bg-white justify-between items-center">
-          <p
-            onClick={() => {
-              handleTextAlign({
-                refX: 1,
-                refY: 1,
-                xAlign: 'left',
-                yAlign: 'top'
-              })
-            }}
-          >
-            不透明度
-          </p>
+          <p>不透明度</p>
           <div>
             <InputNumber<number>
               min={1}
@@ -144,18 +109,9 @@ const GraphicStyle = (props: Props) => {
             onChange={(value) => {
               setCurrentAttrs({ ...currentAttrs, x: value })
               currentNode?.setPosition(value!, currentAttrs.y!, {
-                center: true // 取消 centering 选项，避免跳跃
+                center: true
               })
             }}
-            // onBlur={() => {
-            //   if (currentNode) {
-            //     const newX = currentAttrs?.x // 使用最新的 x 值
-            //     const newY = currentAttrs?.y // 使用 y 值
-            //     currentNode.setPosition(newX!, newY!, {
-            //       // center: true
-            //     })
-            //   }
-            // }}
           />
           {currentAttrs?.x}
 
@@ -223,14 +179,10 @@ const GraphicStyle = (props: Props) => {
             className="w-20 h-6"
             prefix={<FontSizeOutlined className="text-xs" />}
             formatter={(value) => `${value}px`}
-            value={currentAttrs?.text?.fontSize as number}
+            value={textSize as number}
             parser={(value) => value?.replace('px', '') as unknown as number}
             onChange={(value) => {
-              setCurrentAttrs((pre: any) => ({
-                ...pre,
-                text: { ...pre.text, fontSize: value as number }
-              }))
-              currentNode?.attr('text/fontSize', value as number)
+              setTextSize(value as number)
             }}
           />
 
@@ -244,125 +196,62 @@ const GraphicStyle = (props: Props) => {
             className="w-20 h-6"
             prefix={<LineHeightOutlined className="text-xs" />}
             formatter={(value) => `${value}px`}
-            value={currentAttrs?.text?.lineHeight as number}
+            value={textLineHeight as number}
+            // value={currentAttrs?.text?.lineHeight as number}
             parser={(value) => value?.replace('px', '') as unknown as number}
             onChange={(value) => {
-              setCurrentAttrs((pre: any) => ({
-                ...pre,
-                text: { ...pre.text, lineHeight: value as number }
-              }))
-              currentNode?.attr('text/lineHeight', value as number)
+              setTextLineHeight(value as number)
+              // setCurrentAttrs((pre: any) => ({
+              //   ...pre,
+              //   text: { ...pre.text, lineHeight: value as number }
+              // }))
+              // currentNode?.attr('text/lineHeight', value as number)
+              // setCurrentAttrs((pre: any) => ({
+              //   ...pre,
+              //   text: { ...pre.text, lineHeight: value as number }
+              // }))
+              // currentNode?.attr('text/lineHeight', value as number)
             }}
           />
         </div>
 
         <div className="flex w-full justify-between items-center  custom-input">
           <Radio.Group
-            defaultValue="a"
+            defaultValue="middle"
             buttonStyle="outline"
             size="small"
-            // onChange={(value) => {
-            //   console.log(value.target.value, '111212112121111')
-            //   handleAlignmentChange(value.target.value)
-
-            // }}
-            onChange={(value) => {
-              const align = value.target.value
-              // console.log(value.target.value, '111212112121111')
-              // setCurrentAttrs((pre: any) => ({
-              //   ...pre,
-              //   text: { ...pre.text, textAlign: align }
-              // }))
-              // currentNode?.attr('text/textAlign', align)
-              // currentNode?.updateAttrs({
-              //   text: {
-              //     textAnchor: 'start', // 左对齐
-              //     textVerticalAnchor: 'middle' // 垂直居中
-              //   }
-              // })
-
-              // 居左
-              // text: {
-              //   refX: 1,
-              //   refY: 0.5,
-              //   textAnchor: 'start'
-              // }
-
-              // 居右边
-              // text: {
-              //   refX: 1,
-              //   refY: 0.5,
-              //   textAnchor: 'end'
-              // }
-
-              // 居中
-              // text: {
-              //   refX: 1,
-              //   refY: 0.5,
-              //   textAnchor: 'middle'
-              // }
-
-              // 150 * 30 = 4500
-
-              // . 调试可能会有其他情况 一星期
-              // 7. 上线 一星期
-              handleTextAlign({
-                refX: 1,
-                refY: 1,
-                xAlign: 'left',
-                yAlign: 'top'
-              })
-
-              // currentNode?.attr({
-              //   // label: {
-              //   //   // textVerticalAnchor: 'middle',
-              //   //   refX: -1,
-              //   //   refY: 0.5,
-              //   //   textAnchor: 'end',
-              //   //   textVerticalAnchor: 'middle'
-              //   // },
-              //   label: {
-              //     refX: -1,
-              //     refY: 0.5,
-              //     textAnchor: 'end',
-              //     textVerticalAnchor: 'middle'
-              //   },
-              //   // text: {
-              //   //   // textVerticalAnchor: 'middle',
-              //   //   refX: 1,
-              //   //   refY: 0.5,
-              //   //   textAnchor: 'end',
-              //   //   textVerticalAnchor: 'middle'
-              //   // },
-              //   vLine: { refX: -1 },
-              //   hLine: { refY: 0.5 }
-              // } as any)
-              console.log(currentNode?.getAttrs(), '111212112121111')
+            value={textAnchorValue}
+            onChange={(e) => {
+              setTextAnchorValue(e.target.value)
             }}
           >
-            <Radio.Button value="left">
+            <Radio.Button value="start">
               <AlignCenterOutlined />
             </Radio.Button>
-            <Radio.Button value="center">
+            <Radio.Button value="middle">
               <AlignLeftOutlined />
             </Radio.Button>
-            <Radio.Button value="right">
+            <Radio.Button value="end">
               <AlignRightOutlined />
             </Radio.Button>
           </Radio.Group>
 
           <Radio.Group
-            defaultValue="a"
+            defaultValue="middle"
             buttonStyle="outline"
             size="small"
+            value={textVerticalAnchorValue}
+            onChange={(e) => {
+              setTextVerticalAnchorValue(e.target.value)
+            }}
           >
-            <Radio.Button value="a">
+            <Radio.Button value="top">
               <VerticalAlignTopOutlined />
             </Radio.Button>
-            <Radio.Button value="b">
+            <Radio.Button value="middle">
               <VerticalAlignMiddleOutlined />
             </Radio.Button>
-            <Radio.Button value="c">
+            <Radio.Button value="bottom">
               <VerticalAlignBottomOutlined />
             </Radio.Button>
           </Radio.Group>

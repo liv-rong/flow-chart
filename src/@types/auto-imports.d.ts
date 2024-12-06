@@ -31,6 +31,7 @@ declare global {
   const lazy: typeof import('react')['lazy']
   const lineHeightOptions: typeof import('../components/FlowChart/types/text')['lineHeightOptions']
   const memo: typeof import('react')['memo']
+  const settings: typeof import('../components/FlowChart/components/settings')['default']
   const startTransition: typeof import('react')['startTransition']
   const useCallback: typeof import('react')['useCallback']
   const useContext: typeof import('react')['useContext']

@@ -5,7 +5,8 @@ import LeftOperate from './components/LeftOperate'
 import RightOperate from './components/RightOperate'
 import mermaid from 'mermaid'
 import type { Props } from 'react-resize-detector/build/types/types'
-import { Settings, type State } from './components/settings'
+import { type State } from './components/settings'
+import Settings from './components/settings'
 
 const commands = [
   {
@@ -81,394 +82,121 @@ flowchart TD
   2-->3[统计分析:对AKT、STAT3、VAL和Vimentin表达与临床病理因素做单因素/多因素分析和预后关联分析,明确临床意义]
 `
 
-const testA = {
-  nodes: [
-    {
-      x: 168.5,
-      y: 83,
-      width: 28,
-      height: 44,
-      label: '1',
-      shape: 'custom-rect',
-      id: '1'
-    },
-    {
-      x: 72.5,
-      y: 247,
-      width: 220,
-      height: 140,
-      label:
-        '100例AKT持续激活特征的肺腺癌前瞻性研究:新鲜组织标本配对癌旁组织及血浆检测其中STAT3、VAL和Vimentin表达',
-      shape: 'custom-rect',
-      id: '2'
-    },
-    {
-      x: 72.5,
-      y: 459,
-      width: 220,
-      height: 140,
-      label:
-        '统计分析:对AKT、STAT3、VAL和Vimentin表达与临床病理因素做单因素/多因素分析和预后关联分析,明确临床意义',
-
-      shape: 'custom-rect',
-
-      id: '3'
-    },
-    {
-      x: 423.5,
-      y: 59,
-      width: 220,
-      height: 92,
-      label: '阐明VAL竞争性结合Vimentin调控Trim16介导泛素化的分子机制',
-
-      shape: 'custom-rect',
-
-      id: 'A'
-    },
-    {
-      x: 444,
-      y: 247,
-      width: 179,
-      height: 44,
-      label: 'VAL-Vimentin结合位点',
-      shape: 'custom-rect',
-
-      id: 'B'
-    },
-    {
-      x: 427.5,
-      y: 365,
-      width: 212,
-      height: 44,
-      label: '构建三种分段截短突变载体',
-
-      shape: 'custom-rect',
-
-      id: 'C'
-    },
-    {
-      x: 426.5,
-      y: 531,
-      width: 214,
-      height: 44,
-      label: 'RNA pulldown验证交互位点',
-
-      shape: 'custom-rect',
-
-      id: 'D'
-    },
-    {
-      x: 423.5,
-      y: 627,
-      width: 220,
-      height: 68,
-      label: 'AVAL影响Vimentin表达及转移',
-      visible: true,
-      shape: 'custom-rect',
-
-      id: 'E'
-    },
-    {
-      x: 435,
-      y: 751,
-      width: 197,
-      height: 44,
-      label: '构建结合失活突变体AVAL',
-      visible: true,
-      shape: 'custom-rect',
-
-      id: 'F'
-    },
-    {
-      x: 292.5,
-      y: 857,
-      width: 213,
-      height: 44,
-      label: 'AVAL对Vimentin泛素化调控',
-
-      shape: 'custom-rect',
-
-      id: 'G'
-    },
-    {
-      x: 623,
-      y: 1387,
-      width: 220,
-      height: 68,
-      label: '验证AVAL与VAL调控Vimentin蛋白表达的差异',
-
-      shape: 'custom-rect',
-
-      id: 'H'
-    },
-    {
-      x: 289,
-      y: 955,
-      width: 220,
-      height: 92,
-      label: 'MG132抑制剂处理观察AVAL与VAL调节Vimentin表达能力',
-
-      shape: 'custom-rect',
-
-      id: 'I'
-    },
-    {
-      x: 289,
-      y: 1127,
-      width: 220,
-      height: 92,
-      label: 'CHX抑制剂处理观察AVAL与VAL影响Vimentin蛋白半衰期',
-
-      shape: 'custom-rect',
-
-      id: 'J'
-    },
-    {
-      x: 296,
-      y: 1275,
-      width: 206,
-      height: 44,
-      label: '.检测K48和K63泛素化水平',
-
-      shape: 'custom-rect',
-
-      id: 'K'
-    },
-    {
-      x: 289,
-      y: 1363,
-      width: 220,
-      height: 92,
-      label: '.Trim16过表达条件下重复上述a/b/c三个泛素化相关实验',
-
-      shape: 'custom-rect',
-
-      id: 'L'
-    },
-    {
-      x: 460,
-      y: 1520,
-      width: 220,
-      height: 68,
-      label: 'AVAL对Vimentin-Trim16结合的竞争性效应',
-
-      shape: 'custom-rect',
-      id: 'M'
-    },
-    {
-      x: 289,
-      y: 1641,
-      width: 220,
-      height: 68,
-      label: 'AVAL与VAL处理co-IP比较Trim16与Vimentin结合效应',
-
-      shape: 'custom-rect',
-
-      id: 'N'
-    },
-    {
-      x: 623,
-      y: 1651,
-      width: 220,
-      height: 68,
-      label: 'AVAL与VAL处理co-IP比较Trim16与Vimentin结合效',
-
-      shape: 'custom-rect',
-
-      id: 'P'
-    },
-    {
-      x: 754,
-      y: 59,
-      width: 220,
-      height: 68,
-      label: '2.在体水平验证VAL结合Vimentin调控肺脉癌转移',
-
-      shape: 'custom-rect',
-
-      id: 'R'
-    },
-    {
-      x: 754,
-      y: 235,
-      width: 220,
-      height: 68,
-      label: '构建VAL和AVAL过表达的肺腺癌稳转细胞株',
-
-      shape: 'custom-rect',
-
-      id: 'S'
-    },
-    {
-      x: 754,
-      y: 435,
-      width: 220,
-      height: 68,
-      label: '尾静脉注射肺转移模型验证VAL及AVAL功能',
-
-      shape: 'custom-rect',
-
-      id: 'T'
-    },
-    {
-      x: 754,
-      y: 599,
-      width: 220,
-      height: 68,
-      label: '心脏注射肺腺癌骨转移模型验证VAL及AVAL功能',
-
-      shape: 'custom-rect',
-
-      id: 'W'
-    },
-    {
-      x: 754,
-      y: 727,
-      width: 220,
-      height: 68,
-      label: 'VAL与Trim16存在竞争性效应的在体实验',
-
-      shape: 'custom-rect',
-
-      id: 'X'
-    },
-    {
-      x: 1064,
-      y: 59,
-      width: 220,
-      height: 68,
-      label: 'AKTVimentin信号轴在肺腺癌转移中的临床意义',
-
-      shape: 'custom-rect',
-
-      id: 'Y'
-    },
-    {
-      x: 1064,
-      y: 235,
-      width: 220,
-      height: 92,
-      label: '200例肺腺癌患者肿瘤组织进行回顾性研究,qPCR、WB和IH检',
-      visible: true,
-      shape: 'custom-rect',
-
-      id: 'Z'
-    }
-  ],
-  edges: [
-    {
-      source: 'A',
-      target: 'B'
-    },
-    {
-      source: 'B',
-      target: 'C'
-    },
-    {
-      source: 'C',
-      target: 'D'
-    },
-    {
-      source: 'D',
-      target: 'E'
-    },
-    {
-      source: 'E',
-      target: 'F'
-    },
-    {
-      source: 'F',
-      target: 'G'
-    },
-    {
-      source: 'F',
-      target: 'H'
-    },
-    {
-      source: 'G',
-      target: 'I'
-    },
-    {
-      source: 'I',
-      target: 'J'
-    },
-    {
-      source: 'J',
-      target: 'K'
-    },
-    {
-      source: 'K',
-      target: 'L'
-    },
-    {
-      source: 'L',
-      target: 'M'
-    },
-    {
-      source: 'H',
-      target: 'M'
-    },
-    {
-      source: 'M',
-      target: 'N'
-    },
-    {
-      source: 'M',
-      target: 'P'
-    },
-    {
-      source: 'R',
-      target: 'S'
-    },
-    {
-      source: 'S',
-      target: 'T'
-    },
-    {
-      source: 'T',
-      target: 'W'
-    },
-    {
-      source: 'W',
-      target: 'X'
-    },
-    {
-      source: 'Y',
-      target: 'Z'
-    },
-    {
-      source: '1',
-      target: '2'
-    },
-    {
-      source: '2',
-      target: '3'
-    }
-  ]
-}
-
 const lungCancerResearch = {
   nodes: [
     {
       x: 0,
       y: 60,
-      width: 200,
+      width: 600,
       height: 100,
-      label: '实验目的 - 研究lncRNA VAL与Vimentin的相互作用及其在肺腺癌转移中的作用机制。',
-      shape: 'custom-rect',
+      label: '实验目的 - 研究lncRNA VAL与Vimentin结合对Trim16介导的泛素化作用的调控机制。',
+      shape: 'ellipse',
       id: '实验目的'
     },
     {
       x: 0,
-      y: 120,
-      width: 200,
+      y: 280,
+      width: 600,
       height: 100,
-      label: '实验目的 - 在肺腺癌转移中的作用机制。',
-      shape: 'custom-rect',
-      id: '实验目的1'
+      label: '药物机制 - VAL通过竞争性结合Vimentin，影响其泛素化及相关信号通路。',
+      shape: 'rect',
+      id: '药物机制'
+    },
+    {
+      x: 0,
+      y: 500,
+      width: 600,
+      height: 100,
+      label: '功能原理 - VAL调控Vimentin表达，进而影响肺腺癌细胞的侵袭与转移能力。',
+      shape: 'rect',
+      id: '功能原理'
+    },
+    {
+      x: 0,
+      y: 720,
+      width: 600,
+      height: 100,
+      label: '临床意义 - VAL和Vimentin的关系可能成为肺腺癌转移的生物标志物。',
+      shape: 'rect',
+      id: '临床意义'
+    },
+    {
+      x: 0,
+      y: 940,
+      width: 600,
+      height: 100,
+      label:
+        '数据分析 - qPCR、WB和IHC检测VAL、Vimentin、AKT和STAT3的表达，分析其与肺腺癌转移的相关性。',
+      shape: 'rect',
+      id: '数据分析'
+    },
+    {
+      x: 0,
+      y: 1160,
+      width: 600,
+      height: 100,
+      label: '实验结论 - VAL通过影响Vimentin和Trim16的交互作用，调控肺腺癌转移。',
+      shape: 'rect',
+      id: '实验结论'
+    },
+    {
+      x: 0,
+      y: 1380,
+      width: 600,
+      height: 100,
+      label: '临床标记 - 统计分析表明AKT、STAT3、VAL和Vimentin的表达与患者生存率和转移事件相关。',
+      shape: 'ellipse',
+      id: '临床标记'
+    },
+    {
+      x: 650,
+      y: 500,
+      width: 600,
+      height: 100,
+      label: 'VAL促进细胞迁移',
+      shape: 'rect',
+      id: 'VAL促进细胞迁移'
+    },
+    {
+      x: -650,
+      y: 500,
+      width: 600,
+      height: 100,
+      label: 'ΔVAL抑制迁移',
+      shape: 'rect',
+      id: 'ΔVAL抑制迁移'
+    },
+    {
+      x: 650,
+      y: 1160,
+      width: 600,
+      height: 100,
+      label: 'AKT/STAT3信号轴可能介导此过程',
+      shape: 'rect',
+      id: 'AKT/STAT3信号轴'
+    },
+    {
+      x: -650,
+      y: 1160,
+      width: 600,
+      height: 100,
+      label: '临床案例支持其作为潜在治疗靶点',
+      shape: 'rect',
+      id: '临床案例支持'
     }
   ],
-  edges: []
+  edges: [
+    { source: '实验目的', target: '药物机制' },
+    { source: '药物机制', target: '功能原理' },
+    { source: '功能原理', target: '临床意义' },
+    { source: '临床意义', target: '数据分析' },
+    { source: '数据分析', target: '实验结论' },
+    { source: '实验结论', target: '临床标记' },
+    { source: '功能原理', target: 'VAL促进细胞迁移' },
+    { source: '功能原理', target: 'ΔVAL抑制迁移' },
+    { source: '实验结论', target: 'AKT/STAT3信号轴' },
+    { source: '实验结论', target: '临床案例支持' }
+  ]
 }
 
 function FlowChart(props: Props) {

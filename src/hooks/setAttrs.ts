@@ -1,36 +1,124 @@
 import { Node } from '@antv/x6'
-export interface State {
+
+export interface StateTextAlign {
   refX: number
   refY: number
-  xAlign?: string
-  yAlign?: string
+  textAnchor?: string
+  textVerticalAnchor?: string
 }
 
-export const useSetAttrs = (
-  node: Node<Node.Properties> | null,
-  setCurrentAttrs: React.Dispatch<React.SetStateAction<{ [x: string]: any } | null>>
-) => {
-  const onAttrsChanged = (attrs: State) => {
-    console.log('onAttrsChanged', node)
-    node?.updateAttrs({
-      ref: attrs,
-      hLine: { refY: attrs.refY },
-      vLine: { refX: attrs.refX }
+export type TextAnchorType = 'start' | 'middle' | 'end'
+export type TextVerticalAnchorType = 'top' | 'middle' | 'bottom'
+
+export const useSetAttrs = (node: Node<Node.Properties> | null) => {
+  const [textAnchorValue, setTextAnchorValue] = useState<TextAnchorType>('middle')
+
+  const [textVerticalAnchorValue, setTextVerticalAnchorValue] =
+    useState<TextVerticalAnchorType>('middle')
+
+  const [textSize, setTextSize] = useState<number>(node?.attr('text/textSize') || 12)
+
+  const [textLineHeight, setTextLineHeight] = useState<number>(node?.attr('text/lineHeight') || 12)
+
+  const handleTextAlign = () => {
+    const resTextAlign: StateTextAlign = {
+      textAnchor: textAnchorValue,
+      textVerticalAnchor: textVerticalAnchorValue,
+      refX: 0.5,
+      refY: 0.5
+    }
+    if (textAnchorValue === 'middle') {
+      if (textVerticalAnchorValue === 'top') {
+        resTextAlign.refX = 0.5
+        resTextAlign.refY = 0
+      }
+      if (textVerticalAnchorValue === 'middle') {
+        resTextAlign.refX = 0.5
+        resTextAlign.refY = 0.5
+      }
+      if (textVerticalAnchorValue === 'bottom') {
+        resTextAlign.refX = 0.5
+        resTextAlign.refY = 0.99
+      }
+    }
+
+    if (textAnchorValue === 'start') {
+      if (textVerticalAnchorValue === 'top') {
+        resTextAlign.refX = 0
+        resTextAlign.refY = 0
+      }
+      if (textVerticalAnchorValue === 'middle') {
+        resTextAlign.refX = 0
+        resTextAlign.refY = 0.5
+      }
+      if (textVerticalAnchorValue === 'bottom') {
+        resTextAlign.refX = 0
+        resTextAlign.refY = 0.99
+      }
+    }
+
+    if (textAnchorValue === 'end') {
+      if (textVerticalAnchorValue === 'top') {
+        resTextAlign.refX = 0.99
+        resTextAlign.refY = 0
+      }
+
+      if (textVerticalAnchorValue === 'middle') {
+        resTextAlign.refX = 0.99
+        resTextAlign.refY = 0.5
+      }
+
+      if (textVerticalAnchorValue === 'bottom') {
+        resTextAlign.refX = 0.99
+        resTextAlign.refY = 0.99
+      }
+    }
+
+    console.log('resTextAlign', resTextAlign)
+    node?.attr({
+      label: resTextAlign,
+      hLine: { refY: resTextAlign.refY },
+      vLine: { refX: resTextAlign.refX }
     } as any)
   }
 
-  const handleTextStyle = (textProps: { [key: string]: any }) => {
-    console.log('handleTextStyle', textProps)
-    // if (!textProps) return
-    if (!textProps) return
-    setCurrentAttrs((prev) => ({ ...prev, label: { ...prev?.label, ...textProps } }))
-    // node?.updateAttrs({
-    //   label: {
-    //     ...,
-    //     ...textProps
-    //   }
-    // })
-    // node?.attr('label/fontStyle', textProps.fontStyle)
+  useEffect(() => {
+    handleTextAlign()
+  }, [textAnchorValue, textVerticalAnchorValue])
+
+  useEffect(() => {
+    console.log(node?.getAttrs().text)
+    if (node) {
+      node.attr({
+        text: {
+          // lineHeight: textLineHeight,
+          fontSize: textSize
+        }
+      })
+      handleTextAlign()
+    }
+  }, [textSize])
+
+  // useEffect(() => {
+  //   if (node) {
+  //     node.attr({
+  //       label: {
+  //         fontSize: textSize
+  //       }
+  //     })
+  //     handleTextAlign()
+  //   }
+  // }, [textSize])
+
+  return {
+    textAnchorValue,
+    textVerticalAnchorValue,
+    handleTextAlign,
+    setTextVerticalAnchorValue,
+    setTextAnchorValue,
+    textLineHeight,
+    setTextLineHeight,
+    textSize,
+    setTextSize
   }
-  return { onAttrsChanged, handleTextStyle }
 }
