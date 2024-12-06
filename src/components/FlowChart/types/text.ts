@@ -17,3 +17,8 @@ export const lineHeightOptions = [
   { value: 2.5, label: '2.5' },
   { value: 3.0, label: '3.0' }
 ]
+
+export const borderOptions = [
+  { value: '0', label: '实线' },
+  { value: '5,5', label: '虚线' }
+]

@@ -24,6 +24,7 @@ declare global {
   const Routes: typeof import('react-router-dom')['Routes']
   const Settings: typeof import('../components/FlowChart/components/settings')['Settings']
   const Suspense: typeof import('react')['Suspense']
+  const borderOptions: typeof import('../components/FlowChart/types/text')['borderOptions']
   const classNames: typeof import('classnames')['default']
   const createRef: typeof import('react')['createRef']
   const fontFamilyOptions: typeof import('../components/FlowChart/types/text')['fontFamilyOptions']
@@ -66,6 +67,9 @@ declare global {
 }
 // for type re-export
 declare global {
+  // @ts-ignore
+  export type { Settings } from '../components/FlowChart/components/settings'
+  import('../components/FlowChart/components/settings')
   // @ts-ignore
   export type { ChartUtils, ChartUtils } from '../utils/chart'
   import('../utils/chart')

@@ -3,9 +3,11 @@ import react from '@vitejs/plugin-react-swc'
 import { fileURLToPath, URL } from 'node:url'
 import AutoImport from 'unplugin-auto-import/vite'
 import ViteCompression from 'vite-plugin-compression'
+import svgr from 'vite-plugin-svgr'
 
 export default defineConfig({
   plugins: [
+    svgr({ svgrOptions: { icon: true } }),
     react(),
     AutoImport({
       imports: [

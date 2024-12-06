@@ -343,7 +343,7 @@ export const useFlowChart = () => {
     })
 
     graph.on('node:mouseup', ({ cell, x, y }) => {
-      console.log('Node placed: mouseup', cell, x, y)
+      // console.log('Node placed: mouseup', cell, x, y)
       // if (cell.id) {
       //   cell.position(x, y) // 更新节点位置
       // }

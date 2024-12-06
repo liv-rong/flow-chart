@@ -18,12 +18,13 @@ export const useSetAttrs = (node: Node<Node.Properties> | null) => {
 
   const [textSize, setTextSize] = useState<number>()
 
-  const [textLineHeight, setTextLineHeight] = useState<number>(node?.attr('text/lineHeight') || 1.0)
+  const [textLineHeight, setTextLineHeight] = useState<number>()
+
+  const [opacityValue, setOpacityValue] = useState<number>(1.0)
+
+  const [widthValue, seTWidthValue] = useState<number | string>()
 
   const handleTextAlign = () => {
-    console.log('textAnchorValue', textAnchorValue)
-    console.log('textVerticalAnchorValue', textVerticalAnchorValue)
-
     const resTextAlign: StateTextAlign = {
       textAnchor: textAnchorValue,
       textVerticalAnchor: textVerticalAnchorValue,
@@ -89,8 +90,16 @@ export const useSetAttrs = (node: Node<Node.Properties> | null) => {
   }, [textAnchorValue, textVerticalAnchorValue])
 
   useEffect(() => {
-    handleTextAlign()
-    const textSize = node?.getAttrs().text.fontSize as number
+    const textAnchorValue = (node?.getAttrs()?.label?.textAnchor ?? 'middle') as TextAnchorType
+    const textVerticalAnchorValue = (node?.getAttrs()?.label?.textVerticalAnchor ??
+      'middle') as TextVerticalAnchorType
+    setTextAnchorValue(textAnchorValue)
+    setTextVerticalAnchorValue(textVerticalAnchorValue)
+
+    const setOpacity = (node?.getAttrs()?.body?.opacity ?? 1) as number
+    setOpacityValue(setOpacity * 100)
+
+    const textSize = (node?.getAttrs().text.fontSize ?? 12) as number
     const textLineHeight = (node?.getAttrs().text.lineHeight ?? textSize) as number
     setTextSize(textSize)
     setTextLineHeight(textLineHeight / textSize)
@@ -105,6 +114,10 @@ export const useSetAttrs = (node: Node<Node.Properties> | null) => {
     textSize,
     setTextSize,
     textLineHeight,
-    setTextLineHeight
+    setTextLineHeight,
+    opacityValue,
+    setOpacityValue,
+    widthValue,
+    seTWidthValue
   }
 }

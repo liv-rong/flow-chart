@@ -1,4 +1,4 @@
-import {
+import Icon, {
   AlignCenterOutlined,
   AlignLeftOutlined,
   AlignRightOutlined,
@@ -12,38 +12,18 @@ import {
   VerticalAlignMiddleOutlined,
   VerticalAlignTopOutlined
 } from '@ant-design/icons'
-import { Node, type Graph } from '@antv/x6'
-import { Button, ColorPicker, InputNumber, Radio, Select } from 'antd'
+import { Node } from '@antv/x6'
+import { Button, ColorPicker, InputNumber, Radio, Select, Tooltip } from 'antd'
 import { useSetAttrs } from '@/hooks'
-import { fontWeight } from 'html2canvas/dist/types/css/property-descriptors/font-weight'
-import { Console } from 'console'
-import { fontFamilyOptions, lineHeightOptions } from '../../types'
-import type { State } from '../settings'
-
-// export const useSetAttrs = () => {
-//   const onAttrsChanged = (attrs: State, node: Node<Node.Properties> | null) => {
-//     node?.attr({
-//       ref: attrs,
-//       hLine: { refY: attrs.refY },
-//       vLine: { refX: attrs.refX }
-//     } as any)
-//   }
-//   return { onAttrsChanged }
-// }
-
-// export interface Props {}
+import { borderOptions, fontFamilyOptions, lineHeightOptions } from '../../types'
+import { rotateSvg, flipSvg } from '@/assets/svg'
 
 interface Props {
   currentNode: Node<Node.Properties> | null
-  currentAttrs: any
-  setCurrentAttrs: React.Dispatch<React.SetStateAction<{ [x: string]: any } | null>>
-  setCurrentNode: any
-  graph: Graph | null
-  onChange?: (state: State) => void
 }
 
 const GraphicStyle = (props: Props) => {
-  const { currentNode, graph, currentAttrs, setCurrentAttrs, setCurrentNode } = props
+  const { currentNode } = props
 
   const {
     textAnchorValue,
@@ -53,7 +33,10 @@ const GraphicStyle = (props: Props) => {
     textSize,
     setTextSize,
     textLineHeight,
-    setTextLineHeight
+    setTextLineHeight,
+    opacityValue,
+    setOpacityValue,
+    seTWidthValue
   } = useSetAttrs(currentNode)
 
   return (
@@ -64,11 +47,19 @@ const GraphicStyle = (props: Props) => {
           <p>不透明度</p>
           <div>
             <InputNumber<number>
-              min={1}
+              min={0}
               max={100}
-              defaultValue={3}
-              // value={currentAttrs}
+              changeOnWheel
+              defaultValue={100}
+              value={opacityValue}
               size="small"
+              step={5}
+              onChange={(value) => {
+                const resOpacityValue = value ?? 100
+                setOpacityValue(resOpacityValue)
+                currentNode?.attr('body/opacity', resOpacityValue / 100)
+                currentNode?.attr('text/opacity', resOpacityValue / 100)
+              }}
               className="w-20 h-6"
               formatter={(value) => `${value}%`}
               parser={(value) => value?.replace('%', '') as unknown as number}
@@ -81,55 +72,101 @@ const GraphicStyle = (props: Props) => {
         <p className="text-xs font-bold">布局</p>
         <div className="flex w-full justify-between items-center custom-input">
           <InputNumber<number>
-            defaultValue={3}
             size="small"
             className="w-20 h-6"
             suffix="w"
             type="number"
-            value={currentAttrs?.body?.refHeight}
+            step={1}
+            value={currentNode?.getSize()?.width}
+            onChange={(value) => {
+              seTWidthValue(value ?? 100)
+              currentNode?.setSize(value ?? 100, currentNode?.getSize()?.height)
+            }}
           />
 
           <InputNumber<number>
-            defaultValue={3}
             size="small"
             className="w-20 h-6"
             suffix="H"
             type="number"
-            value={currentAttrs?.body?.refHeight}
+            step={1}
+            value={currentNode?.getSize()?.height}
+            onChange={(value) => {
+              seTWidthValue(value ?? 100)
+              currentNode?.setSize(currentNode?.getSize()?.width, value ?? 100)
+            }}
           />
         </div>
         <div className="flex w-full justify-between items-center  custom-input">
           <InputNumber<number>
-            defaultValue={3}
             size="small"
             className="w-20 h-6"
             suffix="x"
             type="number"
-            value={currentAttrs?.x}
+            value={currentNode?.getPosition()?.x}
             onChange={(value) => {
-              setCurrentAttrs({ ...currentAttrs, x: value })
-              currentNode?.setPosition(value!, currentAttrs.y!, {
-                center: true
-              })
+              seTWidthValue(value ?? 100)
+              const { x, y } = currentNode?.getPosition() ?? { x: 0, y: 0 }
+              currentNode?.setPosition(value ?? x, y)
             }}
           />
-          {currentAttrs?.x}
 
           <InputNumber<number>
-            defaultValue={3}
             size="small"
             className="w-20 h-6"
             suffix="y"
             type="number"
+            value={currentNode?.getPosition()?.y}
+            onChange={(value) => {
+              seTWidthValue(value ?? 100)
+              const { x, y } = currentNode?.getPosition() ?? { x: 0, y: 0 }
+              currentNode?.setPosition(x, value ?? y)
+            }}
           />
         </div>
         <div className="flex w-full justify-between items-center  custom-input">
           <InputNumber<number>
-            defaultValue={3}
+            min={0}
+            max={360}
+            defaultValue={0}
+            value={currentNode?.getAngle()}
+            suffix={<Icon component={rotateSvg} />}
+            changeOnWheel
             size="small"
+            onChange={(value) => {
+              seTWidthValue(value ?? 100)
+              currentNode?.rotate(value ?? 0, { absolute: true })
+            }}
             className="w-20 h-6"
-            type="number"
+            formatter={(value) => `${value}°`}
+            parser={(value) => value?.replace('°', '') as unknown as number}
           />
+          <div className="space-x-2">
+            <Tooltip title="垂直翻转">
+              <Button
+                size="small"
+                icon={<Icon component={flipSvg} />}
+                onClick={() => {
+                  currentNode?.rotate(0, { absolute: true })
+                }}
+              />
+            </Tooltip>
+
+            <Tooltip title="水平翻转">
+              <Button
+                size="small"
+                icon={
+                  <Icon
+                    className="rotate-90"
+                    component={flipSvg}
+                  />
+                }
+                onClick={() => {
+                  currentNode?.rotate(90, { absolute: true })
+                }}
+              />
+            </Tooltip>
+          </div>
         </div>
       </div>
 
@@ -143,10 +180,6 @@ const GraphicStyle = (props: Props) => {
             className="w-32 h-6"
             onChange={(value) => {
               currentNode?.attr('text/fontFamily', value)
-              setCurrentAttrs((pre: any) => ({
-                ...pre,
-                text: { ...pre.text, fontFamily: value }
-              }))
             }}
             value={
               (currentNode?.getAttrs()?.text?.fontFamily as string) ===
@@ -158,15 +191,12 @@ const GraphicStyle = (props: Props) => {
           />
           <ColorPicker
             defaultValue="#1677ff"
-            value={currentAttrs?.text?.fill}
             className="h-6 w-6 !border-0"
             onChange={(color) => {
-              setCurrentAttrs((pre: any) => ({
-                ...pre,
-                text: { ...pre.text, fill: color.toHexString() }
-              }))
+              seTWidthValue(color.toHexString())
               currentNode?.attr('text/fill', color.toHexString())
             }}
+            value={currentNode?.getAttrs()?.text?.fill as string}
           />
         </div>
 
@@ -185,13 +215,12 @@ const GraphicStyle = (props: Props) => {
               setTextSize(value as number)
               currentNode?.attr({
                 text: {
-                  fontSize: textSize,
-                  lineHeight: textSize * textLineHeight
+                  fontSize: textSize ?? 12,
+                  lineHeight: (textSize ?? 12) * (textLineHeight ?? 1)
                 }
               })
             }}
           />
-          {currentNode?.getAttrs()?.text?.fontSize as number}
           <Select
             defaultValue={1}
             size="small"
@@ -201,8 +230,8 @@ const GraphicStyle = (props: Props) => {
               setTextLineHeight(value)
               currentNode?.attr({
                 text: {
-                  fontSize: textSize,
-                  lineHeight: textSize * value
+                  fontSize: textSize ?? 12,
+                  lineHeight: (textSize ?? 12) * value
                 }
               })
             }}
@@ -261,12 +290,9 @@ const GraphicStyle = (props: Props) => {
                 const value =
                   currentNode?.getAttrs()?.text?.fontWeight === 'bold' ? 'normal' : 'bold'
                 currentNode?.attr('text/fontWeight', value)
-                setCurrentAttrs((prev) => ({
-                  ...prev,
-                  text: { ...prev?.text, fontWeight: value }
-                }))
+                seTWidthValue(value)
               }}
-              type={currentAttrs?.text?.fontWeight === 'bold' ? 'primary' : 'default'}
+              type={currentNode?.getAttrs()?.text?.fontWeight === 'bold' ? 'primary' : 'default'}
             >
               <BoldOutlined />
             </Button>
@@ -276,12 +302,9 @@ const GraphicStyle = (props: Props) => {
                 const value =
                   currentNode?.getAttrs()?.text?.fontStyle === 'italic' ? 'none' : 'italic'
                 currentNode?.attr('text/fontStyle', value)
-                setCurrentAttrs((prev) => ({
-                  ...prev,
-                  text: { ...prev?.text, fontStyle: value }
-                }))
+                seTWidthValue(value)
               }}
-              type={currentAttrs?.text?.fontStyle === 'italic' ? 'primary' : 'default'}
+              type={currentNode?.getAttrs()?.text?.fontStyle === 'italic' ? 'primary' : 'default'}
             >
               <ItalicOutlined />
             </Button>
@@ -293,12 +316,13 @@ const GraphicStyle = (props: Props) => {
                     ? 'none'
                     : 'underline'
                 currentNode?.attr('text/textDecoration', value)
-                setCurrentAttrs((prev) => ({
-                  ...prev,
-                  text: { ...prev?.text, textDecoration: value }
-                }))
+                seTWidthValue(value)
               }}
-              type={currentAttrs?.text?.textDecoration === 'underline' ? 'primary' : 'default'}
+              type={
+                currentNode?.getAttrs()?.text?.textDecoration === 'underline'
+                  ? 'primary'
+                  : 'default'
+              }
             >
               <UnderlineOutlined />
             </Button>
@@ -310,12 +334,13 @@ const GraphicStyle = (props: Props) => {
                     ? 'none'
                     : 'line-through'
                 currentNode?.attr('text/textDecoration', value)
-                setCurrentAttrs((prev) => ({
-                  ...prev,
-                  text: { ...prev?.text, textDecoration: value }
-                }))
+                seTWidthValue(value)
               }}
-              type={currentAttrs?.text?.textDecoration === 'line-through' ? 'primary' : 'default'}
+              type={
+                currentNode?.getAttrs()?.text?.textDecoration === 'line-through'
+                  ? 'primary'
+                  : 'default'
+              }
             >
               <StrikethroughOutlined />
             </Button>
@@ -328,15 +353,58 @@ const GraphicStyle = (props: Props) => {
         <div className="flex w-full justify-between items-center custom-input">
           <ColorPicker
             defaultValue="#1677ff"
-            value={currentAttrs?.body?.fill as string}
             className="h-6 w-6 !border-0"
             onChange={(color) => {
-              setCurrentAttrs({
-                ...currentAttrs,
-                body: { ...currentAttrs?.body, fill: color.toHexString() }
-              })
+              seTWidthValue(color.toHexString())
               currentNode?.attr('body/fill', color.toHexString())
             }}
+            value={currentNode?.getAttrs()?.body?.fill as string}
+          />
+        </div>
+      </div>
+
+      <div className="border-b  p-2 space-y-2">
+        <p className="text-xs font-bold">线条</p>
+        <div className="flex w-full justify-between items-center custom-input">
+          <Select
+            size="small"
+            className="w-32 h-6"
+            onChange={(value) => {
+              seTWidthValue(value)
+              currentNode?.attr('body/strokeDasharray', value)
+              console.log(currentNode?.getAttrs())
+            }}
+            value={(currentNode?.getAttrs()?.body?.strokeDasharray ?? '0') as string}
+            options={borderOptions}
+          />
+          <ColorPicker
+            defaultValue="#1677ff"
+            className="h-6 w-6 !border-0"
+            onChange={(color) => {
+              seTWidthValue(color.toHexString())
+              currentNode?.attr('body/stroke', color.toHexString())
+              console.log(currentNode?.getAttrs())
+            }}
+            value={currentNode?.getAttrs()?.body?.stroke as string}
+          />
+        </div>
+
+        <div className="flex w-full justify-between items-center custom-input">
+          <InputNumber<number>
+            min={0}
+            max={10}
+            changeOnWheel
+            defaultValue={10}
+            value={currentNode?.getAttrs()?.body?.strokeWidth as number}
+            size="small"
+            onChange={(value) => {
+              const resStrokeWidthValue = value ?? 1
+              seTWidthValue(resStrokeWidthValue)
+              currentNode?.attr('body/strokeWidth', resStrokeWidthValue)
+            }}
+            className="w-20 h-6"
+            formatter={(value) => `${value}px`}
+            parser={(value) => value?.replace('px', '') as unknown as number}
           />
         </div>
       </div>
