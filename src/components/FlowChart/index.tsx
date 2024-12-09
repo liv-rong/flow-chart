@@ -3,7 +3,6 @@ import Header from '../common/Header'
 import LeftOperate from './components/LeftOperate'
 import RightOperate from './components/RightOperate'
 import mermaid from 'mermaid'
-import type { Props } from 'react-resize-detector/build/types/types'
 
 const commands = [
   {
@@ -79,131 +78,12 @@ flowchart TD
   2-->3[统计分析:对AKT、STAT3、VAL和Vimentin表达与临床病理因素做单因素/多因素分析和预后关联分析,明确临床意义]
 `
 
-const lungCancerResearch = {
-  nodes: [
-    {
-      x: 0,
-      y: 60,
-      width: 600,
-      height: 100,
-      label: '实验目的 - 研究lncRNA VAL与Vimentin结合对Trim16介导的泛素化作用的调控机制。',
-      shape: 'ellipse',
-      id: '实验目的'
-    },
-    {
-      x: 0,
-      y: 280,
-      width: 600,
-      height: 100,
-      label: '药物机制 - VAL通过竞争性结合Vimentin，影响其泛素化及相关信号通路。',
-      shape: 'rect',
-      id: '药物机制'
-    },
-    {
-      x: 0,
-      y: 500,
-      width: 600,
-      height: 100,
-      label: '功能原理 - VAL调控Vimentin表达，进而影响肺腺癌细胞的侵袭与转移能力。',
-      shape: 'rect',
-      id: '功能原理'
-    },
-    {
-      x: 0,
-      y: 720,
-      width: 600,
-      height: 100,
-      label: '临床意义 - VAL和Vimentin的关系可能成为肺腺癌转移的生物标志物。',
-      shape: 'rect',
-      id: '临床意义'
-    },
-    {
-      x: 0,
-      y: 940,
-      width: 600,
-      height: 100,
-      label:
-        '数据分析 - qPCR、WB和IHC检测VAL、Vimentin、AKT和STAT3的表达，分析其与肺腺癌转移的相关性。',
-      shape: 'rect',
-      id: '数据分析'
-    },
-    {
-      x: 0,
-      y: 1160,
-      width: 600,
-      height: 100,
-      label: '实验结论 - VAL通过影响Vimentin和Trim16的交互作用，调控肺腺癌转移。',
-      shape: 'rect',
-      id: '实验结论'
-    },
-    {
-      x: 0,
-      y: 1380,
-      width: 600,
-      height: 100,
-      label: '临床标记 - 统计分析表明AKT、STAT3、VAL和Vimentin的表达与患者生存率和转移事件相关。',
-      shape: 'ellipse',
-      id: '临床标记'
-    },
-    {
-      x: 650,
-      y: 500,
-      width: 600,
-      height: 100,
-      label: 'VAL促进细胞迁移',
-      shape: 'rect',
-      id: 'VAL促进细胞迁移'
-    },
-    {
-      x: -650,
-      y: 500,
-      width: 600,
-      height: 100,
-      label: 'ΔVAL抑制迁移',
-      shape: 'rect',
-      id: 'ΔVAL抑制迁移'
-    },
-    {
-      x: 650,
-      y: 1160,
-      width: 600,
-      height: 100,
-      label: 'AKT/STAT3信号轴可能介导此过程',
-      shape: 'rect',
-      id: 'AKT/STAT3信号轴'
-    },
-    {
-      x: -650,
-      y: 1160,
-      width: 600,
-      height: 100,
-      label: '临床案例支持其作为潜在治疗靶点',
-      shape: 'rect',
-      id: '临床案例支持'
-    }
-  ],
-  edges: [
-    { source: '实验目的', target: '药物机制' },
-    { source: '药物机制', target: '功能原理' },
-    { source: '功能原理', target: '临床意义' },
-    { source: '临床意义', target: '数据分析' },
-    { source: '数据分析', target: '实验结论' },
-    { source: '实验结论', target: '临床标记' },
-    { source: '功能原理', target: 'VAL促进细胞迁移' },
-    { source: '功能原理', target: 'ΔVAL抑制迁移' },
-    { source: '实验结论', target: 'AKT/STAT3信号轴' },
-    { source: '实验结论', target: '临床案例支持' }
-  ]
-}
-
-function FlowChart(props: Props) {
+function FlowChart() {
   const {
     initGraph,
     handleZoom,
     refContainer: customRefContainer,
     currentNode,
-    currentAttrs,
-    setCurrentAttrs,
     setCurrentNode,
     refStencil,
     graph
@@ -218,41 +98,113 @@ function FlowChart(props: Props) {
 
     const { edges } = ChartUtils.mermaidTojson(a)
 
+    console.log({
+      nodes,
+      edges
+    })
+
     initGraph({
       nodes,
       edges
     })
   }
 
-  const onAttrsChanged = (attrs: State) => {
-    console.log(attrs, '111111111111111111')
-    currentNode?.attr({
-      label: attrs,
-      hLine: { refY: attrs.refY },
-      vLine: { refX: attrs.refX }
-    } as any)
-  }
-
   useEffect(() => {
+    // 获取可编辑的 div 元素
+    const editableDiv = document.querySelector('.editable')
+
+    // 监听编辑完成事件
+    // editableDiv?.addEventListener('blur', () => {
+    //   console.log('编辑内容:', editableDiv.innerText)
+    // })
+
+    // 自动聚焦到可编辑区域
+    // editableDiv?.focus()
     handleInit()
     return () => {
       graph?.dispose()
     }
   }, [])
 
+  // useEffect(() => {
+  //   setCurrentNode((pre) => {
+  //     console.log(pre)
+  //     return currentNode
+  //   })
+  // },[currentNode])
+
   return (
-    <div className="w-full h-screen bg-green-50">
+    <div className="w-full h-screen bg-green-50  relative">
+      <div className="v-line text-red-500">
+        <text>
+          <tspan
+            dy="0.3em"
+            className="v-line"
+          >
+            VAL与Trim16存在竞争性效应的在体实验
+          </tspan>
+        </text>
+
+        <svg
+          width="400"
+          height="200"
+          style={{ border: '1px solid red' }}
+        >
+          <g transform="translate(110, 34)">
+            <foreignObject
+              width="220"
+              height="68"
+            >
+              <div
+                xmlns="http://www.w3.org/1999/xhtml"
+                contenteditable="true"
+              >
+                VAL与Trim16存在竞争性效应的在体实验
+              </div>
+            </foreignObject>
+            <text
+              font-size="12"
+              xmlSpace="preserve"
+              fill="#262626"
+              text-anchor="middle"
+              font-family="Arial, helvetica, sans-serif"
+              transform="matrix(1,0,0,1,0,0)"
+              class="editable"
+            >
+              <tspan
+                dy="0.3em"
+                className="v-line"
+              >
+                11111111
+              </tspan>
+            </text>
+          </g>
+        </svg>
+        <text
+          font-size="12"
+          xmlSpace="preserve"
+          fill="#262626"
+          text-anchor="middle"
+          font-family="Arial, helvetica, sans-serif"
+          transform="matrix(1,0,0,1,110,34)"
+        >
+          <tspan
+            dy="0.3em"
+            className="v-line"
+          >
+            VAL与Trim16存在竞争性效应的在体实验
+          </tspan>
+        </text>
+      </div>
+
       <Header
         exportJson={() => {
-          // console.log(graph?.toJSON())
           const nodes = graph?.getNodes()
           const edges = graph?.getEdges()
           console.log({
             nodes: nodes?.map((item) => item.toJSON()),
             edges: edges?.map((item) => item.toJSON())
           })
-
-          // graph?.toJSON()
         }}
       />
 
@@ -267,17 +219,13 @@ function FlowChart(props: Props) {
             ></div>
           </div>
         </div>
-        <RightOperate
-          onChange={onAttrsChanged}
-          currentNode={currentNode}
-          currentAttrs={currentAttrs}
-          setCurrentAttrs={setCurrentAttrs}
-          setCurrentNode={setCurrentNode}
-          graph={graph}
-        />
+        <RightOperate currentNode={currentNode} />
       </div>
       <Footer />
-      <div id="svgContainer" />
+      <div
+        id="svgContainer"
+        className="!h-0 absolute top-0 left-0 -z-20"
+      />
     </div>
   )
 }

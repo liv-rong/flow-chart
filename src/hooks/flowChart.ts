@@ -1,4 +1,4 @@
-import { Graph, type Model, Shape, Node } from '@antv/x6'
+import { Graph, type Model, Shape, Node, type Edge } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Stencil } from '@antv/x6-plugin-stencil'
 import { Transform } from '@antv/x6-plugin-transform'
@@ -7,6 +7,7 @@ import { Snapline } from '@antv/x6-plugin-snapline'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
+// import { node-editor } from '@antv/x6/es/registry/tool'
 
 export const useFlowChart = () => {
   const refContainer = useRef<HTMLDivElement>(null)
@@ -15,8 +16,9 @@ export const useFlowChart = () => {
 
   const [graph, setGraph] = useState<Graph | null>(null)
 
-  const [currentNode, setCurrentNode] = useState<Node<Node.Properties> | null>(null)
-  const [currentAttrs, setCurrentAttrs] = useState<{ [x: string]: any } | null>(null)
+  const [currentNode, setCurrentNode] = useState<
+    Node<Node.Properties> | null | Edge<Edge.Properties>
+  >(null)
 
   const ports = {
     groups: {
@@ -103,6 +105,18 @@ export const useFlowChart = () => {
       background: {
         color: '#F2F7FA'
       },
+      interacting: {
+        nodeMovable: true,
+        magnetConnectable: true,
+        edgeMovable: true,
+        edgeLabelMovable: true
+      },
+      // selecting: true,
+      panning: {
+        enabled: true,
+        modifiers: ['space'],
+        eventTypes: ['leftMouseDown']
+      },
       translating: {
         restrict: true //设置节点移动范围在画布内
       },
@@ -134,7 +148,7 @@ export const useFlowChart = () => {
           name: 'orth'
         },
         anchor: 'center',
-        // connectionPoint: 'anchor',
+        connectionPoint: 'boundary',
         allowBlank: false,
         snap: {
           radius: 20
@@ -143,15 +157,25 @@ export const useFlowChart = () => {
           return new Shape.Edge({
             attrs: {
               line: {
-                stroke: '#000000',
-                strokeWidth: 1,
+                stroke: 'blue',
+                strokeWidth: 3,
                 targetMarker: {
-                  name: 'block',
-                  width: 12,
-                  height: 8
+                  name: 'block'
                 }
               }
             },
+            // tools: [
+            //   {
+            //     name: 'edge-editor'
+            //   },
+            //   {
+            //     name: 'vertices',
+            //     args: {
+            //       attrs: { fill: '#666' }
+            //     }
+            //   },
+            //   { name: 'segments' }
+            // ],
             zIndex: 0
           })
         },
@@ -180,15 +204,7 @@ export const useFlowChart = () => {
           // dragNode: true
         })
       )
-      .use(
-        new Selection({
-          enabled: true
-          // multiple: true,
-          // rubberband: true,
-          // movable: true,
-          // showNodeSelectionBox: true
-        })
-      )
+
       .use(
         new Snapline({
           enabled: true,
@@ -200,6 +216,16 @@ export const useFlowChart = () => {
       .use(new Keyboard())
       .use(new Clipboard())
       .use(new History())
+      .use(
+        new Selection({
+          enabled: true,
+          multiple: true,
+          rubberband: true,
+          movable: true,
+          showNodeSelectionBox: true
+          // showEdgeSelectionBox: true
+        })
+      )
 
     graph.bindKey(['meta+c', 'ctrl+c'], () => {
       const cells = graph.getSelectedCells()
@@ -248,7 +274,7 @@ export const useFlowChart = () => {
 
     // delete
     graph.bindKey('backspace', () => {
-      console.log('backspace')
+      // console.log('backspace')
       const cells = graph.getSelectedCells()
       if (cells.length) {
         graph.removeCells(cells)
@@ -294,37 +320,77 @@ export const useFlowChart = () => {
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
-
-      const name = cell.isEdge() ? 'edge-editor' : 'node-editor'
-
+      //双击编辑节点内容
       if (cell.isNode()) {
-        const attrs = cell.getAttrs()
-        setCurrentAttrs(attrs)
-        setCurrentNode(cell)
+        // cell.getTools()
+        // cell.removeTool('node-editor')
+        // cell.addTools([
+        //   {
+        //     name: 'node-editor'
+        //   }
+        // ])
+        //   {
+        //     name: string;
+        //     args?: any;
+        // }
+        // // console.log(cell.getChildIndex({}))
+        // console.log(cell.getData(), '1111111111111111')
+        // setCurrentNode(cell)
+        // // const parentElement = document.getElementById(cell.id)
+        // // console.log(parentElement, 'parentElement')
+        // // if (parentElement) {
+        // //   console.log(parentElement, 'parentElement')
+        // //   parentElement.setAttribute('contenteditable', 'true')
+        // //   parentElement.focus()
+        // // }
+        // // const cellElement = document.querySelector(`[data-cell-id="${cell.id}"]`)
+        // // 检查元素是否存在 如果存在 则创建一个可以编辑的div  元素 用来包裹文本 让文本可以编辑
+        // // 检查元素是否存在
+        // if (cellElement) {
+        //   // 获取文本元素 <tspan>
+        //   const tspanElement = cellElement.querySelector('text')
+        //   console.log(tspanElement, 'tspanElement')
+        //   // 检查 <tspan> 元素是否存在
+        //   if (tspanElement) {
+        //     // 将 <tspan> 元素设置为可编辑
+        //     // const editableDiv = document.createElement('div')
+        //     // editableDiv.contentEditable = 'true'
+        //     // // editableDiv.innerText = tspanElement.innerText // 将文本内容设置为可编辑
+        //     // // cellElement.appendChild(editableDiv) // 将可编辑的div添加到cellElement中
+        //     // const divElement = document.createElement('div')
+        //     // divElement.innerText = tspanElement.innerHTML
+        //     // // 将 <text> 元素从 SVG 中移除
+        //     // const parentSvg = tspanElement.parentNode
+        //     // parentSvg?.removeChild(tspanElement)
+        //     // // 将 <text> 元素插入到 <div> 中
+        //     // divElement.appendChild(tspanElement)
+        //     // // 将 <div> 插入到 SVG 中
+        //     // parentSvg?.appendChild(divElement)
+        //     // // tspanElement.parentNode?.insertBefore(editableDiv, tspanElement)
+        //     // // tspanElement.setAttribute('contenteditable', 'true')
+        //     // tspanElement.style.outline = '1px dashed red' // 可选：给可编辑文本添加边框以便于视觉识别
+        //     // console.log(cellElement, 'editableDiv')
+        //     // 可选：自动聚焦并选择文本
+        //     // tspanElement.focus()
+        //     // const range = document.createRange()
+        //     // const selection = window.getSelection()
+        //     // range.selectNodeContents(tspanElement)
+        //     // selection.removeAllRanges()
+        //     // selection.addRange(range)
+        //   } else {
+        //     console.log('没有找到 <tspan> 元素。')
+        //   }
+        // } else {
+        //   console.log("没有找到 data-cell-id 为 'X' 的元素。")
+        // }
+        // console.log(cell.id, '双击编辑')
+        //根据id 获取节点子孩子 text 并且修改文本内容
+        // const tspan = document.querySelector(cell.id)
+        // const text = cell.children
+        // console.log(cell.getChildren(), '双击编辑333333333')
+        // text.innerHTML = '双击编辑'
+        // console.log('双击编辑', cell.getAttrs())
       }
-
-      // const attrs = cell.getAttrs()
-      // setCurrentAttrs(attrs)
-      // setCurrentNode(cell)
-      // currentNode.current = cell // 保存当前节点
-      // cell.removeTool(name)
-      // cell.addTools([
-      //   {
-      //     name,
-      //     args: {
-      //       event: e
-      //     }
-      //   }
-      // ])
-
-      // node.addTools({
-      //   name: 'node-editor',
-      //   args: {
-      //     event: e
-      //   }
-      // })
-      console.log(cell, '双击编辑1')
-      console.log('双击编辑', cell.getAttrs())
     })
 
     graph.on('node:click', ({ cell, x, y }) => {
@@ -333,21 +399,9 @@ export const useFlowChart = () => {
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
       setCurrentNode(cell)
-      // console.log('Node clicked:', cell.getAttrs())
-      // console.log('Node clicked:', cell.getData())
-      setCurrentAttrs({
-        ...cell.getAttrs(),
-        x,
-        y
-      })
     })
 
-    graph.on('node:mouseup', ({ cell, x, y }) => {
-      // console.log('Node placed: mouseup', cell, x, y)
-      // if (cell.id) {
-      //   cell.position(x, y) // 更新节点位置
-      // }
-    })
+    graph.on('node:mouseup', ({ cell, x, y }) => {})
     graph.on('node:mouseenter', ({ e, node, view }) => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
@@ -362,20 +416,112 @@ export const useFlowChart = () => {
       showPorts(ports, false)
     })
 
-    // cell.unembed(cell) // 取消当前节点的选择
-    graph.on('node:mouseup', ({ cell }) => {
-      console.log('node:mouseup  mouseup', cell)
-      // graph.cleanSelection()
-      // cell.off() // 取消当前节点的选择
-      // cell.unembed(cell) // 取消当前节点的选择
-      // 当前节点和鼠标不在联系
+    graph.on('node:mouseup', ({ cell }) => {})
+
+    graph.on('edge:click', ({ cell }) => {
+      setCurrentNode((pre) => {
+        console.log(pre, cell, 'pre')
+        if (pre?.isEdge()) {
+          pre?.attr({
+            line: {
+              stroke: '#ff0000',
+              filter: {
+                name: 'outline',
+                args: { color: 'green', margin: 0, opacity: 0.5 }
+              }
+            },
+            targetMarker: {
+              name: 'block', // 使用块箭头
+              args: {
+                size: 8,
+                stroke: '#000', // 箭头的颜色
+                fill: '#000'
+              }
+            }
+          })
+        }
+        // pre?.removeAttrs({ unset: ['line/filter'] })
+
+        cell.attr({
+          line: {
+            stroke: 'yellow',
+            filter: {
+              name: 'outline',
+              args: { color: '#1677ff', margin: 1, opacity: 0.5 }
+            }
+          },
+          targetMarker: {
+            name: 'block', // 使用块箭头
+            args: {
+              size: 8,
+              stroke: '#000', // 箭头的颜色
+              fill: '#000',
+              filter: {
+                name: 'outline',
+                args: { color: 'pink', margin: 1, opacity: 0.5 }
+              }
+            }
+          }
+        })
+        return cell
+      })
+    })
+
+    graph.on('edge:mouseenter', ({ cell }) => {})
+
+    graph.on('edge:mouseleave', ({ cell }) => {
+      // cell.removeTools()
+      // cell.setAttrs({
+      //   line: {
+      //     stroke: 'black',
+      //     strokeWidth: 1,
+      //     targetMarker: {
+      //       name: 'classic',
+      //       size: 10,
+      //       width: 0
+      //     }
+      //   }
+      // })
+      // cell.attr({
+      //   line: {
+      //     filter: {
+      //       name: 'outline',
+      //       args: { color: '#1677ff', margin: 0, opacity: 0, width: 0 }
+      //     }
+      //   }
+      // })
+    })
+
+    graph.on('blank:click', ({ e, x, y }) => {
+      // if (currentNode?.isNode()) {
+      // }
+      // if (currentNode?.isEdge()) {
+      //   currentNode.attr({
+      //     line: {
+      //       filter: {
+      //         name: 'outline',
+      //         args: { color: '#1677ff', margin: 0, opacity: 0, width: 0 }
+      //       }
+      //     }
+      //   })
+      // }
+      // setCurrentNode(null)
+      // cell.attr({
+      //   line: {
+      //     filter: {
+      //       name: 'outline',
+      //       args: { color: '#1677ff', margin: 0, opacity: 0, width: 0 }
+      //     }
+      //   }
+      // })
+    })
+
+    graph.on('blank:click', ({ e, x, y }) => {
+      setCurrentNode(null)
     })
 
     handleStencilInit(graph)
-    console.log(data, 'data')
     graph.fromJSON(data)
-    graph.isPannable() //  画布是否可以平移
-    graph.enablePanning() //  启用画布平移
     graph.centerContent()
     setGraph(graph)
     return { graph }
@@ -398,7 +544,7 @@ export const useFlowChart = () => {
           fill: '#262626'
         }
       },
-      tools: ['node-editor'],
+
       ports: { ...ports }
     },
     true
@@ -421,7 +567,7 @@ export const useFlowChart = () => {
           fill: '#262626'
         }
       },
-      tools: ['node-editor'],
+
       ports: {
         ...ports,
         items: [
@@ -460,7 +606,7 @@ export const useFlowChart = () => {
           fill: '#262626'
         }
       },
-      tools: ['node-editor'],
+
       ports: { ...ports }
     },
     true
@@ -483,7 +629,7 @@ export const useFlowChart = () => {
           fill: '#262626'
         }
       },
-      tools: ['node-editor'],
+
       ports: { ...ports }
     },
     true
@@ -595,6 +741,20 @@ export const useFlowChart = () => {
     }
   }
 
+  useEffect(() => {
+    // console.log('currentNode333', currentNode)
+    // if (pre?.isEdge()) {
+    //   pre?.attr('line', {
+    //     stroke: '#000'
+    //   })
+    // }
+    // if (currentNode?.isEdge()) {
+    //   pre?.attr('line', {
+    //     stroke: 'blue'
+    //   })
+    // }
+  }, [currentNode])
+
   return {
     initGraph,
     refContainer,
@@ -603,11 +763,6 @@ export const useFlowChart = () => {
     handleStencilInit,
     handleZoom,
     currentNode,
-    currentAttrs,
-    setCurrentAttrs,
     setCurrentNode
   }
 }
-
-// const [currentNode, setCurrentNode] = useState<any>(null)
-// const [currentAttrs, setCurrentAttrs] = useState<any>(null)

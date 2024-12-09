@@ -25,6 +25,7 @@ export const useSetAttrs = (node: Node<Node.Properties> | null) => {
   const [widthValue, seTWidthValue] = useState<number | string>()
 
   const handleTextAlign = () => {
+    if (!node || node.isEdge()) return
     const resTextAlign: StateTextAlign = {
       textAnchor: textAnchorValue,
       textVerticalAnchor: textVerticalAnchorValue,
@@ -90,6 +91,7 @@ export const useSetAttrs = (node: Node<Node.Properties> | null) => {
   }, [textAnchorValue, textVerticalAnchorValue])
 
   useEffect(() => {
+    if (!node || node.isEdge()) return
     const textAnchorValue = (node?.getAttrs()?.label?.textAnchor ?? 'middle') as TextAnchorType
     const textVerticalAnchorValue = (node?.getAttrs()?.label?.textVerticalAnchor ??
       'middle') as TextVerticalAnchorType

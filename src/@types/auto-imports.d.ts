@@ -7,7 +7,9 @@
 export {}
 declare global {
   const BaseLayout: typeof import('../layouts/BaseLayout/index')['default']
+  const CellEditor: typeof import('../components/FlowChart/components/Editor/index')['CellEditor']
   const ChartUtils: typeof import('../utils/chart')['ChartUtils']
+  const EdgeEditor: typeof import('../components/FlowChart/components/Editor/index')['EdgeEditor']
   const FlowChart: typeof import('../components/FlowChart/index')['default']
   const Footer: typeof import('../components/common/Footer')['default']
   const GraphicStyle: typeof import('../components/FlowChart/components/RightOperate/GraphicStyle')['default']
@@ -17,6 +19,7 @@ declare global {
   const MermaidDiagram: typeof import('../components/Mermaid/MermaidDiagram')['MermaidDiagram']
   const NavLink: typeof import('react-router-dom')['NavLink']
   const Navigate: typeof import('react-router-dom')['Navigate']
+  const NodeEditor: typeof import('../components/FlowChart/components/Editor/index')['NodeEditor']
   const Outlet: typeof import('react-router-dom')['Outlet']
   const PageStyle: typeof import('../components/FlowChart/components/RightOperate/PageStyle')['default']
   const RightOperate: typeof import('../components/FlowChart/components/RightOperate/index')['default']

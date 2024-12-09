@@ -23,7 +23,11 @@ export class ChartUtils {
           source: sourceId, // 源节点
           target: targetId, // 目标节点
           label: edgeLabel || '', // 边的标签
-          tools: ['edge-editor']
+          tools: [
+            {
+              name: 'edge-editor'
+            }
+          ]
         })
       }
     })
@@ -118,10 +122,19 @@ export class ChartUtils {
         attrs: {
           body
         },
-        refX: '99%',
-
-        refY: '99%',
-
+        tools: [
+          {
+            name: 'node-editor',
+            args: {
+              attrs: {
+                color: 'red',
+                fontSize: 46,
+                getText: 'a/b',
+                setText: 'c/d'
+              }
+            }
+          }
+        ],
         label: nodeLabel
       }
     })
