@@ -234,81 +234,8 @@ function FlowChart() {
     }
   }, [])
 
-  // useEffect(
-  //   (pre) => {
-  //     console.log(currentNode, 'currentNode')
-  //     // setCurrentNode((pre) => {
-  //     //   console.log(pre)
-  //     //   return currentNode
-  //     // })
-  //   },
-  //   [currentNode]
-  // )
-
   return (
     <div className="w-full h-screen bg-green-50  relative">
-      <div className="v-line text-red-500">
-        <text>
-          <tspan
-            dy="0.3em"
-            className="v-line"
-          >
-            VAL与Trim16存在竞争性效应的在体实验
-          </tspan>
-        </text>
-
-        <svg
-          width="400"
-          height="200"
-          style={{ border: '1px solid red' }}
-        >
-          <g transform="translate(110, 34)">
-            <foreignObject
-              width="220"
-              height="68"
-            >
-              <div
-                xmlns="http://www.w3.org/1999/xhtml"
-                contenteditable="true"
-              >
-                VAL与Trim16存在竞争性效应的在体实验
-              </div>
-            </foreignObject>
-            <text
-              font-size="12"
-              xmlSpace="preserve"
-              fill="#262626"
-              text-anchor="middle"
-              font-family="Arial, helvetica, sans-serif"
-              transform="matrix(1,0,0,1,0,0)"
-              class="editable"
-            >
-              <tspan
-                dy="0.3em"
-                className="v-line"
-              >
-                11111111
-              </tspan>
-            </text>
-          </g>
-        </svg>
-        <text
-          font-size="12"
-          xmlSpace="preserve"
-          fill="#262626"
-          text-anchor="middle"
-          font-family="Arial, helvetica, sans-serif"
-          transform="matrix(1,0,0,1,110,34)"
-        >
-          <tspan
-            dy="0.3em"
-            className="v-line"
-          >
-            VAL与Trim16存在竞争性效应的在体实验
-          </tspan>
-        </text>
-      </div>
-
       <Header
         exportJson={() => {
           const nodes = graph?.getNodes()
