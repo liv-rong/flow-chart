@@ -1,4 +1,5 @@
 import { Node, Edge } from '@antv/x6'
+
 //起点是椭圆 流程是矩形  判断是菱形 圆角矩形 园
 export class ChartUtils {
   static mermaidTojson(mermaidString: string) {
@@ -20,14 +21,25 @@ export class ChartUtils {
         const { id: targetId, edgeLabel } = this.extractNodeInfo(target) ?? {}
 
         edges.push({
-          source: sourceId, // 源节点
+          source: sourceId!, // 源节点
           target: targetId, // 目标节点
           label: edgeLabel || '', // 边的标签
-          tools: [
-            {
-              name: 'edge-editor'
+
+          connector: {
+            name: 'jumpover',
+            args: {
+              type: 'cubic',
+              size: 5,
+              radius: 0
             }
-          ]
+          },
+          attrs: {
+            line: {
+              stroke: '#000',
+              strokeWidth: 2
+            }
+          },
+          zIndex: 0
         })
       }
     })

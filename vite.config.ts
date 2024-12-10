@@ -13,7 +13,6 @@ export default defineConfig({
       imports: [
         'react',
         'react-router-dom',
-        // import classNames from 'classnames'
         { from: 'classnames', imports: [['default', 'classNames']] },
         {
           from: 'react',

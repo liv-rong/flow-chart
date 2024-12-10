@@ -7,7 +7,7 @@ import { Snapline } from '@antv/x6-plugin-snapline'
 import { Keyboard } from '@antv/x6-plugin-keyboard'
 import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
-// import { node-editor } from '@antv/x6/es/registry/tool'
+import { Export } from '@antv/x6-plugin-export'
 
 export const useFlowChart = () => {
   const refContainer = useRef<HTMLDivElement>(null)
@@ -111,7 +111,6 @@ export const useFlowChart = () => {
         edgeMovable: true,
         edgeLabelMovable: true
       },
-      // selecting: true,
       panning: {
         enabled: true,
         modifiers: ['space'],
@@ -148,34 +147,40 @@ export const useFlowChart = () => {
           name: 'orth'
         },
         anchor: 'center',
-        connectionPoint: 'boundary',
+        connectionPoint: {
+          name: 'boundary',
+          args: {
+            sticky: true
+            // offset: -4
+          }
+        },
+
         allowBlank: false,
         snap: {
-          radius: 200
+          radius: 20
         },
         createEdge() {
           return new Shape.Edge({
             attrs: {
               line: {
                 stroke: '#000',
-                strokeWidth: 2,
-                targetMarker: {
-                  name: 'block'
-                }
+                strokeWidth: 2
+                // targetMarker: {
+                //   name: 'block'
+                // }
               }
             },
-            // tools: [
-            //   {
-            //     name: 'edge-editor'
-            //   },
-            //   {
-            //     name: 'vertices',
-            //     args: {
-            //       attrs: { fill: '#666' }
-            //     }
-            //   },
-            //   { name: 'segments' }
-            // ],
+            connectionPoint: 'bbox',
+            connector: {
+              connectionPoint: 'anchor',
+              name: 'jumpover',
+              args: {
+                type: 'cubic',
+                size: 5,
+                radius: 0
+              }
+            },
+
             zIndex: 0
           })
         },
@@ -219,13 +224,16 @@ export const useFlowChart = () => {
       .use(
         new Selection({
           enabled: true,
-          multiple: true,
           rubberband: true,
-          movable: true,
           showNodeSelectionBox: true
+          // multiple: true,
+          // rubberband: true,
+          // movable: true,
+          // showNodeSelectionBox: true
           // showEdgeSelectionBox: true
         })
       )
+      .use(new Export())
 
     graph.bindKey(['meta+c', 'ctrl+c'], () => {
       const cells = graph.getSelectedCells()
@@ -400,14 +408,7 @@ export const useFlowChart = () => {
       showPorts(ports, false)
       setCurrentNode((pre) => {
         if (pre?.isEdge()) {
-          pre?.attr({
-            line: {
-              filter: {
-                name: 'outline',
-                args: { color: 'green', margin: 0, opacity: 0 }
-              }
-            }
-          })
+          pre.attr('line/stroke', pre.getData().customStroke)
         }
         return cell
       })
@@ -433,56 +434,82 @@ export const useFlowChart = () => {
     graph.on('edge:click', ({ cell }) => {
       setCurrentNode((pre) => {
         console.log(pre, cell, 'pre')
-        if (pre?.isEdge()) {
-          pre?.attr({
-            line: {
-              filter: {
-                name: 'outline',
-                args: { color: 'green', margin: 0, opacity: 0 }
-              }
-            },
-            targetMarker: {
-              name: 'block', // 使用块箭头
-              args: {
-                size: 8,
-                stroke: '#000', // 箭头的颜色
-                fill: '#000'
-              }
-            }
-          })
-        }
 
-        cell.attr({
-          line: {
-            filter: {
-              name: 'outline',
-              args: { color: '#1677ff', margin: 0, opacity: 0.5 }
-            }
+        if (pre?.isEdge()) {
+          const res = pre?.getData()?.customStroke
+          if (res) {
+            pre.attr('line/stroke', res)
           }
+        }
+        console.log(cell.getAttrs())
+        console.log(cell.getData())
+        // console.log(cell.getAttrs().line.stroke, 'cell')
+
+        const currentLineAttrs = cell.getAttrs().line.stroke
+
+        cell.attr('line/stroke', 'blue')
+
+        cell.setData({
+          customStroke: currentLineAttrs
         })
+
+        console.log(cell.getAttrs())
+        console.log(cell.getData())
+
         return cell
       })
     })
 
-    graph.on('edge:mouseenter', ({ cell }) => {})
+    graph.on('edge:dblclick', ({ cell, e }) => {
+      console.log('edge:dblclick')
+      cell.removeTools()
+      cell.addTools([
+        {
+          name: 'edge-editor'
+        }
+      ])
+    })
 
-    graph.on('edge:mouseleave', ({ cell }) => {})
-
-    graph.on('blank:click', ({ e, x, y }) => {
-      graph?.getEdges().forEach((edge) => {
-        edge.attr({
-          line: {
-            filter: {
-              name: 'outline',
-              args: { color: '#000', margin: 0, opacity: 0 }
-            }
+    graph.on('edge:mouseenter', ({ cell }) => {
+      const ports = refContainer.current?.querySelectorAll(
+        '.x6-port-body'
+      ) as NodeListOf<SVGElement>
+      showPorts(ports, true)
+      cell.removeTools()
+      cell.addTools([
+        {
+          name: 'vertices',
+          args: {
+            attrs: { fill: '#666' }
           }
-        })
-      })
+        },
+        {
+          name: 'segments',
+          args: {
+            attrs: { fill: 'red' }
+          }
+        },
+        {
+          name: 'source-arrowhead'
+        },
+        {
+          name: 'target-arrowhead'
+        }
+      ])
+    })
+    graph.on('edge:mouseleave', ({ cell }) => {
+      const ports = refContainer.current?.querySelectorAll(
+        '.x6-port-body'
+      ) as NodeListOf<SVGElement>
+      showPorts(ports, false)
+      cell.removeTools(['source-arrowhead', 'target-arrowhead'])
     })
 
     graph.on('blank:click', ({ e, x, y }) => {
-      setCurrentNode(null)
+      graph?.getEdges().forEach((edge) => {
+        const res = edge.getData()?.customStroke ?? edge.getAttrs().line.stroke
+        edge.attr('line/stroke', res)
+      })
     })
 
     handleStencilInit(graph)
@@ -706,19 +733,7 @@ export const useFlowChart = () => {
     }
   }
 
-  useEffect(() => {
-    // console.log('currentNode333', currentNode)
-    // if (pre?.isEdge()) {
-    //   pre?.attr('line', {
-    //     stroke: '#000'
-    //   })
-    // }
-    // if (currentNode?.isEdge()) {
-    //   pre?.attr('line', {
-    //     stroke: 'blue'
-    //   })
-    // }
-  }, [currentNode])
+  useEffect(() => {}, [currentNode])
 
   return {
     initGraph,

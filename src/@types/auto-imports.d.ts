@@ -7,25 +7,23 @@
 export {}
 declare global {
   const BaseLayout: typeof import('../layouts/BaseLayout/index')['default']
-  const CellEditor: typeof import('../components/FlowChart/components/Editor/index')['CellEditor']
+  const BrowserUtils: typeof import('../utils/browser')['BrowserUtils']
   const ChartUtils: typeof import('../utils/chart')['ChartUtils']
-  const EdgeEditor: typeof import('../components/FlowChart/components/Editor/index')['EdgeEditor']
+  const ExportFiles: typeof import('../components/common/Header/components/ExportFiles')['default']
   const FlowChart: typeof import('../components/FlowChart/index')['default']
   const Footer: typeof import('../components/common/Footer')['default']
   const GraphicStyle: typeof import('../components/FlowChart/components/RightOperate/GraphicStyle')['default']
-  const Header: typeof import('../components/common/Header')['default']
+  const Header: typeof import('../components/common/Header/index')['default']
   const LeftOperate: typeof import('../components/FlowChart/components/LeftOperate/index')['default']
   const Link: typeof import('react-router-dom')['Link']
   const MermaidDiagram: typeof import('../components/Mermaid/MermaidDiagram')['MermaidDiagram']
   const NavLink: typeof import('react-router-dom')['NavLink']
   const Navigate: typeof import('react-router-dom')['Navigate']
-  const NodeEditor: typeof import('../components/FlowChart/components/Editor/index')['NodeEditor']
   const Outlet: typeof import('react-router-dom')['Outlet']
   const PageStyle: typeof import('../components/FlowChart/components/RightOperate/PageStyle')['default']
   const RightOperate: typeof import('../components/FlowChart/components/RightOperate/index')['default']
   const Route: typeof import('react-router-dom')['Route']
   const Routes: typeof import('react-router-dom')['Routes']
-  const Settings: typeof import('../components/FlowChart/components/settings')['Settings']
   const Suspense: typeof import('react')['Suspense']
   const borderOptions: typeof import('../components/FlowChart/types/text')['borderOptions']
   const classNames: typeof import('classnames')['default']
@@ -34,15 +32,14 @@ declare global {
   const forwardRef: typeof import('react')['forwardRef']
   const lazy: typeof import('react')['lazy']
   const lineHeightOptions: typeof import('../components/FlowChart/types/text')['lineHeightOptions']
-  const lineHeightType: typeof import('../components/FlowChart/types/text')['lineHeightType']
   const memo: typeof import('react')['memo']
-  const settings: typeof import('../components/FlowChart/components/settings')['default']
   const startTransition: typeof import('react')['startTransition']
   const useCallback: typeof import('react')['useCallback']
   const useContext: typeof import('react')['useContext']
   const useDebugValue: typeof import('react')['useDebugValue']
   const useDeferredValue: typeof import('react')['useDeferredValue']
   const useEffect: typeof import('react')['useEffect']
+  const useExportFile: typeof import('../hooks/exportFiles')['useExportFile']
   const useFlowChart: typeof import('../hooks/flowChart')['useFlowChart']
   const useHref: typeof import('react-router-dom')['useHref']
   const useId: typeof import('react')['useId']
@@ -71,8 +68,8 @@ declare global {
 // for type re-export
 declare global {
   // @ts-ignore
-  export type { Settings } from '../components/FlowChart/components/settings'
-  import('../components/FlowChart/components/settings')
+  export type { BrowserUtils, BrowserUtils } from '../utils/browser'
+  import('../utils/browser')
   // @ts-ignore
   export type { ChartUtils, ChartUtils } from '../utils/chart'
   import('../utils/chart')

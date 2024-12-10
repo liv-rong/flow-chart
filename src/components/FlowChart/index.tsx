@@ -205,6 +205,8 @@ function FlowChart() {
     graph
   } = useFlowChart()
 
+  const { exportJson, exportPng, exportSvg } = useExportFile(graph)
+
   const handleInit = async () => {
     const svgres = await mermaid.render('text', a)
 
@@ -212,9 +214,12 @@ function FlowChart() {
 
     const nodes = ChartUtils.handleXY()
 
-    const { edges } = ChartUtils.mermaidTojson(a)
+    const { edges } = ChartUtils.mermaidTojson(a) ?? {}
 
-    initGraph(experimentFlow)
+    initGraph({
+      nodes,
+      edges
+    })
   }
 
   useEffect(() => {
@@ -237,14 +242,9 @@ function FlowChart() {
   return (
     <div className="w-full h-screen bg-green-50  relative">
       <Header
-        exportJson={() => {
-          const nodes = graph?.getNodes()
-          const edges = graph?.getEdges()
-          console.log({
-            nodes: nodes?.map((item) => item.toJSON()),
-            edges: edges?.map((item) => item.toJSON())
-          })
-        }}
+        exportJson={exportJson}
+        exportPng={exportPng}
+        exportSvg={exportSvg}
       />
 
       <div className="h-[calc(100%-72px)] w-full flex">
