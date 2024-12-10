@@ -134,19 +134,19 @@ export class ChartUtils {
         attrs: {
           body
         },
-        tools: [
-          {
-            name: 'node-editor',
-            args: {
-              attrs: {
-                color: 'red',
-                fontSize: 46,
-                getText: 'a/b',
-                setText: 'c/d'
-              }
-            }
-          }
-        ],
+        // tools: [
+        //   {
+        //     name: 'node-editor',
+        //     args: {
+        //       attrs: {
+        //         color: 'red',
+        //         fontSize: 46,
+        //         getText: 'a/b',
+        //         setText: 'c/d'
+        //       }
+        //     }
+        //   }
+        // ],
         label: nodeLabel
       }
     })

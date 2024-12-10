@@ -328,77 +328,22 @@ export const useFlowChart = () => {
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
+      console.log(cell.getAttrs())
       //双击编辑节点内容
       if (cell.isNode()) {
-        // cell.getTools()
-        // cell.removeTool('node-editor')
-        // cell.addTools([
-        //   {
-        //     name: 'node-editor'
-        //   }
-        // ])
-        //   {
-        //     name: string;
-        //     args?: any;
-        // }
-        // // console.log(cell.getChildIndex({}))
-        // console.log(cell.getData(), '1111111111111111')
-        // setCurrentNode(cell)
-        // // const parentElement = document.getElementById(cell.id)
-        // // console.log(parentElement, 'parentElement')
-        // // if (parentElement) {
-        // //   console.log(parentElement, 'parentElement')
-        // //   parentElement.setAttribute('contenteditable', 'true')
-        // //   parentElement.focus()
-        // // }
-        // // const cellElement = document.querySelector(`[data-cell-id="${cell.id}"]`)
-        // // 检查元素是否存在 如果存在 则创建一个可以编辑的div  元素 用来包裹文本 让文本可以编辑
-        // // 检查元素是否存在
-        // if (cellElement) {
-        //   // 获取文本元素 <tspan>
-        //   const tspanElement = cellElement.querySelector('text')
-        //   console.log(tspanElement, 'tspanElement')
-        //   // 检查 <tspan> 元素是否存在
-        //   if (tspanElement) {
-        //     // 将 <tspan> 元素设置为可编辑
-        //     // const editableDiv = document.createElement('div')
-        //     // editableDiv.contentEditable = 'true'
-        //     // // editableDiv.innerText = tspanElement.innerText // 将文本内容设置为可编辑
-        //     // // cellElement.appendChild(editableDiv) // 将可编辑的div添加到cellElement中
-        //     // const divElement = document.createElement('div')
-        //     // divElement.innerText = tspanElement.innerHTML
-        //     // // 将 <text> 元素从 SVG 中移除
-        //     // const parentSvg = tspanElement.parentNode
-        //     // parentSvg?.removeChild(tspanElement)
-        //     // // 将 <text> 元素插入到 <div> 中
-        //     // divElement.appendChild(tspanElement)
-        //     // // 将 <div> 插入到 SVG 中
-        //     // parentSvg?.appendChild(divElement)
-        //     // // tspanElement.parentNode?.insertBefore(editableDiv, tspanElement)
-        //     // // tspanElement.setAttribute('contenteditable', 'true')
-        //     // tspanElement.style.outline = '1px dashed red' // 可选：给可编辑文本添加边框以便于视觉识别
-        //     // console.log(cellElement, 'editableDiv')
-        //     // 可选：自动聚焦并选择文本
-        //     // tspanElement.focus()
-        //     // const range = document.createRange()
-        //     // const selection = window.getSelection()
-        //     // range.selectNodeContents(tspanElement)
-        //     // selection.removeAllRanges()
-        //     // selection.addRange(range)
-        //   } else {
-        //     console.log('没有找到 <tspan> 元素。')
-        //   }
-        // } else {
-        //   console.log("没有找到 data-cell-id 为 'X' 的元素。")
-        // }
-        // console.log(cell.id, '双击编辑')
-        //根据id 获取节点子孩子 text 并且修改文本内容
-        // const tspan = document.querySelector(cell.id)
-        // const text = cell.children
-        // console.log(cell.getChildren(), '双击编辑333333333')
-        // text.innerHTML = '双击编辑'
-        // console.log('双击编辑', cell.getAttrs())
+        const resTools = cell.getTools()
+        console.log(resTools, 'resTools')
       }
+    })
+
+    graph.on('node:selected', ({ node }) => {
+      node.removeTool('node-editor')
+      node.addTools([
+        {
+          name: 'node-editor',
+          args: {}
+        }
+      ])
     })
 
     graph.on('node:click', ({ cell, x, y }) => {
