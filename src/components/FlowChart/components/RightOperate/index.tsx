@@ -3,12 +3,11 @@ import type { TabsProps } from 'antd'
 import { Tabs } from 'antd'
 import PageStyle from './PageStyle'
 import GraphicStyle from './GraphicStyle'
-import type { Graph } from '@antv/x6'
+import type { Edge, Graph, Node } from '@antv/x6'
 
 interface Props {
   className?: string
   currentNode: any
-  setCurrentNode:
 }
 
 const RightOperate = (props: Props) => {

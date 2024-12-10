@@ -78,6 +78,122 @@ flowchart TD
   2-->3[统计分析:对AKT、STAT3、VAL和Vimentin表达与临床病理因素做单因素/多因素分析和预后关联分析,明确临床意义]
 `
 
+const experimentFlow = {
+  nodes: [
+    {
+      id: '实验目的',
+      x: 0,
+      y: 0,
+      width: 600,
+      height: 100,
+      shape: 'ellipse',
+      label: '研究lncRNA VAL通过竞争性结合Vimentin调控Trim16介导的泛素化机制。'
+    },
+    {
+      id: '实验使用药物的分子机制',
+      x: 0,
+      y: 220,
+      width: 600,
+      height: 100,
+      shape: 'rect',
+      label: 'VAL通过与Vimentin结合影响其表达与泛素化。'
+    },
+    {
+      id: '功能原理',
+      x: 0,
+      y: 440,
+      width: 600,
+      height: 100,
+      shape: 'rect',
+      label: 'VAL与Vimentin交互对于肺腺癌转移功能的调节至关重要。'
+    },
+    {
+      id: '临床意义',
+      x: 0,
+      y: 660,
+      width: 600,
+      height: 100,
+      shape: 'rect',
+      label: '通过分析肺腺癌患者组织，探讨AKT/STAT3/VAL/Vimentin信号轴的临床相关性。'
+    },
+    {
+      id: '数据分析',
+      x: 0,
+      y: 880,
+      width: 600,
+      height: 100,
+      shape: 'rect',
+      label: '利用qPCR、WB和IHC检测标志物表达，使用SPSS进行统计分析。'
+    },
+    {
+      id: '实验结论',
+      x: 0,
+      y: 1100,
+      width: 600,
+      height: 100,
+      shape: 'ellipse',
+      label: 'VAL的表达影响Vimentin与Trim16的结合，影响肺腺癌细胞转移。'
+    },
+    {
+      id: 'VAL-Vimentin结合位点',
+      x: 650,
+      y: 220,
+      width: 600,
+      height: 100,
+      shape: 'rect',
+      label: '通过突变载体和RNA pulldown实验识别结合区域。'
+    },
+    {
+      id: 'ΔVAL对Vimentin表达的影响',
+      x: -650,
+      y: 220,
+      width: 600,
+      height: 100,
+      shape: 'rect',
+      label: '观察不同质粒剂量对Vimentin调节及转移功能的影响。'
+    },
+    {
+      id: '泛素化调控',
+      x: 650,
+      y: 440,
+      width: 600,
+      height: 100,
+      shape: 'rect',
+      label: '检测ΔVAL影响Vimentin泛素化及与Trim16的关系。'
+    },
+    {
+      id: '在体实验',
+      x: -650,
+      y: 440,
+      width: 600,
+      height: 100,
+      shape: 'rect',
+      label: '通过尾静脉和心脏注射模型验证VAL的功能。'
+    },
+    {
+      id: '临床标记研究',
+      x: 650,
+      y: 660,
+      width: 600,
+      height: 100,
+      shape: 'rect',
+      label: '进行回顾性和前瞻性研究以建立临床相关性。'
+    }
+  ],
+  edges: [
+    { source: '实验目的', target: '实验使用药物的分子机制' },
+    { source: '实验使用药物的分子机制', target: '功能原理' },
+    { source: '功能原理', target: '临床意义' },
+    { source: '临床意义', target: '数据分析' },
+    { source: '数据分析', target: '实验结论' },
+    { source: '实验使用药物的分子机制', target: 'VAL-Vimentin结合位点' },
+    { source: '实验使用药物的分子机制', target: 'ΔVAL对Vimentin表达的影响' },
+    { source: '功能原理', target: '泛素化调控' },
+    { source: '实验结论', target: '在体实验' },
+    { source: '临床意义', target: '临床标记研究' }
+  ]
+}
+
 function FlowChart() {
   const {
     initGraph,
@@ -98,15 +214,7 @@ function FlowChart() {
 
     const { edges } = ChartUtils.mermaidTojson(a)
 
-    console.log({
-      nodes,
-      edges
-    })
-
-    initGraph({
-      nodes,
-      edges
-    })
+    initGraph(experimentFlow)
   }
 
   useEffect(() => {
@@ -126,12 +234,16 @@ function FlowChart() {
     }
   }, [])
 
-  // useEffect(() => {
-  //   setCurrentNode((pre) => {
-  //     console.log(pre)
-  //     return currentNode
-  //   })
-  // },[currentNode])
+  // useEffect(
+  //   (pre) => {
+  //     console.log(currentNode, 'currentNode')
+  //     // setCurrentNode((pre) => {
+  //     //   console.log(pre)
+  //     //   return currentNode
+  //     // })
+  //   },
+  //   [currentNode]
+  // )
 
   return (
     <div className="w-full h-screen bg-green-50  relative">

@@ -151,14 +151,14 @@ export const useFlowChart = () => {
         connectionPoint: 'boundary',
         allowBlank: false,
         snap: {
-          radius: 20
+          radius: 200
         },
         createEdge() {
           return new Shape.Edge({
             attrs: {
               line: {
-                stroke: 'blue',
-                strokeWidth: 3,
+                stroke: '#000',
+                strokeWidth: 2,
                 targetMarker: {
                   name: 'block'
                 }
@@ -398,7 +398,19 @@ export const useFlowChart = () => {
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
-      setCurrentNode(cell)
+      setCurrentNode((pre) => {
+        if (pre?.isEdge()) {
+          pre?.attr({
+            line: {
+              filter: {
+                name: 'outline',
+                args: { color: 'green', margin: 0, opacity: 0 }
+              }
+            }
+          })
+        }
+        return cell
+      })
     })
 
     graph.on('node:mouseup', ({ cell, x, y }) => {})
@@ -424,10 +436,9 @@ export const useFlowChart = () => {
         if (pre?.isEdge()) {
           pre?.attr({
             line: {
-              stroke: '#ff0000',
               filter: {
                 name: 'outline',
-                args: { color: 'green', margin: 0, opacity: 0.5 }
+                args: { color: 'green', margin: 0, opacity: 0 }
               }
             },
             targetMarker: {
@@ -440,26 +451,12 @@ export const useFlowChart = () => {
             }
           })
         }
-        // pre?.removeAttrs({ unset: ['line/filter'] })
 
         cell.attr({
           line: {
-            stroke: 'yellow',
             filter: {
               name: 'outline',
-              args: { color: '#1677ff', margin: 1, opacity: 0.5 }
-            }
-          },
-          targetMarker: {
-            name: 'block', // 使用块箭头
-            args: {
-              size: 8,
-              stroke: '#000', // 箭头的颜色
-              fill: '#000',
-              filter: {
-                name: 'outline',
-                args: { color: 'pink', margin: 1, opacity: 0.5 }
-              }
+              args: { color: '#1677ff', margin: 0, opacity: 0.5 }
             }
           }
         })
@@ -469,51 +466,19 @@ export const useFlowChart = () => {
 
     graph.on('edge:mouseenter', ({ cell }) => {})
 
-    graph.on('edge:mouseleave', ({ cell }) => {
-      // cell.removeTools()
-      // cell.setAttrs({
-      //   line: {
-      //     stroke: 'black',
-      //     strokeWidth: 1,
-      //     targetMarker: {
-      //       name: 'classic',
-      //       size: 10,
-      //       width: 0
-      //     }
-      //   }
-      // })
-      // cell.attr({
-      //   line: {
-      //     filter: {
-      //       name: 'outline',
-      //       args: { color: '#1677ff', margin: 0, opacity: 0, width: 0 }
-      //     }
-      //   }
-      // })
-    })
+    graph.on('edge:mouseleave', ({ cell }) => {})
 
     graph.on('blank:click', ({ e, x, y }) => {
-      // if (currentNode?.isNode()) {
-      // }
-      // if (currentNode?.isEdge()) {
-      //   currentNode.attr({
-      //     line: {
-      //       filter: {
-      //         name: 'outline',
-      //         args: { color: '#1677ff', margin: 0, opacity: 0, width: 0 }
-      //       }
-      //     }
-      //   })
-      // }
-      // setCurrentNode(null)
-      // cell.attr({
-      //   line: {
-      //     filter: {
-      //       name: 'outline',
-      //       args: { color: '#1677ff', margin: 0, opacity: 0, width: 0 }
-      //     }
-      //   }
-      // })
+      graph?.getEdges().forEach((edge) => {
+        edge.attr({
+          line: {
+            filter: {
+              name: 'outline',
+              args: { color: '#000', margin: 0, opacity: 0 }
+            }
+          }
+        })
+      })
     })
 
     graph.on('blank:click', ({ e, x, y }) => {
