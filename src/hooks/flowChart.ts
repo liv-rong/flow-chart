@@ -338,10 +338,19 @@ export const useFlowChart = () => {
 
     graph.on('node:selected', ({ node }) => {
       node.removeTool('node-editor')
+      console.log(node.getAttrs())
       node.addTools([
         {
           name: 'node-editor',
-          args: {}
+          args: {
+            attrs: {
+              // ...node.getAttrs()
+              textDecoration: 'underline',
+              fontSize: node.getAttrs()?.text?.fontSize,
+              color: node.getAttrs()?.text?.fill || node.getAttrs()?.label?.fill || '#000000',
+              fontFamily: node.getAttrs()?.text?.fontFamily || node.getAttrs()?.label?.fontFamily
+            }
+          }
         }
       ])
     })
