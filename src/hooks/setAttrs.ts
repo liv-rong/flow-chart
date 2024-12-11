@@ -236,24 +236,38 @@ export const useSetAttrs = (node: (Edge<Edge.Properties> | Node<Node.Properties>
   const handleAlign = (alignment: string) => {
     if (!node.length) return
 
-    const selectedCells = node
+    let minX = Infinity
+    let minY = Infinity
+    let maxX = -Infinity
+    let maxY = -Infinity
 
-    if (selectedCells.length === 0) return
+    node.forEach((cell) => {
+      if (!cell.isNode()) return
 
-    // 获取选中节点的边界框
-    const bbox = selectedCells.reduce(
-      (acc, cell) => {
-        const cellBBox = cell.getBBox()
-        acc.x = Math.min(acc.x, cellBBox.x)
-        acc.y = Math.min(acc.y, cellBBox.y)
-        acc.width = Math.max(acc.width, cellBBox.x + cellBBox.width) // 计算最大宽度
-        acc.height = Math.max(acc.height, cellBBox.y + cellBBox.height) // 计算最大高度
-        return acc
-      },
-      { x: Infinity, y: Infinity, width: 0, height: 0 }
-    )
+      const { x, y } = cell.getPosition() // 获取节点的 x, y 位置
+      const { width, height } = cell.getSize() // 获取节点的宽高
 
-    selectedCells.forEach((cell) => {
+      // 更新最小和最大值
+      minX = Math.min(minX, x)
+      minY = Math.min(minY, y)
+      maxX = Math.max(maxX, x + width)
+      maxY = Math.max(maxY, y + height)
+    })
+
+    node.forEach((cell) => {
+      if (!cell.isNode()) return
+      console.log(cell.getSize())
+      console.log(cell.position())
+    })
+
+    const bbox = {
+      x: minX,
+      y: minY,
+      width: maxX - minX,
+      height: maxY - minY
+    }
+
+    node.forEach((cell) => {
       if (!cell.isNode()) return
       const currentPosition = cell.getPosition()
       let targetX = currentPosition.x
@@ -283,7 +297,6 @@ export const useSetAttrs = (node: (Edge<Edge.Properties> | Node<Node.Properties>
           break
       }
 
-      // 设置新的位置
       cell.setPosition(targetX, targetY)
     })
   }

@@ -445,6 +445,7 @@ export const useFlowChart = () => {
     })
 
     graph.on('cell:selected', ({ cell, options }) => {
+      console.log(options, 'options')
       cell.removeTools()
       if (cell.isNode()) {
         cell.addTools([
