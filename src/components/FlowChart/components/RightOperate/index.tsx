@@ -7,7 +7,7 @@ import type { Edge, Graph, Node } from '@antv/x6'
 
 interface Props {
   className?: string
-  currentNode: any
+  currentNode: (Edge<Edge.Properties> | Node<Node.Properties>)[]
 }
 
 const RightOperate = (props: Props) => {

@@ -1,4 +1,4 @@
-import { Graph, type Model, Shape, Node, type Edge } from '@antv/x6'
+import { Graph, type Model, Shape, Node, type Edge, CellView } from '@antv/x6'
 import { register } from '@antv/x6-react-shape'
 import { Stencil } from '@antv/x6-plugin-stencil'
 import { Transform } from '@antv/x6-plugin-transform'
@@ -16,9 +16,9 @@ export const useFlowChart = () => {
 
   const [graph, setGraph] = useState<Graph | null>(null)
 
-  const [currentNode, setCurrentNode] = useState<
-    Node<Node.Properties> | null | Edge<Edge.Properties>
-  >(null)
+  const [currentNode, setCurrentNode] = useState<(Edge<Edge.Properties> | Node<Node.Properties>)[]>(
+    []
+  )
 
   const ports = {
     groups: {
@@ -225,12 +225,9 @@ export const useFlowChart = () => {
         new Selection({
           enabled: true,
           rubberband: true,
-          showNodeSelectionBox: true
-          // multiple: true,
-          // rubberband: true,
-          // movable: true,
-          // showNodeSelectionBox: true
-          // showEdgeSelectionBox: true
+          showNodeSelectionBox: true,
+          movable: true,
+          multiple: true
         })
       )
       .use(new Export())
@@ -309,43 +306,27 @@ export const useFlowChart = () => {
         ports[i].style.visibility = show ? 'visible' : 'hidden'
       }
     }
-    graph.on('node:dragend', ({ cell, e, x, y }) => {
-      // 更新节点位置
-      // if (cell.id) {
-      //   cell.position(x, y) // 更新节点位置
-      // }
-    })
+    graph.on('node:dragend', ({ cell, e, x, y }) => {})
 
-    graph.on('node:mouseup', ({ cell }) => {
-      // 确保节点在鼠标抬起时能够放置
-      // if (cell.id) {
-      //   const position = cell.getPosition()
-      //   cell.position(position.x, position.y) // 确保位置更新
-      // }
-    })
+    graph.on('node:mouseup', ({ cell }) => {})
     graph.on('cell:dblclick', ({ cell, e }) => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
-      console.log(cell.getAttrs())
-      //双击编辑节点内容
-      if (cell.isNode()) {
-        const resTools = cell.getTools()
-        console.log(resTools, 'resTools')
-      }
     })
 
     graph.on('node:selected', ({ node }) => {
-      node.removeTool('node-editor')
-      console.log(node.getAttrs())
+      node.removeTools()
+      console.log(node.getAttrs(), '11111111111111111111')
       node.addTools([
         {
           name: 'node-editor',
           args: {
+            y: '0%',
+            x: -50,
             attrs: {
-              // ...node.getAttrs()
-              textDecoration: 'underline',
+              textAlign: 'left',
               fontSize: node.getAttrs()?.text?.fontSize,
               color: node.getAttrs()?.text?.fill || node.getAttrs()?.label?.fill || '#000000',
               fontFamily: node.getAttrs()?.text?.fontFamily || node.getAttrs()?.label?.fontFamily
@@ -360,12 +341,6 @@ export const useFlowChart = () => {
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
-      setCurrentNode((pre) => {
-        if (pre?.isEdge()) {
-          pre.attr('line/stroke', pre.getData().customStroke)
-        }
-        return cell
-      })
     })
 
     graph.on('node:mouseup', ({ cell, x, y }) => {})
@@ -385,43 +360,46 @@ export const useFlowChart = () => {
 
     graph.on('node:mouseup', ({ cell }) => {})
 
+    graph.on('edge:selected', ({ edge }) => {
+      // edge.removeTools()
+      // edge.addTools([
+      //   {
+      //     name: 'edge-editor',
+      //     args: {
+      //       attrs: {
+      //         fontSize: 24,
+      //         color: edge.getAttrs()?.text?.fill || edge.getAttrs()?.label?.fill || '#000000'
+      //       }
+      //     }
+      //   }
+      // ])
+    })
+
     graph.on('edge:click', ({ cell }) => {
-      setCurrentNode((pre) => {
-        console.log(pre, cell, 'pre')
-
-        if (pre?.isEdge()) {
-          const res = pre?.getData()?.customStroke
-          if (res) {
-            pre.attr('line/stroke', res)
-          }
-        }
-        console.log(cell.getAttrs())
-        console.log(cell.getData())
-        // console.log(cell.getAttrs().line.stroke, 'cell')
-
-        const currentLineAttrs = cell.getAttrs().line.stroke
-
-        cell.attr('line/stroke', 'blue')
-
-        cell.setData({
-          customStroke: currentLineAttrs
-        })
-
-        console.log(cell.getAttrs())
-        console.log(cell.getData())
-
-        return cell
-      })
+      // setCurrentNode((pre) => {
+      //   console.log(pre, cell, 'pre')
+      //   if (pre?.isEdge()) {
+      //     const res = pre?.getData()?.customStroke
+      //     if (res) {
+      //       pre.attr('line/stroke', res)
+      //     }
+      //   }
+      //   console.log(cell.getAttrs())
+      //   console.log(cell.getData())
+      //   // console.log(cell.getAttrs().line.stroke, 'cell')
+      //   const currentLineAttrs = cell.getAttrs().line.stroke
+      //   cell.attr('line/stroke', 'blue')
+      //   cell.setData({
+      //     customStroke: currentLineAttrs
+      //   })
+      //   console.log(cell.getAttrs())
+      //   console.log(cell.getData())
+      //   return cell
+      // })
     })
 
     graph.on('edge:dblclick', ({ cell, e }) => {
       console.log('edge:dblclick')
-      cell.removeTools()
-      cell.addTools([
-        {
-          name: 'edge-editor'
-        }
-      ])
     })
 
     graph.on('edge:mouseenter', ({ cell }) => {
@@ -430,26 +408,26 @@ export const useFlowChart = () => {
       ) as NodeListOf<SVGElement>
       showPorts(ports, true)
       cell.removeTools()
-      cell.addTools([
-        {
-          name: 'vertices',
-          args: {
-            attrs: { fill: '#666' }
-          }
-        },
-        {
-          name: 'segments',
-          args: {
-            attrs: { fill: 'red' }
-          }
-        },
-        {
-          name: 'source-arrowhead'
-        },
-        {
-          name: 'target-arrowhead'
-        }
-      ])
+      // cell.addTools([
+      //   {
+      //     name: 'vertices',
+      //     args: {
+      //       attrs: { fill: '#666' }
+      //     }
+      //   },
+      //   {
+      //     name: 'segments',
+      //     args: {
+      //       attrs: { fill: 'red' }
+      //     }
+      //   },
+      //   {
+      //     name: 'source-arrowhead'
+      //   },
+      //   {
+      //     name: 'target-arrowhead'
+      //   }
+      // ])
     })
     graph.on('edge:mouseleave', ({ cell }) => {
       const ports = refContainer.current?.querySelectorAll(
@@ -464,6 +442,53 @@ export const useFlowChart = () => {
         const res = edge.getData()?.customStroke ?? edge.getAttrs().line.stroke
         edge.attr('line/stroke', res)
       })
+    })
+
+    graph.on('cell:selected', ({ cell, options }) => {
+      cell.removeTools()
+      if (cell.isNode()) {
+        cell.addTools([
+          {
+            name: 'node-editor',
+            args: {
+              y: '0%',
+              x: -50,
+              attrs: {
+                textAlign: 'left',
+                fontSize: cell.getAttrs()?.text?.fontSize,
+                color: cell.getAttrs()?.text?.fill || cell.getAttrs()?.label?.fill || '#000000',
+                fontFamily: cell.getAttrs()?.text?.fontFamily || cell.getAttrs()?.label?.fontFamily
+              }
+            }
+          }
+        ])
+      }
+
+      if (cell.isEdge()) {
+        cell.addTools([
+          {
+            name: 'edge-editor',
+            args: {
+              attrs: {
+                fontSize: 24,
+                color: cell.getAttrs()?.text?.fill || cell.getAttrs()?.label?.fill || '#000000'
+              }
+            }
+          }
+        ])
+      }
+
+      const currentCells = graph?.getSelectedCells() as (
+        | Edge<Edge.Properties>
+        | Node<Node.Properties>
+      )[]
+      setCurrentNode(currentCells)
+
+      console.log(graph.getSelectedCells(), '111111')
+    })
+
+    graph.on('cell:unselected', () => {
+      setCurrentNode([])
     })
 
     handleStencilInit(graph)

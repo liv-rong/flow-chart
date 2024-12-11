@@ -12,6 +12,7 @@
   "dependencies": {
     "@ant-design/happy-work-theme": "^1.0.0",
     "@ant-design/icons": "^5.5.2",
+    "@antv/layout": "1.2.14-beta.8",
     "@antv/x6": "^2.18.1",
     "@antv/x6-plugin-clipboard": "^2.1.6",
     "@antv/x6-plugin-dnd": "^2.1.1",

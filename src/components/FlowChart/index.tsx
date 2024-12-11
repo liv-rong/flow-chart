@@ -223,16 +223,6 @@ function FlowChart() {
   }
 
   useEffect(() => {
-    // 获取可编辑的 div 元素
-    const editableDiv = document.querySelector('.editable')
-
-    // 监听编辑完成事件
-    // editableDiv?.addEventListener('blur', () => {
-    //   console.log('编辑内容:', editableDiv.innerText)
-    // })
-
-    // 自动聚焦到可编辑区域
-    // editableDiv?.focus()
     handleInit()
     return () => {
       graph?.dispose()
