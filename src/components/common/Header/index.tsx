@@ -97,13 +97,6 @@ const Header = (props: Props) => {
         <Button
           type="default"
           className=""
-          size="small"
-        >
-          导出
-        </Button>
-        <Button
-          type="default"
-          className=""
           onClick={exportJson}
           size="small"
         >

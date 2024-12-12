@@ -1,5 +1,5 @@
 
-FROM node:lts-slim
+FROM node:20.10.0-alpine AS builder
 
 WORKDIR /app
 RUN npm install -g pnpm
@@ -9,7 +9,7 @@ COPY . .
 RUN pnpm run build
 
 FROM nginx:alpine
-COPY --from=base /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY entrypoint.sh ./entrypoint.sh

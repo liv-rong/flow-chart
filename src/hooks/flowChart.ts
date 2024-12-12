@@ -1,5 +1,4 @@
 import { Graph, type Model, Shape, Node, type Edge } from '@antv/x6'
-
 import { Stencil } from '@antv/x6-plugin-stencil'
 import { Transform } from '@antv/x6-plugin-transform'
 import { Selection } from '@antv/x6-plugin-selection'
@@ -9,13 +8,7 @@ import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
 import { Export } from '@antv/x6-plugin-export'
 
-interface Props {
-  setTextValue: React.Dispatch<React.SetStateAction<string>>
-  textValue: string
-}
-export const useFlowChart = (props: Props) => {
-  const { setTextValue, textValue } = props
-
+export const useFlowChart = () => {
   const refContainer = useRef<HTMLDivElement>(null)
 
   const refStencil = useRef<HTMLDivElement | null>(null)
@@ -152,6 +145,9 @@ export const useFlowChart = (props: Props) => {
         router: {
           name: 'orth'
         },
+
+        allowLoop: false,
+        allowNode: false,
         anchor: 'center',
         connectionPoint: {
           name: 'boundary',
@@ -188,7 +184,7 @@ export const useFlowChart = (props: Props) => {
           })
         },
         validateConnection({ targetMagnet }) {
-          return !!targetMagnet
+          return true
         }
       },
       highlighting: {
@@ -308,7 +304,6 @@ export const useFlowChart = (props: Props) => {
         ports[i].style.visibility = show ? 'visible' : 'hidden'
       }
     }
-    graph.on('node:dragend', () => {})
 
     graph.on('node:mouseup', () => {})
     graph.on('cell:dblclick', ({ cell }) => {
@@ -318,17 +313,14 @@ export const useFlowChart = (props: Props) => {
       showPorts(ports, false)
       if (cell.isNode()) {
         console.log(cell.getAttrs())
-        const textValue = cell.getAttrs()?.text?.text as string
-        console.log('textValue', textValue)
-        setTextValue(textValue)
+        cell.attr('text/opacity', 0)
       }
     })
 
-    graph.on('node:selected', () => {})
+    graph.on('node:click', ({ cell }) => {
+      cell.attr('text/opacity', 1)
+    })
 
-    graph.on('node:click', ({ cell }) => {})
-
-    graph.on('node:mouseup', () => {})
     graph.on('node:mouseenter', () => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
@@ -342,46 +334,49 @@ export const useFlowChart = (props: Props) => {
       showPorts(ports, false)
     })
 
-    graph.on('node:mouseup', () => {})
-
-    graph.on('edge:selected', () => {})
-
-    graph.on('edge:click', () => {
-      // setCurrentNode((pre) => {
-      //   console.log(pre, cell, 'pre')
-      //   if (pre?.isEdge()) {
-      //     const res = pre?.getData()?.customStroke
-      //     if (res) {
-      //       pre.attr('line/stroke', res)
-      //     }
-      //   }
-      //   console.log(cell.getAttrs())
-      //   console.log(cell.getData())
-      //   // console.log(cell.getAttrs().line.stroke, 'cell')
-      //   const currentLineAttrs = cell.getAttrs().line.stroke
-      //   cell.attr('line/stroke', 'blue')
-      //   cell.setData({
-      //     customStroke: currentLineAttrs
-      //   })
-      //   console.log(cell.getAttrs())
-      //   console.log(cell.getData())
-      //   return cell
-      // })
-    })
-
-    graph.on('edge:dblclick', () => {})
-
-    graph.on('edge:mouseenter', () => {
+    graph.on('edge:mouseenter', ({ edge }) => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, true)
+      edge.removeTools()
+      edge.addTools([
+        {
+          name: 'vertices',
+          args: {
+            modifiers: ['shift']
+          }
+        },
+
+        {
+          name: 'segments'
+        },
+        {
+          name: 'target-arrowhead'
+        },
+
+        {
+          name: 'source-arrowhead'
+        }
+      ])
     })
-    graph.on('edge:mouseleave', () => {
+    graph.on('edge:mouseleave', ({ edge }) => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
+      if (edge.hasTool('vertices')) {
+        edge.removeTool('vertices')
+      }
+      if (edge.hasTool('segments')) {
+        edge.removeTool('segments')
+      }
+      if (edge.hasTool('source-arrowhead')) {
+        edge.removeTool('source-arrowhead')
+      }
+      if (edge.hasTool('target-arrowhead')) {
+        edge.removeTool('target-arrowhead')
+      }
     })
 
     graph.on('blank:click', () => {
@@ -395,16 +390,6 @@ export const useFlowChart = (props: Props) => {
       cell.removeTools()
 
       if (cell.isNode()) {
-        // console.log(cell.getAttrs(), 'argsY')
-        // const { textAnchor, textVerticalAnchor } = cell.getAttrs()?.label ?? {
-        //   textAnchor: 'middle',
-        //   textVerticalAnchor: 'middle'
-        // }
-
-        // const argsY =
-        //   textVerticalAnchor === 'middle' ? '50%' : textVerticalAnchor === 'bottom' ? '100%' : '0%'
-        // console.log(argsY, textVerticalAnchor, 'argsY')
-
         cell.addTools([
           {
             name: 'node-editor',
@@ -419,20 +404,11 @@ export const useFlowChart = (props: Props) => {
           }
         ])
       }
-      console.log(cell.getAttrs(), 'argsY')
 
       if (cell.isEdge()) {
-        // cell.attr('line/stroke', 'blue')
         cell.addTools([
           {
-            name: 'vertices',
-            args: {
-              attrs: { fill: 'blue' }
-            }
-          },
-          {
-            name: 'edge-editor',
-            args: {}
+            name: 'edge-editor'
           }
         ])
       }
@@ -444,9 +420,11 @@ export const useFlowChart = (props: Props) => {
       setCurrentNode(currentCells)
     })
 
-    graph.on('cell:unselected', () => {
+    graph.on('cell:unselected', ({ cell }) => {
       setCurrentNode([])
-      // cell.removeTools()
+      if (cell.isNode()) {
+        cell.attr('text/opacity', 1)
+      }
     })
 
     handleStencilInit(graph)

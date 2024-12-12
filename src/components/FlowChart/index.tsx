@@ -3,31 +3,6 @@ import Header from '../common/Header'
 import LeftOperate from './components/LeftOperate'
 import RightOperate from './components/RightOperate'
 import mermaid from 'mermaid'
-import CustomNodeEdit from './components/CustomEdit/CustomNodeEdit'
-import { Button } from 'antd'
-
-const commands = [
-  {
-    key: 'zoomIn',
-    label: 'ZoomIn(0.2)'
-  },
-  {
-    key: 'zoomOut',
-    label: 'ZoomOut(-0.2)'
-  },
-  {
-    key: 'zoomTo',
-    label: 'ZoomTo(1)'
-  },
-  {
-    key: 'zoomToFit',
-    label: 'ZoomToFit'
-  },
-  {
-    key: 'centerContent',
-    label: 'CenterContent'
-  }
-]
 
 const mermaidInput = `
 flowchart TD
@@ -85,25 +60,18 @@ flowchart TD
     A[实验目的激活特征的AS续激活特征的肺腺癌前瞻性研DSAD肺腺癌前瞻] --> B[Hematology Oncology Hematology Hematology]
 
 
-    A --> J[HematologyyyyyHematologyyyyyyyyyyyyyyyyy]
+    A --> J[Hematolo]
 
 `
 
 function FlowChart() {
-  const nodeEitor = useRef(null)
-  const [textValue, setTextValue] = useState('')
   const {
     initGraph,
-    handleZoom,
     refContainer: customRefContainer,
     currentNode,
-    setCurrentNode,
     refStencil,
     graph
-  } = useFlowChart({
-    setTextValue,
-    textValue
-  })
+  } = useFlowChart()
 
   const { exportJson, exportPng, exportSvg } = useExportFile(graph)
 
@@ -114,11 +82,8 @@ function FlowChart() {
 
     const nodes = ChartUtils.handleXY()
 
-    // const { edges } = ChartUtils.mermaidTojson(b) ?? {}
-
     const edges = ChartUtils.getEdgeInfo()
 
-    console.log(nodes, edges)
     initGraph({
       nodes,
       edges
