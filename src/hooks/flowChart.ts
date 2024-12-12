@@ -9,7 +9,13 @@ import { Clipboard } from '@antv/x6-plugin-clipboard'
 import { History } from '@antv/x6-plugin-history'
 import { Export } from '@antv/x6-plugin-export'
 
-export const useFlowChart = () => {
+interface Props {
+  setTextValue: React.Dispatch<React.SetStateAction<string>>
+  textValue: string
+}
+export const useFlowChart = (props: Props) => {
+  const { setTextValue, textValue } = props
+
   const refContainer = useRef<HTMLDivElement>(null)
 
   const refStencil = useRef<HTMLDivElement | null>(null)
@@ -305,16 +311,22 @@ export const useFlowChart = () => {
     graph.on('node:dragend', () => {})
 
     graph.on('node:mouseup', () => {})
-    graph.on('cell:dblclick', () => {
+    graph.on('cell:dblclick', ({ cell }) => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
+      if (cell.isNode()) {
+        console.log(cell.getAttrs())
+        const textValue = cell.getAttrs()?.text?.text as string
+        console.log('textValue', textValue)
+        setTextValue(textValue)
+      }
     })
 
     graph.on('node:selected', () => {})
 
-    graph.on('node:click', () => {})
+    graph.on('node:click', ({ cell }) => {})
 
     graph.on('node:mouseup', () => {})
     graph.on('node:mouseenter', () => {
@@ -392,12 +404,13 @@ export const useFlowChart = () => {
         // const argsY =
         //   textVerticalAnchor === 'middle' ? '50%' : textVerticalAnchor === 'bottom' ? '100%' : '0%'
         // console.log(argsY, textVerticalAnchor, 'argsY')
+
         cell.addTools([
           {
             name: 'node-editor',
             args: {
               attrs: {
-                backgroundColor: 'transparent ',
+                backgroundColor: 'transparent',
                 fontSize: cell.getAttrs()?.text?.fontSize,
                 color: cell.getAttrs()?.text?.fill || cell.getAttrs()?.label?.fill || '#000000',
                 fontFamily: cell.getAttrs()?.text?.fontFamily || cell.getAttrs()?.label?.fontFamily
@@ -406,19 +419,20 @@ export const useFlowChart = () => {
           }
         ])
       }
+      console.log(cell.getAttrs(), 'argsY')
 
       if (cell.isEdge()) {
-        cell.attr('line/stroke', 'blue')
+        // cell.attr('line/stroke', 'blue')
         cell.addTools([
-          {
-            name: 'edge-editor',
-            args: {}
-          },
           {
             name: 'vertices',
             args: {
               attrs: { fill: 'blue' }
             }
+          },
+          {
+            name: 'edge-editor',
+            args: {}
           }
         ])
       }

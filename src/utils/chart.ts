@@ -126,6 +126,8 @@ export class ChartUtils {
         nodeLabel = p.innerText
       }
 
+      console.log(nodeLabel.length, 'nodeLabel')
+
       return {
         id,
         x,
@@ -134,8 +136,12 @@ export class ChartUtils {
         height,
         shape,
         attrs: {
-          body
+          body,
+          label: {
+            textWrap: { width: '80%', ellipsis: true, height: '1000%' }
+          }
         },
+
         label: nodeLabel
       }
     })
@@ -180,8 +186,6 @@ export class ChartUtils {
 
     const simpleRegex = /(\w+)\s*/
 
-    console.log(inputString, 'inputString')
-
     if (/^\w+$/.test(inputString)) {
       return {
         id: inputString,
@@ -192,7 +196,6 @@ export class ChartUtils {
     let edgeLabel = ''
 
     const matchEdge = inputString.match(/\|(.+?)\|/)
-    console.log(matchEdge, 'matchEdge')
 
     if (matchEdge) {
       edgeLabel = matchEdge[1]
@@ -200,11 +203,7 @@ export class ChartUtils {
 
     const matchDeleteEdge = inputString.replace(/\|[^|]*\|/, '').trim()
 
-    console.log(matchDeleteEdge, 'matchDeleteEdge')
-
     const match = matchDeleteEdge.match(regex)
-
-    console.log(match, matchDeleteEdge, 'match')
 
     if (match) {
       const id = match[1]
@@ -224,10 +223,5 @@ export class ChartUtils {
 
   static replaceBRWithNewline(inputString: string) {
     return inputString.replace(/<br\/?>/g, '\n')
-  }
-
-  //判断节点文本内容 是左对齐 还是右对齐 还是居中   文本位置居中 距底 距顶
-  static getLabelTextAlign(node: Node<Node.Properties>) {
-    if (!node) return
   }
 }

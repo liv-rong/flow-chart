@@ -9,6 +9,7 @@ declare global {
   const BaseLayout: typeof import('../layouts/BaseLayout/index')['default']
   const BrowserUtils: typeof import('../utils/browser')['BrowserUtils']
   const ChartUtils: typeof import('../utils/chart')['ChartUtils']
+  const CustomNodeEdit: typeof import('../components/FlowChart/components/CustomEdit/CustomNodeEdit')['default']
   const ExportFiles: typeof import('../components/common/Header/components/ExportFiles')['default']
   const FlowChart: typeof import('../components/FlowChart/index')['default']
   const Footer: typeof import('../components/common/Footer')['default']

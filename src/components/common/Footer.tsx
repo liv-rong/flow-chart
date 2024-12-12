@@ -6,9 +6,7 @@ const Footer = () => {
       className={classNames(
         'h-8 w-full border-t bg-white flex justify-center items-center text-xs'
       )}
-    >
-      Footer
-    </div>
+    ></div>
   )
 }
 

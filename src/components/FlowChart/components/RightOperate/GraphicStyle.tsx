@@ -90,18 +90,16 @@ const GraphicStyle = (props: Props) => {
         <div className="border-b p-2  space-y-2">
           <div className="flex w-full h-6 bg-white justify-between items-center border px-2">
             {alignData.map((item, index) => (
-              <>
-                <Tooltip
-                  title={item.label}
-                  key={index}
-                >
-                  <Icon
-                    component={item.icon}
-                    className="text-lg font-medium cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleAlign(item.value)}
-                  />
-                </Tooltip>
-              </>
+              <Tooltip
+                title={item.label}
+                key={index}
+              >
+                <Icon
+                  component={item.icon}
+                  className="text-lg font-medium cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleAlign(item.value)}
+                />
+              </Tooltip>
             ))}
           </div>
           <div className="flex w-full h-6 bg-white justify-between items-center">

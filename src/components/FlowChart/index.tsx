@@ -3,6 +3,8 @@ import Header from '../common/Header'
 import LeftOperate from './components/LeftOperate'
 import RightOperate from './components/RightOperate'
 import mermaid from 'mermaid'
+import CustomNodeEdit from './components/CustomEdit/CustomNodeEdit'
+import { Button } from 'antd'
 
 const commands = [
   {
@@ -72,7 +74,7 @@ flowchart TD
   R[2.在体水平验证VAL结合Vimentin调控肺脉癌转移]-->S[构建VAL和AVAL过表达的肺腺癌稳转细胞株]
   S-->T[尾静脉注射肺转移模型验证VAL及AVAL功能]
   T-->W[心脏注射肺腺癌骨转移模型验证VAL及AVAL功能]
-  W-->X[VAL与Trim16存在竞争性效应的在体实验]
+  W-->X[VAL与Trim16存 Diagnosis 在竞争性效应的在体实验]
   Y[AKTVimentin信号轴在肺腺癌转移中的临床意义]--> Z[200例肺腺癌患者肿瘤组织进行回顾性研究,qPCR、WB和IH检]
   1-->2[100例AKT持续激活特征的肺腺癌前瞻性研究:新鲜组织标本配对癌旁组织及血浆检测其中STAT3、VAL和Vimentin表达]
   2-->3[统计分析:对AKT、STAT3、VAL和Vimentin表达与临床病理因素做单因素/多因素分析和预后关联分析,明确临床意义]
@@ -80,19 +82,16 @@ flowchart TD
 
 const b = `
 flowchart TD
-    A[实验目的] --> B[细胞培养]
+    A[实验目的激活特征的AS续激活特征的肺腺癌前瞻性研DSAD肺腺癌前瞻] --> B[Hematology Oncology Hematology Hematology]
 
 
-    A --> J[材料准备]
-    J -->|细胞培养基| B
-    J -->|细胞株| B
-    J -->|抗生素| D
-    J -->|孔板| C
-    J -->|qqw培养箱| E
-    J -->|试剂| F
+    A --> J[HematologyyyyyHematologyyyyyyyyyyyyyyyyy]
+
 `
 
 function FlowChart() {
+  const nodeEitor = useRef(null)
+  const [textValue, setTextValue] = useState('')
   const {
     initGraph,
     handleZoom,
@@ -101,12 +100,15 @@ function FlowChart() {
     setCurrentNode,
     refStencil,
     graph
-  } = useFlowChart()
+  } = useFlowChart({
+    setTextValue,
+    textValue
+  })
 
   const { exportJson, exportPng, exportSvg } = useExportFile(graph)
 
   const handleInit = async () => {
-    const svgres = await mermaid.render('text', b)
+    const svgres = await mermaid.render('text', a)
 
     document.getElementById('svgContainer')!.innerHTML = svgres.svg
 
@@ -140,7 +142,7 @@ function FlowChart() {
 
       <div className="h-[calc(100%-72px)] w-full flex">
         <LeftOperate refCustom={refStencil}></LeftOperate>
-        <div className="w-full h-full bg-gray-50 flex-1 overflow-auto flex justify-center items-center">
+        <div className="w-full h-full bg-gray-50 flex-1  overflow-auto flex justify-center items-center">
           <div className="flex flex-col h-full w-full">
             <div
               id="container"
@@ -151,7 +153,9 @@ function FlowChart() {
         </div>
         <RightOperate currentNode={currentNode} />
       </div>
+
       <Footer />
+
       <div
         id="svgContainer"
         className="!h-0 absolute top-0 left-0 "
