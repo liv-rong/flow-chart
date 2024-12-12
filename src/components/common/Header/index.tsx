@@ -49,6 +49,27 @@ const Header = (props: Props) => {
           }
         }
       ]
+    },
+    {
+      type: 'divider'
+    },
+    {
+      label: '导入',
+      key: 'jsonImport',
+      children: [
+        {
+          label: '导入json',
+          key: 'jsonImport'
+        },
+        {
+          label: '导入svg',
+          key: 'svgImport'
+        },
+        {
+          label: '导入mermaid',
+          key: 'mermaidImport'
+        }
+      ]
     }
   ]
 
@@ -71,15 +92,6 @@ const Header = (props: Props) => {
             文件
           </Button>
         </Dropdown>
-
-        <Button
-          type="default"
-          className=""
-          onClick={exportJson}
-          size="small"
-        >
-          导出json
-        </Button>
       </div>
       <div className="flex justify-center items-center gap-2">
         <Button

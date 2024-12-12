@@ -1,5 +1,5 @@
-import { Graph, type Model, Shape, Node, type Edge, CellView } from '@antv/x6'
-import { register } from '@antv/x6-react-shape'
+import { Graph, type Model, Shape, Node, type Edge } from '@antv/x6'
+
 import { Stencil } from '@antv/x6-plugin-stencil'
 import { Transform } from '@antv/x6-plugin-transform'
 import { Selection } from '@antv/x6-plugin-selection'
@@ -165,9 +165,6 @@ export const useFlowChart = () => {
               line: {
                 stroke: '#000',
                 strokeWidth: 2
-                // targetMarker: {
-                //   name: 'block'
-                // }
               }
             },
             connectionPoint: 'bbox',
@@ -206,7 +203,6 @@ export const useFlowChart = () => {
         new Transform({
           resizing: true,
           rotating: true
-          // dragNode: true
         })
       )
 
@@ -306,50 +302,26 @@ export const useFlowChart = () => {
         ports[i].style.visibility = show ? 'visible' : 'hidden'
       }
     }
-    graph.on('node:dragend', ({ cell, e, x, y }) => {})
+    graph.on('node:dragend', () => {})
 
-    graph.on('node:mouseup', ({ cell }) => {})
-    graph.on('cell:dblclick', ({ cell, e }) => {
+    graph.on('node:mouseup', () => {})
+    graph.on('cell:dblclick', () => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
     })
 
-    graph.on('node:selected', ({ node }) => {
-      node.removeTools()
-      console.log(node.getAttrs(), '11111111111111111111')
-      node.addTools([
-        {
-          name: 'node-editor',
-          args: {
-            y: '0%',
-            x: -50,
-            attrs: {
-              textAlign: 'left',
-              fontSize: node.getAttrs()?.text?.fontSize,
-              color: node.getAttrs()?.text?.fill || node.getAttrs()?.label?.fill || '#000000',
-              fontFamily: node.getAttrs()?.text?.fontFamily || node.getAttrs()?.label?.fontFamily
-            }
-          }
-        }
-      ])
-    })
+    graph.on('node:selected', () => {})
 
-    graph.on('node:click', ({ cell, x, y }) => {
-      const ports = refContainer.current?.querySelectorAll(
-        '.x6-port-body'
-      ) as NodeListOf<SVGElement>
-      showPorts(ports, false)
-    })
+    graph.on('node:click', () => {})
 
-    graph.on('node:mouseup', ({ cell, x, y }) => {})
-    graph.on('node:mouseenter', ({ e, node, view }) => {
+    graph.on('node:mouseup', () => {})
+    graph.on('node:mouseenter', () => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, true)
-      //鼠标滑过显示连接庄
     })
     graph.on('node:mouseleave', () => {
       const ports = refContainer.current?.querySelectorAll(
@@ -358,24 +330,11 @@ export const useFlowChart = () => {
       showPorts(ports, false)
     })
 
-    graph.on('node:mouseup', ({ cell }) => {})
+    graph.on('node:mouseup', () => {})
 
-    graph.on('edge:selected', ({ edge }) => {
-      // edge.removeTools()
-      // edge.addTools([
-      //   {
-      //     name: 'edge-editor',
-      //     args: {
-      //       attrs: {
-      //         fontSize: 24,
-      //         color: edge.getAttrs()?.text?.fill || edge.getAttrs()?.label?.fill || '#000000'
-      //       }
-      //     }
-      //   }
-      // ])
-    })
+    graph.on('edge:selected', () => {})
 
-    graph.on('edge:click', ({ cell }) => {
+    graph.on('edge:click', () => {
       // setCurrentNode((pre) => {
       //   console.log(pre, cell, 'pre')
       //   if (pre?.isEdge()) {
@@ -398,64 +357,47 @@ export const useFlowChart = () => {
       // })
     })
 
-    graph.on('edge:dblclick', ({ cell, e }) => {
-      console.log('edge:dblclick')
-    })
+    graph.on('edge:dblclick', () => {})
 
-    graph.on('edge:mouseenter', ({ cell }) => {
+    graph.on('edge:mouseenter', () => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, true)
-      cell.removeTools()
-      // cell.addTools([
-      //   {
-      //     name: 'vertices',
-      //     args: {
-      //       attrs: { fill: '#666' }
-      //     }
-      //   },
-      //   {
-      //     name: 'segments',
-      //     args: {
-      //       attrs: { fill: 'red' }
-      //     }
-      //   },
-      //   {
-      //     name: 'source-arrowhead'
-      //   },
-      //   {
-      //     name: 'target-arrowhead'
-      //   }
-      // ])
     })
-    graph.on('edge:mouseleave', ({ cell }) => {
+    graph.on('edge:mouseleave', () => {
       const ports = refContainer.current?.querySelectorAll(
         '.x6-port-body'
       ) as NodeListOf<SVGElement>
       showPorts(ports, false)
-      cell.removeTools(['source-arrowhead', 'target-arrowhead'])
     })
 
-    graph.on('blank:click', ({ e, x, y }) => {
+    graph.on('blank:click', () => {
       graph?.getEdges().forEach((edge) => {
         const res = edge.getData()?.customStroke ?? edge.getAttrs().line.stroke
         edge.attr('line/stroke', res)
       })
     })
 
-    graph.on('cell:selected', ({ cell, options }) => {
-      console.log(options, 'options')
+    graph.on('cell:selected', ({ cell }) => {
       cell.removeTools()
+
       if (cell.isNode()) {
+        // console.log(cell.getAttrs(), 'argsY')
+        // const { textAnchor, textVerticalAnchor } = cell.getAttrs()?.label ?? {
+        //   textAnchor: 'middle',
+        //   textVerticalAnchor: 'middle'
+        // }
+
+        // const argsY =
+        //   textVerticalAnchor === 'middle' ? '50%' : textVerticalAnchor === 'bottom' ? '100%' : '0%'
+        // console.log(argsY, textVerticalAnchor, 'argsY')
         cell.addTools([
           {
             name: 'node-editor',
             args: {
-              y: '0%',
-              x: -50,
               attrs: {
-                textAlign: 'left',
+                backgroundColor: 'transparent ',
                 fontSize: cell.getAttrs()?.text?.fontSize,
                 color: cell.getAttrs()?.text?.fill || cell.getAttrs()?.label?.fill || '#000000',
                 fontFamily: cell.getAttrs()?.text?.fontFamily || cell.getAttrs()?.label?.fontFamily
@@ -466,14 +408,16 @@ export const useFlowChart = () => {
       }
 
       if (cell.isEdge()) {
+        cell.attr('line/stroke', 'blue')
         cell.addTools([
           {
             name: 'edge-editor',
+            args: {}
+          },
+          {
+            name: 'vertices',
             args: {
-              attrs: {
-                fontSize: 24,
-                color: cell.getAttrs()?.text?.fill || cell.getAttrs()?.label?.fill || '#000000'
-              }
+              attrs: { fill: 'blue' }
             }
           }
         ])
@@ -484,12 +428,11 @@ export const useFlowChart = () => {
         | Node<Node.Properties>
       )[]
       setCurrentNode(currentCells)
-
-      console.log(graph.getSelectedCells(), '111111')
     })
 
     graph.on('cell:unselected', () => {
       setCurrentNode([])
+      // cell.removeTools()
     })
 
     handleStencilInit(graph)

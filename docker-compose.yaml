@@ -1,0 +1,9 @@
+services:
+  web:
+    container_name: flow-chart
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"

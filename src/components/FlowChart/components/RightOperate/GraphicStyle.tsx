@@ -50,8 +50,6 @@ const GraphicStyle = (props: Props) => {
     handleAlign
   } = useSetAttrs(currentNode)
 
-  useEffect(() => {}, [currentNode])
-
   const alignData = [
     {
       icon: AlignHorizontalLeft,
@@ -89,7 +87,7 @@ const GraphicStyle = (props: Props) => {
   return (
     <div className="text-xs">
       <>
-        <div className="border-b p-2 bg-red-50 space-y-2">
+        <div className="border-b p-2  space-y-2">
           <div className="flex w-full h-6 bg-white justify-between items-center border px-2">
             {alignData.map((item, index) => (
               <>

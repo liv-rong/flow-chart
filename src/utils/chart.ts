@@ -20,6 +20,8 @@ export class ChartUtils {
         const { id: sourceId } = this.extractNodeInfo(source) ?? {}
         const { id: targetId, edgeLabel } = this.extractNodeInfo(target) ?? {}
 
+        console.log('sourceId', sourceId, targetId, edgeLabel)
+
         edges.push({
           source: sourceId!, // 源节点
           target: targetId, // 目标节点
@@ -134,28 +136,51 @@ export class ChartUtils {
         attrs: {
           body
         },
-        // tools: [
-        //   {
-        //     name: 'node-editor',
-        //     args: {
-        //       attrs: {
-        //         color: 'red',
-        //         fontSize: 46,
-        //         getText: 'a/b',
-        //         setText: 'c/d'
-        //       }
-        //     }
-        //   }
-        // ],
         label: nodeLabel
       }
     })
     return nodeData
   }
 
+  static getEdgeInfo() {
+    // 1. 获取所有的边的节点的label
+
+    const edgeLabels = document.querySelectorAll<HTMLElement>('span.edgeLabel')
+    console.log(edgeLabels, 'getEdgeInfo')
+
+    const result = Array.from(edgeLabels).map((label) => ({
+      label: label.textContent?.trim() || ''
+    }))
+
+    // 2. 获取所有的边的节点的id
+    const edgeIds = document.querySelectorAll<HTMLElement>('.edgePaths path')
+    console.log(edgeIds, 'getEdgeInfo')
+
+    const result1 = Array.from(edgeIds).map((label, index) => {
+      const id = (label.getAttribute('id') || '').split('_')
+
+      const source = id.length >= 3 ? id[1] : ''
+      const target = id.length >= 3 ? id[2] : ''
+
+      return {
+        source,
+        target,
+        d: label.getAttribute('d') || '',
+        label: result[index].label
+      }
+    })
+
+    return result1
+  }
+
   static extractNodeInfo(inputString: string) {
     const regex = /(\w+)([\[\{\(])(.*?)([\]\}\)])/
+
+    const regex1 = /(\[.*?\]|\{.*?\}|<.*?>|\|.*?\|)/g
+
     const simpleRegex = /(\w+)\s*/
+
+    console.log(inputString, 'inputString')
 
     if (/^\w+$/.test(inputString)) {
       return {
@@ -167,6 +192,7 @@ export class ChartUtils {
     let edgeLabel = ''
 
     const matchEdge = inputString.match(/\|(.+?)\|/)
+    console.log(matchEdge, 'matchEdge')
 
     if (matchEdge) {
       edgeLabel = matchEdge[1]
@@ -174,7 +200,11 @@ export class ChartUtils {
 
     const matchDeleteEdge = inputString.replace(/\|[^|]*\|/, '').trim()
 
+    console.log(matchDeleteEdge, 'matchDeleteEdge')
+
     const match = matchDeleteEdge.match(regex)
+
+    console.log(match, matchDeleteEdge, 'match')
 
     if (match) {
       const id = match[1]
@@ -194,5 +224,10 @@ export class ChartUtils {
 
   static replaceBRWithNewline(inputString: string) {
     return inputString.replace(/<br\/?>/g, '\n')
+  }
+
+  //判断节点文本内容 是左对齐 还是右对齐 还是居中   文本位置居中 距底 距顶
+  static getLabelTextAlign(node: Node<Node.Properties>) {
+    if (!node) return
   }
 }

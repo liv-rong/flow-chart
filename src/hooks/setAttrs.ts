@@ -1,5 +1,4 @@
 import { Node, type Edge } from '@antv/x6'
-import { GridLayout } from '@antv/layout'
 
 export interface StateTextAlign {
   refX: number
@@ -137,11 +136,12 @@ export const useSetAttrs = (node: (Edge<Edge.Properties> | Node<Node.Properties>
   const handleTextStyle = (type: string, value?: string | number) => {
     if (!node.length) return
     seTWidthValue(value)
+    console.log('value', value)
 
     node.forEach((item) => {
       if (item.isNode()) {
         switch (type) {
-          case 'fontFamily':
+          case 'text/fontFamily':
             item?.attr('text/fontFamily', value ?? 'Arial, helvetica, sans-serif')
             break
           case 'text/fill':

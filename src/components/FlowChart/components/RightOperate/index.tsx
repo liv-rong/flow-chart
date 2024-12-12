@@ -1,9 +1,8 @@
-import { memo } from 'react'
 import type { TabsProps } from 'antd'
 import { Tabs } from 'antd'
 import PageStyle from './PageStyle'
 import GraphicStyle from './GraphicStyle'
-import type { Edge, Graph, Node } from '@antv/x6'
+import type { Edge, Node } from '@antv/x6'
 
 interface Props {
   className?: string
