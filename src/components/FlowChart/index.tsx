@@ -1,9 +1,3 @@
-import Footer from '../common/Footer'
-import Header from '../common/Header'
-import LeftOperate from './components/LeftOperate'
-import RightOperate from './components/RightOperate'
-import mermaid from 'mermaid'
-
 const mermaidInput = `
 flowchart TD
     A[ChristmasA] -->|Get money| B(Go <br/>  shoppingB)
@@ -53,15 +47,6 @@ flowchart TD
   Y[AKTVimentin信号轴在肺腺癌转移中的临床意义]--> Z[200例肺腺癌患者肿瘤组织进行回顾性研究,qPCR、WB和IH检]
   1-->2[100例AKT持续激活特征的肺腺癌前瞻性研究:新鲜组织标本配对癌旁组织及血浆检测其中STAT3、VAL和Vimentin表达]
   2-->3[统计分析:对AKT、STAT3、VAL和Vimentin表达与临床病理因素做单因素/多因素分析和预后关联分析,明确临床意义]
-`
-
-const b = `
-flowchart TD
-    A[实验目的激活特征的AS续激活特征的肺腺癌前瞻性研DSAD肺腺癌前瞻] --> B[Hematology Oncology Hematology Hematology]
-
-
-    A --> J[Hematolo]
-
 `
 
 function FlowChart() {
@@ -123,7 +108,7 @@ function FlowChart() {
 
       <div
         id="svgContainer"
-        className="!h-0 absolute top-0 left-0 "
+        className="!h-0 absolute top-0 left-0 -z-20"
       />
     </div>
   )

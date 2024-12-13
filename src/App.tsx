@@ -1,6 +1,6 @@
-import router from '@/router'
 import { RouterProvider } from 'react-router'
 import { HappyProvider } from '@ant-design/happy-work-theme'
+import router from './router'
 
 function App() {
   return (

@@ -8,24 +8,22 @@ interface Props {
 }
 
 const CustomNodeEdit = (props: Props) => {
-  const { width = 100, height = 50, x = 0, y = 0, value, setValue } = props
+  const { value, setValue } = props
   const editableRef = useRef<HTMLDivElement | null>(null)
 
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement
     console.log('text', target.innerText)
-    setValue?.(target.innerText) // 使用 innerText 获取文本内容
+    setValue?.(target.innerText)
   }
 
   useEffect(() => {
     if (editableRef.current) {
-      editableRef.current.innerText = value ?? '' // 设置初始值
-
-      // 设置光标在文本末尾
+      editableRef.current.innerText = value ?? ''
       const range = document.createRange()
       const selection = window.getSelection()
       range.selectNodeContents(editableRef.current)
-      range.collapse(false) // collapse(false) 将光标移动到内容末尾
+      range.collapse(false)
       selection?.removeAllRanges()
       selection?.addRange(range)
     }

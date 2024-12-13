@@ -13,19 +13,6 @@ import Icon, {
   VerticalAlignTopOutlined
 } from '@ant-design/icons'
 import { Node, type Edge } from '@antv/x6'
-import { Button, ColorPicker, InputNumber, Radio, Select, Tooltip } from 'antd'
-import { useSetAttrs } from '@/hooks'
-import { borderOptions, fontFamilyOptions, lineHeightOptions } from '../../types'
-import {
-  RotateSvg,
-  FlipSvg,
-  AlignHorizontalCenter,
-  AlignHorizontalLeft,
-  AlignHorizontalRight,
-  AlignVerticalBottom,
-  AlignVerticalCenter,
-  AlignVerticalTop
-} from '@/assets/svg'
 
 interface Props {
   currentNode: (Edge<Edge.Properties> | Node<Node.Properties>)[]

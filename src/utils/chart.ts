@@ -20,8 +20,6 @@ export class ChartUtils {
         const { id: sourceId } = this.extractNodeInfo(source) ?? {}
         const { id: targetId, edgeLabel } = this.extractNodeInfo(target) ?? {}
 
-        console.log('sourceId', sourceId, targetId, edgeLabel)
-
         edges.push({
           source: sourceId!, // 源节点
           target: targetId, // 目标节点
@@ -52,7 +50,6 @@ export class ChartUtils {
     // 1. 获取节点svg 中的 g 元素 class 为 nodes 的 svg 元素
     const nodesGroup = document.querySelector('svg g.nodes')
     if (!nodesGroup) {
-      // console.error('No nodes group found')
       return []
     }
 
@@ -98,7 +95,7 @@ export class ChartUtils {
 
       // 获取第一个儿子节点
       const firstChild = child.querySelector('*')
-      // console.log(firstChild, 'firstChild')
+
       if (firstChild) {
         //获取儿子节点的标签属性
         const tagName = firstChild.tagName.toLowerCase()
@@ -126,8 +123,6 @@ export class ChartUtils {
         nodeLabel = p.innerText
       }
 
-      console.log(nodeLabel.length, 'nodeLabel')
-
       return {
         id,
         x,
@@ -152,7 +147,6 @@ export class ChartUtils {
     // 1. 获取所有的边的节点的label
 
     const edgeLabels = document.querySelectorAll<HTMLElement>('span.edgeLabel')
-    console.log(edgeLabels, 'getEdgeInfo')
 
     const result = Array.from(edgeLabels).map((label) => ({
       label: label.textContent?.trim() || ''
@@ -160,7 +154,6 @@ export class ChartUtils {
 
     // 2. 获取所有的边的节点的id
     const edgeIds = document.querySelectorAll<HTMLElement>('.edgePaths path')
-    console.log(edgeIds, 'getEdgeInfo')
 
     const result1 = Array.from(edgeIds).map((label, index) => {
       const id = (label.getAttribute('id') || '').split('_')

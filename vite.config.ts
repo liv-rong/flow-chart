@@ -13,12 +13,24 @@ export default defineConfig({
       imports: [
         'react',
         'react-router-dom',
-        { from: 'classnames', imports: [['default', 'classNames']] },
         {
-          from: 'react',
-          imports: [
+          classnames: [['default', 'classNames']],
+          '@antv/x6': ['Graph', 'Shape', 'Node', 'Edge'],
+          antd: [
+            'Button',
+            'ColorPicker',
+            'Dropdown',
+            'InputNumber',
+            'Modal',
+            'Radio',
+            'Select',
+            'Tooltip'
+          ],
+          mermaid: [['default', 'mermaid']],
+          react: [
             'Suspense',
             'lazy',
+            'memo',
             'useEffect',
             'useState',
             'useRef',
@@ -36,9 +48,10 @@ export default defineConfig({
         'src/components/**',
         'src/hooks/**',
         'src/layouts/*/index.tsx',
-        'src/providers/**',
         'src/store/**',
-        'src/utils/**'
+        'src/hooks/**',
+        'src/utils/**',
+        'src/assets/**'
       ]
     }),
     ViteCompression({

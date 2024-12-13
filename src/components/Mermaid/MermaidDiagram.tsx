@@ -1,8 +1,17 @@
-import { ReactElement, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import mermaid, { RenderResult } from 'mermaid'
-import { MermaidDiagramProps } from './MermaidDiagram.types'
+import { MouseEvent } from 'react'
 
-const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
+export interface Props {
+  children: string
+  id?: string
+  testId?: string
+  className?: string
+  onClick?: (event: MouseEvent<HTMLElement>) => void
+  onError?: (error: any) => void
+}
+
+const MermaidDiagram = (props: Props) => {
   const [element, setElement] = useState<HTMLDivElement>()
   const [render_result, setRenderResult] = useState<RenderResult>()
 
@@ -22,7 +31,6 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
     setElement(elem)
   }, [])
 
-  // hook to update the component when either the element or the rendered diagram changes
   useEffect(() => {
     if (!element) return
     if (!render_result?.svg) return
@@ -30,10 +38,8 @@ const MermaidDiagram = (props: MermaidDiagramProps): ReactElement => {
     render_result.bindFunctions?.(element)
   }, [element, render_result])
 
-  // hook to handle the diagram rendering
   useEffect(() => {
-    if (!diagram_text && diagram_text.length === 0)
-      return // create async function inside useEffect to cope with async mermaid.run
+    if (!diagram_text && diagram_text.length === 0) return
     ;(async () => {
       try {
         const rr = await mermaid.render(`${container_id}-svg`, diagram_text)

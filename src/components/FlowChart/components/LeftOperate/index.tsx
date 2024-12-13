@@ -1,7 +1,5 @@
-import { memo, type ReactNode } from 'react'
-
 interface Props {
-  children?: ReactNode
+  children?: React.ReactNode
   className?: string
   refCustom: React.MutableRefObject<HTMLDivElement | null>
 }
